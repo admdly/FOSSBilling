@@ -10,6 +10,7 @@
 
 use FOSSBilling\Environment;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
 
@@ -19,8 +20,6 @@ const PATH_LIBRARY = PATH_ROOT . DIRECTORY_SEPARATOR . 'library';
 const PATH_THEMES = PATH_ROOT . DIRECTORY_SEPARATOR . 'themes';
 const PATH_MODS = PATH_ROOT . DIRECTORY_SEPARATOR . 'modules';
 const PATH_LANGS = PATH_ROOT . DIRECTORY_SEPARATOR . 'locale';
-const PATH_UPLOADS = PATH_ROOT . DIRECTORY_SEPARATOR . 'uploads';
-const PATH_DATA = PATH_ROOT . DIRECTORY_SEPARATOR . 'data';
 const PATH_CONFIG = PATH_ROOT . DIRECTORY_SEPARATOR . 'config.php';
 
 /*
@@ -51,8 +50,6 @@ function checkConfig()
  */
 function checkInstaller()
 {
-    $filesystem = new Filesystem();
-
     // Check if /install directory still exists after installation has been completed.
     if ($filesystem->exists(PATH_CONFIG) && $filesystem->exists('install/install.php') && Environment::isProduction()) {
         // Throw exception only if debug mode is NOT enabled.
@@ -74,7 +71,7 @@ function checkLegacyFiles()
     $toCheck = ['bb-data', 'bb-library', 'bb-locale', 'bb-modules', 'bb-themes', 'bb-uploads', 'bb-cron.php', 'bb-di.php', 'bb-load.php', 'bb-config.php'];
     $legacyFound = null;
     foreach ($toCheck as $path) {
-        if ($filesystem->exists($path)) {
+        if ($filesystem->exists(Path::makeAbsolute($path, PATH_ROOT))) {
             $legacyFound = true;
 
             break;
@@ -93,8 +90,9 @@ function checkLegacyFiles()
 function checkRequirements()
 {
     // Check for Composer packages / vendor folder.
-    if (!file_exists(PATH_VENDOR)) {
-        throw new Exception('The composer packages are missing.', 1);
+    $filesystem = new Filesystem();
+    if (!$filesystem->exists(Path::normalize(PATH_VENDOR))) {
+        throw new Exception("The composer packages are missing.", 1);
     }
 }
 
@@ -118,8 +116,6 @@ function checkSSL()
  */
 function checkWebServer()
 {
-    $filesystem = new Filesystem();
-
     // Check for missing required .htaccess on Apache and Apache-compatible web servers.
     $isApache = function_exists('apache_get_version') ? true : false;
     $serverSoftware = $_SERVER['SERVER_SOFTWARE'] ?? '';
@@ -165,7 +161,8 @@ function exceptionHandler($e)
         return false;
     }
 
-    if (defined('BB_DEBUG') && BB_DEBUG && file_exists(PATH_VENDOR)) {
+    $filesystem = new Filesystem();
+    if (defined('BB_DEBUG') && BB_DEBUG && $filesystem->exists(Path::normalize(PATH_VENDOR))) {
         /**
          * If advanced debugging is enabled, print Whoops instead of our error page.
          * flip/whoops documentation: https://github.com/filp/whoops/blob/master/docs/API%20Documentation.md.
@@ -183,7 +180,7 @@ function exceptionHandler($e)
 
         echo $whoops->handleException($e);
     } else {
-        include PATH_LIBRARY . DIRECTORY_SEPARATOR . 'FOSSBilling' . DIRECTORY_SEPARATOR . 'ErrorPage.php';
+        include Path::normalize(PATH_LIBRARY.'/FOSSBilling/ErrorPage.php');
         $errorPage = new \FOSSBilling\ErrorPage();
         $errorPage->generatePage($e->getCode(), $message);
     }
@@ -207,7 +204,7 @@ ini_set('display_startup_errors', '1');
 checkRequirements();
 
 // Requirements met - load required packages/files.
-require PATH_VENDOR . DIRECTORY_SEPARATOR . 'autoload.php';
+require Path::normalize(PATH_VENDOR.'/autoload.php');
 
 // Check web server and web server settings.
 checkWebServer();
@@ -218,22 +215,29 @@ checkLegacyFiles();
 // Check config exists.
 checkConfig();
 
-// All seems good, so load the config file.
-$config = require PATH_CONFIG;
+//All seems good, so load the config file.
+$config = require Path::normalize(PATH_CONFIG);
 
 // Config loaded - set globals and relevant settings.
 date_default_timezone_set($config['i18n']['timezone'] ?? 'UTC');
 define('BB_DEBUG', $config['debug']);
 define('BB_URL', $config['url']);
-define('PATH_CACHE', $config['path_data'] . DIRECTORY_SEPARATOR . 'cache');
-define('PATH_LOG', $config['path_data'] . DIRECTORY_SEPARATOR . 'log');
+define('PATH_DATA', Path::canonicalize($config['path_data'] ??= PATH_ROOT.'/data'));
+define('PATH_CACHE', Path::normalize(PATH_DATA.'/cache'));
+define('PATH_LOG', Path::normalize(PATH_DATA.'/log'));
+define('PATH_UPLOADS', Path::normalize(PATH_DATA.'/uploads'));
 define('BB_SSL', str_starts_with($config['url'], 'https'));
 define('ADMIN_PREFIX', $config['admin_area_prefix']);
 define('BB_URL_API', $config['url'] . 'api/');
 
-// Initial setup and checks passed, now we setup our custom autoloader.
-include PATH_LIBRARY . DIRECTORY_SEPARATOR . 'FOSSBilling' . DIRECTORY_SEPARATOR . 'Autoloader.php';
-$loader = new FOSSBilling\AutoLoader();
+//Initial setup and checks passed, now we setup our custom autoloader.
+$loader = new AntCMS\AntLoader([
+    'mode' => 'filesystem',
+    'path' => Path::normalize(PATH_CACHE.'/classMap.php'),
+]);
+$loader->addNamespace('', Path::normalize(PATH_LIBRARY), 'psr0');
+$loader->addNamespace('Box\\Mod\\', Path::normalize(PATH_MODS));
+$loader->checkClassMap();
 $loader->register();
 
 // Verify the installer was removed.
@@ -245,7 +249,7 @@ checkSSL();
 // Set error and exception handlers, and default logging settings.
 ini_set('log_errors', '1');
 ini_set('html_errors', false);
-ini_set('error_log', PATH_LOG . DIRECTORY_SEPARATOR . 'php_error.log');
+ini_set('error_log', Path::normalize(PATH_LOG.'/php_error.log'));
 if ($config['debug']) {
     error_reporting(E_ALL);
     ini_set('display_errors', '1');

@@ -13,9 +13,12 @@ namespace FOSSBilling;
 use Monolog\Logger;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
+use Pimple\Container;
+use Symfony\Component\Filesystem\Path;
 
 class Monolog implements InjectionAwareInterface
 {
+    protected ?Container $di;
     protected $logger = null;
     public string $dateFormat = "d-M-Y H:i:s e";
     public string $outputFormat = "[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n";
@@ -29,12 +32,12 @@ class Monolog implements InjectionAwareInterface
         "event"
     ];
 
-    public function setDi(\Pimple\Container $di): void
+    public function setDi(Container $di): void
     {
         $this->di = $di;
     }
 
-    public function getDi(): ?\Pimple\Container
+    public function getDi(): ?Container
     {
         return $this->di;
     }
@@ -44,7 +47,7 @@ class Monolog implements InjectionAwareInterface
         $channels = $this->channels;
 
         foreach ($channels as $channel) {
-            $path = $di['config']['path_data'] . '/log/' . $channel . '.log';
+            $path = Path::normalize(PATH_DATA."/log/{$channel}.log");
 
             $this->logger[$channel] = new Logger($channel);
             $stream = new StreamHandler($path, Logger::DEBUG);

@@ -11,16 +11,18 @@ declare(strict_types=1);
 
 namespace FOSSBilling;
 
+use Pimple\Container;
+
 class Request implements InjectionAwareInterface
 {
     protected ?\Pimple\Container $di = null;
 
-    public function setDi(\Pimple\Container $di): void
+    public function setDi(Container $di): void
     {
         $this->di = $di;
     }
 
-    public function getDi(): ?\Pimple\Container
+    public function getDi(): ?Container
     {
         return $this->di;
     }
@@ -61,11 +63,12 @@ class Request implements InjectionAwareInterface
                 $number_of_successful_files++;
             }
         }
-        return ($onlySuccessful)  ? $number_of_successful_files : $number_of_files;
+        return ($onlySuccessful) ? $number_of_successful_files : $number_of_files;
     }
 
     /**
      * Gets attached files as SplFileInfo collection
+     *
      * @return array
      */
     public function getUploadedFiles($onlySuccessful = true)

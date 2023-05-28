@@ -27,12 +27,12 @@ class ExtensionManager implements InjectionAwareInterface
 
     private string $_url = 'https://extensions.fossbilling.org/api/';
 
-    public function setDi(\Pimple\Container $di): void
+    public function setDi(Container $di): void
     {
         $this->di = $di;
     }
 
-    public function getDi(): ?\Pimple\Container
+    public function getDi(): ?Container
     {
         return $this->di;
     }
@@ -48,7 +48,7 @@ class ExtensionManager implements InjectionAwareInterface
      */
     public function getExtension(string $id): array
     {
-        $manifest = $this->makeRequest('extension/' . $id);
+        $manifest = $this->makeRequest('extension/'.$id);
 
         if (empty($manifest)) {
             throw new \Box_Exception('Unable to fetch the extension details from the FOSSBilling extension directory.');
@@ -129,7 +129,7 @@ class ExtensionManager implements InjectionAwareInterface
         $latest = $this->getLatestExtensionRelease($extension);
 
         if ($this->di['config']['update_branch'] === 'release') {
-            if (version_compare(\FOSSBilling\Version::VERSION, $latest['min_fossbilling_version'], '<')) {
+            if (version_compare(Version::VERSION, $latest['min_fossbilling_version'], '<')) {
                 return false;
             }
         }
@@ -138,7 +138,7 @@ class ExtensionManager implements InjectionAwareInterface
     }
 
     /**
-     * Make a request to the FOSSBilling extension directory
+     * Make a request to the FOSSBilling extension directory.
      *
      * @param string $endpoint The API endpoint to call (e.g. list)
      * @param array $params The array of parameters to pass to the API endpoint
@@ -151,16 +151,19 @@ class ExtensionManager implements InjectionAwareInterface
         $url = $this->_url . $endpoint;
         $key = $endpoint . serialize($params);
 
-        return $this->di['cache']->get($key, function (ItemInterface $item) use ($url, $params) {
-            $item->expiresAfter(60 * 60);
-
-            $httpClient = \Symfony\Component\HttpClient\HttpClient::create();
+        try {
+            $httpClient = HttpClient::create();
             $response = $httpClient->request('GET', $url, [
                 'timeout' => 5,
                 'query' => array_merge($params, [
-                    'fossbilling_version' => \FOSSBilling\Version::VERSION,
+                    'fossbilling_version' => Version::VERSION,
                 ]),
             ]);
+            $json = $response->toArray();
+        } catch (TransportExceptionInterface | HttpExceptionInterface $e) {
+            error_log($e->getMessage());
+            throw new \Box_Exception('Unable to contact the Extension Directory. Further details are available in the error log.');
+        }
 
             $json = $response->toArray();
 

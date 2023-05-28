@@ -10,48 +10,50 @@
 
 namespace FOSSBilling;
 
+use Pimple\Container;
+use Symfony\Component\Filesystem\Path;
+
 class Requirements implements InjectionAwareInterface
 {
     protected ?\Pimple\Container $di = null;
 
-    public function setDi(\Pimple\Container $di): void
+    public function setDi(Container $di): void
     {
         $this->di = $di;
     }
 
-    public function getDi(): ?\Pimple\Container
+    public function getDi(): ?Container
     {
         return $this->di;
     }
 
     private bool $_all_ok = true;
-    private string $_app_path = PATH_ROOT;
-    private array $_options = array();
+    private array $_options = [];
 
     public function __construct()
     {
-        $this->_options = array(
-            'php'   =>  array(
-                'extensions' => array(
+        $this->_options = [
+            'php' => [
+                'extensions' => [
                     'pdo_mysql',
                     'zlib',
                     'openssl',
                     'dom',
                     'xml',
-                 ),
-                'version'       =>  PHP_VERSION,
-                'min_version'   =>  '8.0',
-                'safe_mode'     =>  ini_get('safe_mode'),
-            ),
-            'writable_folders' => array(
-                $this->_app_path . '/data/cache',
-                $this->_app_path . '/data/log',
-                $this->_app_path . '/data/uploads',
-            ),
-            'writable_files' => array(
-                $this->_app_path . '/config.php',
-            ),
-        );
+                ],
+                'version' => PHP_VERSION,
+                'min_version' => '8.0',
+                'safe_mode' => ini_get('safe_mode'),
+            ],
+            'writable_folders' => [
+                Path::normalize(PATH_CACHE),
+                Path::normalize(PATH_LOG),
+                Path::normalize(PATH_UPLOADS),
+            ],
+            'writable_files' => [
+                Path::normalize(PATH_CONFIG),
+            ],
+        ];
     }
 
     public function getOptions(): array
@@ -61,41 +63,44 @@ class Requirements implements InjectionAwareInterface
 
     public function getInfo(): array
     {
-        $data = array();
-        $data['ip']             = $_SERVER['SERVER_ADDR'] ?? null;
-        $data['PHP_OS']         = PHP_OS;
-        $data['PHP_VERSION']    = PHP_VERSION;
+        $pathCache = Path::normalize(PATH_CACHE);
+        $pathData = Path::normalize(PATH_DATA);
+        $pathLog = Path:: normalize(PATH_LOG);
+        $pathUploads = Path::normalize(PATH_UPLOADS);
 
-        $data['FOSSBilling']    = array(
-            'BB_LOCALE'     =>  $this->di['config']['i18n']['locale'],
-            'version'       =>  \FOSSBilling\Version::VERSION,
-        );
-
-        $data['ini']    = array(
-            'allow_url_fopen'   =>  ini_get('allow_url_fopen'),
-            'safe_mode'         =>  ini_get('safe_mode'),
-            'memory_limit'      =>  ini_get('memory_limit'),
-        );
-
-        $data['permissions']    = array(
-            PATH_UPLOADS     =>  substr(sprintf('%o', fileperms(PATH_UPLOADS)), -4),
-            PATH_DATA        =>  substr(sprintf('%o', fileperms(PATH_DATA)), -4),
-            PATH_CACHE       =>  substr(sprintf('%o', fileperms(PATH_CACHE)), -4),
-            PATH_LOG         =>  substr(sprintf('%o', fileperms(PATH_LOG)), -4),
-        );
-
-        $data['extensions']    = array(
-            'apc'           => extension_loaded('apc'),
-            'pdo_mysql'     => extension_loaded('pdo_mysql'),
-            'zlib'          => extension_loaded('zlib'),
-            'mbstring'      => extension_loaded('mbstring'),
-            'openssl'        => extension_loaded('openssl'),
-        );
+        $data = [
+            'ip' => $_SERVER['SERVER_ADDR'] ?? null,
+            'PHP_OS' => PHP_OS,
+            'PHP_VERSION' => PHP_VERSION,
+            'FOSSBilling' => [
+                'BB_LOCALE' => $this->di['config']['i18n']['locale'],
+                'version' => Version::VERSION,
+            ],
+            'ini' => [
+                'allow_url_fopen' => ini_get('allow_url_fopen'),
+                'safe_mode' => ini_get('safe_mode'),
+                'memory_limit' => ini_get('memory_limit'),
+            ],
+            'permissions' => [
+                $pathUploads => substr(sprintf('%o', fileperms($pathUploads)), -4),
+                $pathData => substr(sprintf('%o', fileperms($pathData)), -4),
+                $pathCache => substr(sprintf('%o', fileperms($pathCache)), -4),
+                $pathLog => substr(sprintf('%o', fileperms($pathLog)), -4),
+            ],
+            'extensions' => [
+                'apc' => extension_loaded('apc'),
+                'pdo_mysql' => extension_loaded('pdo_mysql'),
+                'zlib' => extension_loaded('zlib'),
+                'mbstring' => extension_loaded('mbstring'),
+                'openssl' => extension_loaded('openssl'),
+            ],
+        ];
 
         //determine php username
         if(function_exists('posix_getpwuid') && function_exists('posix_geteuid')) {
             $data['posix_getpwuid'] = posix_getpwuid(posix_geteuid());
         }
+
         return $data;
     }
 
@@ -108,7 +113,7 @@ class Requirements implements InjectionAwareInterface
 
     public function isFOSSBillingVersionOk(): bool
     {
-        return \FOSSBilling\Version::VERSION !== '0.0.1';
+        return Version::VERSION !== '0.0.1';
     }
 
     /**
@@ -118,7 +123,7 @@ class Requirements implements InjectionAwareInterface
     {
         $exts = $this->_options['php']['extensions'];
 
-        $result = array();
+        $result = [];
         foreach($exts as $ext) {
             if(extension_loaded($ext)) {
                 $result[$ext] = true;
@@ -137,12 +142,13 @@ class Requirements implements InjectionAwareInterface
     public function files(): array
     {
         $files = $this->_options['writable_files'];
-        $result = array();
+        $result = [];
 
         foreach($files as $file) {
-            if ($this->checkPerms($file)) {
+            clearstatcache();
+            if ('0777' == substr(sprintf('%o', @fileperms($file)), -4)) {
                 $result[$file] = true;
-            } else if (is_writable($file)) {
+            } elseif (is_writable($file)) {
             	$result[$file] = true;
             } else if (!file_exists($file)){
                 $written = @file_put_contents($file, 'Test?');
@@ -150,7 +156,7 @@ class Requirements implements InjectionAwareInterface
                     $result[$file] = true;
                 } else {
                     $result[$file] = false;
-                    $this->_all_ok = false;   
+                    $this->_all_ok = false;
                 }
                 @unlink($file);
             } else {
@@ -169,11 +175,12 @@ class Requirements implements InjectionAwareInterface
     {
         $folders = $this->_options['writable_folders'];
 
-        $result = array();
+        $result = [];
         foreach($folders as $folder) {
-            if($this->checkPerms($folder)) {
+            clearstatcache();
+            if ('0777' == substr(sprintf('%o', @fileperms($folder)), -4)) {
                 $result[$folder] = true;
-            } else if (is_writable($folder)) {
+            } elseif (is_writable($folder)) {
             	$result[$folder] = true;
             } else {
                 $result[$folder] = false;

@@ -11,28 +11,18 @@
 namespace FOSSBilling;
 
 use Symfony\Component\Mailer\Mailer;
-use Symfony\Component\Mime\Email;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 
-class Mail implements InjectionAwareInterface
+class Mail
 {
     protected ?\Pimple\Container $di = null;
 
     private Email $email;
     private ?string $transport = null;
     private ?string $dsn = null;
-
-    public function setDi(\Pimple\Container $di): void
-    {
-        $this->di = $di;
-    }
-
-    public function getDi(): ?\Pimple\Container
-    {
-        return $this->di;
-    }
 
     /**
      * Constructor for creating an email message. The custom DSN will be used if you either don't provide a transport or use 'custom' for it.
@@ -144,7 +134,7 @@ class Mail implements InjectionAwareInterface
      * Sends the email that was created and configured when the class was constructed
      *
      * @param array|null $options An optional array of options specific to the chosen transport method.
-     * 
+     *
      * @throws \Box_Exception If the transport method is unknown or if required options for the selected transport aren't defined
      */
     public function send(array|null $options = null): void

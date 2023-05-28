@@ -12,8 +12,10 @@ namespace FOSSBilling;
 
 use PhpZip\Exception\ZipException;
 use PhpZip\ZipFile;
-use Symfony\Component\Filesystem\Exception\IOException;
+use Pimple\Container;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
+use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
@@ -23,12 +25,12 @@ class Update implements InjectionAwareInterface
 {
     protected ?\Pimple\Container $di = null;
 
-    public function setDi(\Pimple\Container $di): void
+    public function setDi(Container $di): void
     {
         $this->di = $di;
     }
 
-    public function getDi(): ?\Pimple\Container
+    public function getDi(): ?Container
     {
         return $this->di;
     }
@@ -173,6 +175,7 @@ class Update implements InjectionAwareInterface
      * Perform system update.
      *
      * @throws \Box_Exception if latest version already installed.
+     * @throws \Box_Exception if unable to create temporary file for update archive.
      * @throws \Box_Exception if unable to download the update archive.
      * @throws \Box_Exception if unable to extract the update archive.
      *
@@ -186,8 +189,15 @@ class Update implements InjectionAwareInterface
         }
 
         error_log('Started FOSSBilling auto-update script');
-        $latestVersionNum = $this->getLatestVersion();
-        $archiveFile = PATH_CACHE . DIRECTORY_SEPARATOR . $latestVersionNum . '.zip';
+
+        // Create temp file for update archive.
+        $filesystem = new Filesystem();
+        try {
+            $archiveFile = $filesystem->tempnam('/tmp', 'fossbilling_', '.zip');
+        } catch (IOException $e) {
+            error_log($e->getMessage());
+            throw new \Box_Exception('Unable to create temporary file for update archive. Further details are available in the error log.');
+        }
 
         // Download latest version archive for configured update branch.
         try {
@@ -213,7 +223,7 @@ class Update implements InjectionAwareInterface
         try {
             $zip = new ZipFile();
             $zip->openFile($archiveFile);
-            $zip->extractTo(PATH_ROOT);
+            $zip->extractTo(Path::normalize(PATH_ROOT));
             $zip->close();
         } catch (ZipException $e) {
             error_log($e->getMessage());
@@ -230,9 +240,8 @@ class Update implements InjectionAwareInterface
 
         // Clear cache and remove install folder.
         try {
-            $filesystem = new Filesystem();
-            $filesystem->remove([PATH_CACHE, PATH_ROOT . '/install']);
-            $filesystem->mkdir(PATH_CACHE, 0777);
+            $filesystem->remove([Path::normalize(PATH_CACHE), Path::normalize(PATH_ROOT.'/install')]);
+            $filesystem->mkdir(Path::normalize(PATH_CACHE), 0777);
         } catch (IOException $e) {
             error_log($e->getMessage());
             throw new \Box_Exception("Unable to clear cache and/or remove install folder. Further details are available in the error log.");

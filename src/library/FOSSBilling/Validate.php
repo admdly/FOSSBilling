@@ -12,18 +12,6 @@ namespace FOSSBilling;
 
 class Validate
 {
-    protected ?\Pimple\Container $di = null;
-
-    public function setDi(\Pimple\Container $di): void
-    {
-        $this->di = $di;
-    }
-
-    public function getDi(): ?\Pimple\Container
-    {
-        return $this->di;
-    }
-
     /**
      * Check if second level domain (SLD) is valid.
      */

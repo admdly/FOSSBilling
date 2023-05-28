@@ -10,16 +10,20 @@
 
 namespace FOSSBilling;
 
+use Pimple\Container;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
+
 class Tools
 {
     protected ?\Pimple\Container $di = null;
 
-    public function setDi(\Pimple\Container $di): void
+    public function setDi(Container $di): void
     {
         $this->di = $di;
     }
 
-    public function getDi(): ?\Pimple\Container
+    public function getDi(): ?Container
     {
         return $this->di;
     }
@@ -60,48 +64,22 @@ class Tools
 
     public function hasService($type)
     {
-        $file = PATH_MODS . '/mod_' . $type . '/Service.php';
-        return file_exists($file);
+        $filesystem = new Filesystem();
+        $file = Path::normalize(PATH_MODS."/mod_{$type}/Service.php");
+        return $filesystem->exists($file);
     }
 
     public function getService($type)
     {
         $class = 'Box_Mod_' . ucfirst($type) . '_Service';
-        $file = PATH_MODS . '/mod_' . $type . '/Service.php';
-        if (!file_exists($file)) {
+
+        $filesystem = new Filesystem();
+        $file = Path::normalize(PATH_MODS."/mod_{$type}/Service.php");
+        if (!$filesystem->exists($file)) {
             throw new \Box_Exception('Service class :class was not found in :path', array(':class' => $class, ':path' => $file));
         }
         require_once $file;
         return new $class();
-    }
-
-    public function checkPerms($path, $perm = '0777')
-    {
-        clearstatcache();
-        $configmod = substr(sprintf('%o', fileperms($path)), -4);
-        $int = (int)$configmod;
-        if ($configmod == $perm) {
-            return true;
-        }
-
-        if ((int)$configmod < (int)$perm) {
-            return true;
-        }
-        return false;
-    }
-
-    public function emptyFolder($folder)
-    {
-        /* Original source for this lovely code snippet: https://stackoverflow.com/a/24563703
-         * With modification suggested from KeineMaster (replaced $file with$file->getRealPath())
-         */
-        if (file_exists($folder)) {
-            $di = new \RecursiveDirectoryIterator($folder, \FilesystemIterator::SKIP_DOTS);
-            $ri = new \RecursiveIteratorIterator($di, \RecursiveIteratorIterator::CHILD_FIRST);
-            foreach ($ri as $file) {
-                $file->isDir() ?  rmdir($file->getRealPath()) : unlink($file->getRealPath());
-            }
-        }
     }
 
     /**
@@ -244,8 +222,10 @@ class Tools
     public function getTable($type)
     {
         $class = 'Model_' . ucfirst($type) . 'Table';
-        $file = PATH_LIBRARY . '/Model/' . $type . 'Table.php';
-        if (!file_exists($file)) {
+
+        $filesystem = new Filesystem();
+        $file = Path::normalize(PATH_LIBRARY."/Model/{$type}Table.php");
+        if (!$filesystem->exists($file)) {
             throw new \Box_Exception('Service class :class was not found in :path', array(':class' => $class, ':path' => $file));
         }
         require_once $file;
