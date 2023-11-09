@@ -12,7 +12,7 @@
  * System activity messages management.
  */
 
-namespace Box\Mod\Activity\Api;
+namespace FOSSBilling\Module\Activity\Api;
 
 class Admin extends \Api_Abstract
 {

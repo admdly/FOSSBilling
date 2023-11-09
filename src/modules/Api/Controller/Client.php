@@ -12,8 +12,6 @@
  * This file connects FOSSBilling client area interface and API.
  */
 
-namespace Box\Mod\Api\Controller;
-
 use FOSSBilling\Environment;
 use FOSSBilling\InjectionAwareInterface;
 
