@@ -19,6 +19,7 @@ use Lcharette\WebpackEncoreTwig\VersionedAssetsTwigExtension;
 use League\CommonMark\Extension\DefaultAttributes\DefaultAttributesExtension;
 use RedBeanPHP\Facade;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\WebpackEncoreBundle\Asset\EntrypointLookup;
 use Twig\Extension\CoreExtension;
 use Twig\Extension\DebugExtension;
@@ -224,12 +225,11 @@ $di['session'] = function () use ($di) {
 };
 
 /*
+ * Returns Request object based on PHP global variables.
  *
- * @param void
- *
- * @return \FOSSBilling\Request
+ * @return \Symfony\Component\HttpFoundation\Request
  */
-$di['request'] = fn (): FOSSBilling\Request => new FOSSBilling\Request();
+$di['request'] = fn (): Symfony\Component\HttpFoundation\Request => Request::createFromGlobals();
 
 /*
  * @param void

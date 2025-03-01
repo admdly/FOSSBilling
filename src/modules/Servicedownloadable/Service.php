@@ -166,10 +166,10 @@ class Service implements InjectionAwareInterface
     public function uploadProductFile(\Model_Product $productModel)
     {
         $request = $this->di['request'];
-        if ($request->hasFiles() == 0) {
+        if (count($request->files->all()) == 0) {
             throw new \FOSSBilling\Exception('Error uploading file');
         }
-        $files = $request->getUploadedFiles();
+        $files = $request->files->all();
         $file = $files[0];
 
         $productService = $this->di['mod_service']('product');
@@ -224,11 +224,11 @@ class Service implements InjectionAwareInterface
     public function updateProductFile(\Model_ServiceDownloadable $serviceDownloadable, \Model_ClientOrder $order)
     {
         $request = $this->di['request'];
-        if ($request->hasFiles() == 0) {
+        if (count($request->files->all()) == 0) {
             throw new \FOSSBilling\Exception('Error uploading file');
         }
         $productService = $this->di['mod_service']('product');
-        $files = $request->getUploadedFiles();
+        $files = $request->files->all();
         $file = $files[0];
         move_uploaded_file($file->getRealPath(), $productService->getSavePath($file->getName()));
         // End upload
