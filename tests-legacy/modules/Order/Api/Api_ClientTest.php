@@ -40,7 +40,7 @@ class Api_ClientTest extends PHPUnit\Framework\TestCase
                 0 => ['id' => 1],
             ],
         ];
-        $paginatorMock = $this->getMockBuilder('\Box_Pagination')->disableOriginalConstructor()->getMock();
+        $paginatorMock = $this->getMockBuilder('\FOSSBilling\Pagination')->disableOriginalConstructor()->getMock();
         $paginatorMock->expects($this->atLeastOnce())
             ->method('getAdvancedResultSet')
             ->willReturn($resultSet);
@@ -48,7 +48,7 @@ class Api_ClientTest extends PHPUnit\Framework\TestCase
         $clientOrderMock = new Model_ClientOrder();
         $clientOrderMock->loadBean(new DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getExistingModelById')
             ->with('ClientOrder')
@@ -79,7 +79,7 @@ class Api_ClientTest extends PHPUnit\Framework\TestCase
         $serviceMock->expects($this->atLeastOnce())->method('getSoonExpiringActiveOrdersQuery')
             ->willReturn(['query', []]);
 
-        $paginatorMock = $this->getMockBuilder('\Box_Pagination')->disableOriginalConstructor()->getMock();
+        $paginatorMock = $this->getMockBuilder('\FOSSBilling\Pagination')->disableOriginalConstructor()->getMock();
         $paginatorMock->expects($this->atLeastOnce())
             ->method('getAdvancedResultSet')
             ->willReturn(['list' => []]);
@@ -204,7 +204,7 @@ class Api_ClientTest extends PHPUnit\Framework\TestCase
         $product = new Model_Product();
         $product->loadBean(new RedBeanPHP\OODBBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->disableOriginalConstructor()->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->disableOriginalConstructor()->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getExistingModelById')
             ->willReturn($product);

@@ -9,16 +9,19 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
 
-use DebugBar\StandardDebugBar;
-use FOSSBilling\Config;
-use FOSSBilling\InjectionAwareInterface;
+namespace FOSSBilling;
 
-class Box_App
+use DebugBar\StandardDebugBar;
+use Pimple\Container;
+use \ArrayObject;
+use UrlHelper;
+
+class App
 {
     protected array $mappings = [];
     protected array $shared = [];
     protected ArrayObject $options;
-    protected ?Pimple\Container $di = null;
+    protected ?Container $di = null;
     protected string $ext = 'html.twig';
     protected string $mod = 'index';
     protected string $url = '/';
@@ -37,7 +40,7 @@ class Box_App
         }
     }
 
-    public function setDi(Pimple\Container $di): void
+    public function setDi(Container $di): void
     {
         $this->di = $di;
     }
@@ -54,8 +57,6 @@ class Box_App
 
     protected function registerModule(): void
     {
-        // bind module urls and process
-        // determine module and bind urls
         $requestUri = $this->url;
         if (empty($requestUri)) {
             $requestUri = '/';
@@ -84,7 +85,7 @@ class Box_App
     {
     }
 
-    public function show404(Exception $e): string
+    public function show404(\Exception $e): string
     {
         $this->di['logger']->setChannel('routing')->info($e->getMessage());
         http_response_code(404);
@@ -129,9 +130,6 @@ class Box_App
         return $this->processRequest();
     }
 
-    /**
-     * @param string $path
-     */
     public function redirect($path): never
     {
         $location = $this->di['url']->link($path);
@@ -171,9 +169,9 @@ class Box_App
         if ($class instanceof InjectionAwareInterface) {
             $class->setDi($this->di);
         }
-        $reflection = new ReflectionMethod($class::class, $methodName);
+        $reflection = new \ReflectionMethod($class::class, $methodName);
         $args = [];
-        $args[] = $this; // first param always app instance
+        $args[] = $this;
 
         foreach ($reflection->getParameters() as $param) {
             if (isset($params[$param->name])) {
@@ -191,7 +189,7 @@ class Box_App
     {
         $this->debugBar['time']->startMeasure('execute', 'Reflecting module controller');
 
-        $reflection = new ReflectionMethod(static::class, $methodName);
+        $reflection = new \ReflectionMethod(static::class, $methodName);
         $args = [];
 
         foreach ($reflection->getParameters() as $param) {
@@ -223,7 +221,6 @@ class Box_App
 
         $allowedURLs = Config::getProperty('maintenance_mode.allowed_urls', []);
 
-        // Allow access to the staff panel all the time
         $adminApiPrefixes = [
             '/api/guest/staff/login',
             '/api/admin',
@@ -249,7 +246,6 @@ class Box_App
         $allowedIPs = Config::getProperty('maintenance_mode.allowed_ips', []);
         $visitorIP = $this->di['request']->getClientIp();
 
-        // Check if the visitor is in using of the allowed IPs/networks
         foreach ($allowedIPs as $network) {
             if (!str_contains($network, '/')) {
                 $network .= '/32';
@@ -283,22 +279,18 @@ class Box_App
 
     protected function processRequest(): string
     {
-        /*
-         * Block requests if the system is undergoing maintenance.
-         * It will respect any URL/IP whitelisting under the configuration file.
-         */
         if (Config::getProperty('maintenance_mode.enabled', false)) {
-            // Check the allowlists
             if ($this->checkAdminPrefix() && $this->checkAllowedURLs() && $this->checkAllowedIPs()) {
-                // Set response code to 503.
                 header('HTTP/1.0 503 Service Unavailable');
 
                 if ($this->mod == 'api') {
-                    $exc = new FOSSBilling\InformationException('The system is undergoing maintenance. Please try again later', [], 503);
-                    $apiController = new Box\Mod\Api\Controller\Client();
+                    $exc = new \FOSSBilling\InformationException('The system is undergoing maintenance. Please try again later', [], 503);
+                    $apiController = new \Box\Mod\Api\Controller\Client();
+
                     $apiController->setDi($this->di);
 
-                    return $apiController->renderJson(null, $exc);
+                    // Ensure we're returning a string from renderJson
+                    return (string) $apiController->renderJson([], $exc);
                 } else {
                     return $this->render('mod_system_maintenance');
                 }
@@ -309,7 +301,7 @@ class Box_App
         $sharedCount = count($this->shared);
         for ($i = 0; $i < $sharedCount; ++$i) {
             $mapping = $this->shared[$i];
-            $url = new Box_UrlHelper($mapping[0], $mapping[1], $mapping[3], $this->url);
+            $url = new UrlHelper($mapping[0], $mapping[1], $mapping[3], $this->url);
             if ($url->match) {
                 $this->debugBar['time']->stopMeasure('sharedMapping');
 
@@ -318,12 +310,11 @@ class Box_App
         }
         $this->debugBar['time']->stopMeasure('sharedMapping');
 
-        // this class mappings
         $this->debugBar['time']->startMeasure('mapping', 'Checking mappings');
         $mappingsCount = count($this->mappings);
         for ($i = 0; $i < $mappingsCount; ++$i) {
             $mapping = $this->mappings[$i];
-            $url = new Box_UrlHelper($mapping[0], $mapping[1], $mapping[3], $this->url);
+            $url = new UrlHelper($mapping[0], $mapping[1], $mapping[3], $this->url);
             if ($url->match) {
                 $this->debugBar['time']->stopMeasure('mapping');
 
@@ -332,7 +323,7 @@ class Box_App
         }
         $this->debugBar['time']->stopMeasure('mapping');
 
-        $e = new FOSSBilling\InformationException('Page :url not found', [':url' => $this->url], 404);
+        $e = new \FOSSBilling\InformationException('Page :url not found', [':url' => $this->url], 404);
 
         return $this->show404($e);
     }

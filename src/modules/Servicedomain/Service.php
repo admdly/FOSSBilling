@@ -718,7 +718,7 @@ class Service implements \FOSSBilling\InjectionAwareInterface
         return [$d, $adapter];
     }
 
-    public static function onBeforeAdminCronRun(\Box_Event $event)
+    public static function onBeforeAdminCronRun(\FOSSBilling\Event $event)
     {
         try {
             $di = $event->getDi();

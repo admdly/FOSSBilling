@@ -9,27 +9,29 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
 
+namespace FOSSBilling;
+
 use FOSSBilling\Config;
 
-class Box_Crypt implements FOSSBilling\InjectionAwareInterface
+class Crypt implements InjectionAwareInterface
 {
-    protected ?Pimple\Container $di = null;
+    protected ?\Pimple\Container $di = null;
 
     final public const METHOD = 'aes-256-cbc';
 
     public function __construct()
     {
         if (!extension_loaded('openssl')) {
-            throw new FOSSBilling\Exception('The PHP OpenSSL extension must be enabled on your server');
+            throw new Exception('The PHP OpenSSL extension must be enabled on your server');
         }
     }
 
-    public function setDi(Pimple\Container $di): void
+    public function setDi(\Pimple\Container $di): void
     {
         $this->di = $di;
     }
 
-    public function getDi(): ?Pimple\Container
+    public function getDi(): ?\Pimple\Container
     {
         return $this->di;
     }

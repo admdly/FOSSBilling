@@ -105,7 +105,7 @@ class AdminTest extends \BBTestCase
             ->method('getOrderService')
             ->willReturn(new \Model_ServiceLicense());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getExistingModelById')
             ->willReturn(new \Model_ClientOrder());
@@ -134,7 +134,7 @@ class AdminTest extends \BBTestCase
             ->method('getOrderService')
             ->willReturn(null);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getExistingModelById')
             ->willReturn(new \Model_ClientOrder());

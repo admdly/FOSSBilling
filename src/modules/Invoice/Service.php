@@ -9,12 +9,13 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
 
-namespace Box\Mod\Invoice;
+namespace FOSSBilling\Mod\Invoice;
 
 use Dompdf\Dompdf;
 use FOSSBilling\InformationException;
 use FOSSBilling\InjectionAwareInterface;
 use Twig\Loader\FilesystemLoader;
+use FOSSBilling\Event as Box_Event;
 
 class Service implements InjectionAwareInterface
 {
@@ -263,7 +264,7 @@ class Service implements InjectionAwareInterface
         return $result;
     }
 
-    public static function onAfterAdminInvoicePaymentReceived(\Box_Event $event)
+    public static function onAfterAdminInvoicePaymentReceived(Box_Event $event)
     {
         $params = $event->getParameters();
         $di = $event->getDi();
@@ -287,7 +288,7 @@ class Service implements InjectionAwareInterface
         return true;
     }
 
-    public static function onAfterAdminInvoiceApprove(\Box_Event $event)
+    public static function onAfterAdminInvoiceApprove(Box_Event $event)
     {
         $params = $event->getParameters();
         $di = $event->getDi();
@@ -309,7 +310,7 @@ class Service implements InjectionAwareInterface
         return true;
     }
 
-    public static function onAfterAdminInvoiceReminderSent(\Box_Event $event)
+    public static function onAfterAdminInvoiceReminderSent(Box_Event $event)
     {
         $params = $event->getParameters();
         $di = $event->getDi();
@@ -329,7 +330,7 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    public static function onAfterAdminCronRun(\Box_Event $event)
+    public static function onAfterAdminCronRun(Box_Event $event)
     {
         $di = $event->getDi();
         $systemService = $di['mod_service']('System');
@@ -342,7 +343,7 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    public static function onEventAfterInvoiceIsDue(\Box_Event $event)
+    public static function onEventAfterInvoiceIsDue(Box_Event $event)
     {
         $params = $event->getParameters();
         $di = $event->getDi();
@@ -1302,7 +1303,7 @@ class Service implements InjectionAwareInterface
     private function _isAutoApproved()
     {
         /**
-         * @var \Box\Mod\System\Service $systemService
+         * @var \FOSSBilling\Mod\System\Service $systemService
          */
         $systemService = $this->di['mod_service']('system');
 

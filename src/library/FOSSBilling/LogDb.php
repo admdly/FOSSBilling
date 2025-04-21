@@ -8,7 +8,10 @@
  * @copyright FOSSBilling (https://www.fossbilling.org)
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
-class Box_LogDb
+
+namespace FOSSBilling;
+
+class LogDb
 {
     private array $ignoredChannels = ['billing', 'routing', 'security', 'email'];
 
@@ -35,7 +38,7 @@ class Box_LogDb
             if (method_exists($this->service, 'logEvent')) {
                 $this->service->logEvent($event);
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             error_log($e);
         }
     }

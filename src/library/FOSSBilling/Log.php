@@ -9,6 +9,8 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
 
+namespace FOSSBilling;
+
 /**
  * @method void emerg(string $message)
  * @method void alert(string $message)
@@ -19,7 +21,7 @@
  * @method void info(string $message)
  * @method void debug(string $message)
  */
-class Box_Log implements FOSSBilling\InjectionAwareInterface
+class Log implements InjectionAwareInterface
 {
     final public const EMERG = 0; // Emergency: system is unusable
     final public const ALERT = 1; // Alert: action must be taken immediately
@@ -41,7 +43,7 @@ class Box_Log implements FOSSBilling\InjectionAwareInterface
         self::DEBUG => 'DEBUG',
     ];
 
-    protected ?Pimple\Container $di = null;
+    protected ?\Pimple\Container $di = null;
     protected $_min_priority;
 
     protected array $_writers = [];
@@ -50,12 +52,12 @@ class Box_Log implements FOSSBilling\InjectionAwareInterface
 
     private array $_maskedKeys = ['password', 'pass', 'token', 'key', 'apisecret', 'secret', 'api_token'];
 
-    public function setDi(Pimple\Container $di): void
+    public function setDi(\Pimple\Container $di): void
     {
         $this->di = $di;
     }
 
-    public function getDi(): ?Pimple\Container
+    public function getDi(): ?\Pimple\Container
     {
         return $this->di;
     }
@@ -82,7 +84,7 @@ class Box_Log implements FOSSBilling\InjectionAwareInterface
     }
 
     /**
-     * @throws FOSSBilling\Exception
+     * @throws Exception
      */
     public function __call($method, $params): void
     {
@@ -91,7 +93,7 @@ class Box_Log implements FOSSBilling\InjectionAwareInterface
         if (($priority = array_search($priority, $this->_priorities)) !== false) {
             switch (is_countable($params) ? count($params) : 0) {
                 case 0:
-                    throw new FOSSBilling\Exception('Missing log message');
+                    throw new Exception('Missing log message');
                 case 1:
                     $message = array_shift($params);
 
@@ -100,19 +102,19 @@ class Box_Log implements FOSSBilling\InjectionAwareInterface
                     $message = array_shift($params);
                     $message = vsprintf($message, array_values($params));
                     if (!$message) {
-                        throw new LogicException('Number of placeholders does not match number of variables');
+                        throw new \LogicException('Number of placeholders does not match number of variables');
                     }
 
                     break;
             }
             $this->log($message, $priority, $params);
         } else {
-            throw new FOSSBilling\Exception('Bad log priority');
+            throw new Exception('Bad log priority');
         }
     }
 
     /**
-     * @throws FOSSBilling\Exception
+     * @throws Exception
      */
     public function log($message, $priority, array|string|null $extras = null): void
     {
@@ -122,7 +124,7 @@ class Box_Log implements FOSSBilling\InjectionAwareInterface
         }
 
         if (!isset($this->_priorities[$priority])) {
-            throw new FOSSBilling\Exception('Bad log priority');
+            throw new Exception('Bad log priority');
         }
 
         if ($this->_min_priority && $priority > $this->_min_priority) {
@@ -167,9 +169,9 @@ class Box_Log implements FOSSBilling\InjectionAwareInterface
     }
 
     /**
-     * @param Box_LogDb|FOSSBilling\Monolog $writer
+     * @param LogDb|Monolog $writer
      *
-     * @return $this The Box_Log instance
+     * @return $this The Log instance
      */
     public function addWriter($writer): static
     {
@@ -182,7 +184,7 @@ class Box_Log implements FOSSBilling\InjectionAwareInterface
      * @param $name  string
      * @param $value mixed
      *
-     * @return $this The Box_Log instance
+     * @return $this The Log instance
      */
     public function setEventItem(string $name, mixed $value): static
     {
@@ -196,7 +198,7 @@ class Box_Log implements FOSSBilling\InjectionAwareInterface
      *
      * @param string $channel Channel name
      *
-     * @return $this The Box_Log instance
+     * @return $this The Log instance
      */
     public function setChannel(string $channel): static
     {
@@ -206,7 +208,7 @@ class Box_Log implements FOSSBilling\InjectionAwareInterface
     }
 
     /**
-     * @return $this The Box_Log instance
+     * @return $this The Log instance
      */
     public function setMinPriority($priority): static
     {

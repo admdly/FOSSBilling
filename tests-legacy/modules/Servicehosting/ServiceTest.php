@@ -68,7 +68,7 @@ class ServiceTest extends \BBTestCase
         $hostingServerModel->loadBean(new \DummyBean());
         $hostingPlansModel = new \Model_ServiceHostingHp();
         $hostingPlansModel->loadBean(new \DummyBean());
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getExistingModelById')
             ->will($this->onConsecutiveCalls($hostingServerModel, $hostingPlansModel));
@@ -123,7 +123,7 @@ class ServiceTest extends \BBTestCase
     //            ->method('generatePassword')
     //            ->will($this->returnValue('generatePassword'));
     //
-    //        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+    //        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
     //        $dbMock->expects($this->atLeastOnce())
     //            ->method('store');
     //
@@ -166,7 +166,7 @@ class ServiceTest extends \BBTestCase
             ->method('getOrderService')
             ->willReturn($model);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
@@ -211,7 +211,7 @@ class ServiceTest extends \BBTestCase
             ->method('getOrderService')
             ->willReturn($model);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
@@ -267,7 +267,7 @@ class ServiceTest extends \BBTestCase
             ->method('getOrderService')
             ->willReturn($model);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
@@ -323,7 +323,7 @@ class ServiceTest extends \BBTestCase
             ->method('getOrderService')
             ->willReturn($model);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
@@ -391,7 +391,7 @@ class ServiceTest extends \BBTestCase
     //        $hostingServerModel->loadBean(new \DummyBean());
     //        $hostingPlansModel = new \Model_ServiceHostingHp();
     //        $hostingPlansModel->loadBean(new \DummyBean());
-    //        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+    //        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
     //        $dbMock->expects($this->atLeastOnce())
     //            ->method('getExistingModelById')
     //            ->will($this->onConsecutiveCalls($hostingServerModel, $hostingPlansModel));
@@ -444,7 +444,7 @@ class ServiceTest extends \BBTestCase
             ->method('getOrderService')
             ->willReturn($model);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('trash');
 
@@ -473,13 +473,13 @@ class ServiceTest extends \BBTestCase
         $modelHp = new \Model_ServiceHostingHp();
         $modelHp->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
 
         $serviceMock = $this->getMockBuilder('\\' . Service::class)
             ->onlyMethods(['_getAM', 'getServerPackage'])
@@ -525,13 +525,13 @@ class ServiceTest extends \BBTestCase
             ->method('_getAM')
             ->willReturn($AMresultArray);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
 
         $serviceMock->setDi($di);
 
@@ -578,13 +578,13 @@ class ServiceTest extends \BBTestCase
             ->method('_getAM')
             ->willReturn($AMresultArray);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
 
         $serviceMock->setDi($di);
 
@@ -632,13 +632,13 @@ class ServiceTest extends \BBTestCase
             ->method('_getAM')
             ->willReturn($AMresultArray);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
 
         $serviceMock->setDi($di);
 
@@ -686,13 +686,13 @@ class ServiceTest extends \BBTestCase
             ->method('_getAM')
             ->willReturn($AMresultArray);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
 
         $serviceMock->setDi($di);
 
@@ -749,13 +749,13 @@ class ServiceTest extends \BBTestCase
             ->method('_getAM')
             ->willReturn($AMresultArray);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
 
         $serviceMock->setDi($di);
 
@@ -774,7 +774,7 @@ class ServiceTest extends \BBTestCase
         $hostingHp = new \Model_ServiceHostingHp();
         $hostingHp->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('load')
             ->will($this->onConsecutiveCalls($hostingServer, $hostingHp));
@@ -805,13 +805,13 @@ class ServiceTest extends \BBTestCase
         $model = new \Model_ServiceHosting();
         $model->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
         $this->service->setDi($di);
 
         $result = $this->service->update($model, $data);
@@ -854,7 +854,7 @@ class ServiceTest extends \BBTestCase
             ],
         ];
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getAll')
             ->willReturn($queryResult);
@@ -878,7 +878,7 @@ class ServiceTest extends \BBTestCase
 
     public function testcreateServer(): void
     {
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
 
         $hostingServerModel = new \Model_ServiceHostingServer();
         $hostingServerModel->loadBean(new \DummyBean());
@@ -893,7 +893,7 @@ class ServiceTest extends \BBTestCase
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
 
         $this->service->setDi($di);
 
@@ -911,13 +911,13 @@ class ServiceTest extends \BBTestCase
         $hostingServerModel = new \Model_ServiceHostingServer();
         $hostingServerModel->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('trash');
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
         $this->service->setDi($di);
 
         $result = $this->service->deleteServer($hostingServerModel);
@@ -947,13 +947,13 @@ class ServiceTest extends \BBTestCase
         $hostingServerModel = new \Model_ServiceHostingServer();
         $hostingServerModel->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
 
         $this->service->setDi($di);
 
@@ -1041,7 +1041,7 @@ class ServiceTest extends \BBTestCase
             ],
         ];
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getAll')
             ->willReturn($queryResult);
@@ -1068,13 +1068,13 @@ class ServiceTest extends \BBTestCase
         $model = new \Model_ServiceHostingHp();
         $model->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('trash');
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
         $this->service->setDi($di);
 
         $result = $this->service->deleteHp($model);
@@ -1107,13 +1107,13 @@ class ServiceTest extends \BBTestCase
         $model = new \Model_ServiceHostingHp();
         $model->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
 
         $this->service->setDi($di);
 
@@ -1127,7 +1127,7 @@ class ServiceTest extends \BBTestCase
         $model->loadBean(new \DummyBean());
         $newId = 1;
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('dispense')->willReturn($model);
         $dbMock->expects($this->atLeastOnce())
@@ -1135,7 +1135,7 @@ class ServiceTest extends \BBTestCase
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
 
         $this->service->setDi($di);
 
@@ -1177,7 +1177,7 @@ class ServiceTest extends \BBTestCase
         $orderServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Order\Service::class)->getMock();
         $orderServiceMock->expects($this->atLeastOnce())
             ->method('getLogger')
-            ->willReturn(new \Box_Log());
+            ->willReturn(new \FOSSBilling\Log());
 
         $di = new \Pimple\Container();
         $di['mod_service'] = $di->protect(fn () => $orderServiceMock);
@@ -1247,7 +1247,7 @@ class ServiceTest extends \BBTestCase
         $tldModel = new \Model_Tld();
         $tldModel->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('find')
             ->willReturn([$tldModel]);

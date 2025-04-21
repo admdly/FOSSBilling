@@ -27,7 +27,7 @@ class Service implements \FOSSBilling\InjectionAwareInterface
         return $this->di;
     }
 
-    public static function onAfterClientOpenTicket(\Box_Event $event)
+    public static function onAfterClientOpenTicket(\FOSSBilling\Event $event)
     {
         $di = $event->getDi();
         $params = $event->getParameters();
@@ -49,7 +49,7 @@ class Service implements \FOSSBilling\InjectionAwareInterface
         }
     }
 
-    public static function onAfterAdminOpenTicket(\Box_Event $event)
+    public static function onAfterAdminOpenTicket(\FOSSBilling\Event $event)
     {
         $di = $event->getDi();
         $supportService = $di['mod_service']('support');
@@ -71,7 +71,7 @@ class Service implements \FOSSBilling\InjectionAwareInterface
         }
     }
 
-    public static function onAfterAdminCloseTicket(\Box_Event $event)
+    public static function onAfterAdminCloseTicket(\FOSSBilling\Event $event)
     {
         $di = $event->getDi();
         $supportService = $di['mod_service']('support');
@@ -93,7 +93,7 @@ class Service implements \FOSSBilling\InjectionAwareInterface
         }
     }
 
-    public static function onAfterAdminReplyTicket(\Box_Event $event)
+    public static function onAfterAdminReplyTicket(\FOSSBilling\Event $event)
     {
         $di = $event->getDi();
         $supportService = $di['mod_service']('support');
@@ -115,7 +115,7 @@ class Service implements \FOSSBilling\InjectionAwareInterface
         }
     }
 
-    public static function onAfterGuestPublicTicketOpen(\Box_Event $event)
+    public static function onAfterGuestPublicTicketOpen(\FOSSBilling\Event $event)
     {
         $di = $event->getDi();
         $supportService = $di['mod_service']('support');
@@ -137,7 +137,7 @@ class Service implements \FOSSBilling\InjectionAwareInterface
         }
     }
 
-    public static function onAfterAdminPublicTicketOpen(\Box_Event $event)
+    public static function onAfterAdminPublicTicketOpen(\FOSSBilling\Event $event)
     {
         $di = $event->getDi();
         $supportService = $di['mod_service']('support');
@@ -160,7 +160,7 @@ class Service implements \FOSSBilling\InjectionAwareInterface
         }
     }
 
-    public static function onAfterAdminPublicTicketReply(\Box_Event $event)
+    public static function onAfterAdminPublicTicketReply(\FOSSBilling\Event $event)
     {
         $di = $event->getDi();
         $supportService = $di['mod_service']('support');
@@ -183,7 +183,7 @@ class Service implements \FOSSBilling\InjectionAwareInterface
         }
     }
 
-    public static function onAfterAdminPublicTicketClose(\Box_Event $event)
+    public static function onAfterAdminPublicTicketClose(\FOSSBilling\Event $event)
     {
         $di = $event->getDi();
         $supportService = $di['mod_service']('support');

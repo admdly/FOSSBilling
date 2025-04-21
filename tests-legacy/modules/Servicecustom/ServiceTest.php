@@ -139,7 +139,7 @@ class ServiceTest extends \BBTestCase
         $product->plugin = 'plugin';
         $product->plugin_config = 'plugin_config';
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store')
             ->willReturn(random_int(1, 100));
@@ -219,7 +219,7 @@ class ServiceTest extends \BBTestCase
             ->method('getOrderService')
             ->willReturn($serviceCustomModel);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store')
             ->willReturn(random_int(1, 100));
@@ -270,7 +270,7 @@ class ServiceTest extends \BBTestCase
             ->method('getOrderService')
             ->willReturn($serviceCustomModel);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store')
             ->willReturn(random_int(1, 100));
@@ -300,7 +300,7 @@ class ServiceTest extends \BBTestCase
             ->method('getOrderService')
             ->willReturn($serviceCustomModel);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store')
             ->willReturn(random_int(1, 100));
@@ -330,7 +330,7 @@ class ServiceTest extends \BBTestCase
             ->method('getOrderService')
             ->willReturn($serviceCustomModel);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store')
             ->willReturn(random_int(1, 100));
@@ -360,7 +360,7 @@ class ServiceTest extends \BBTestCase
             ->method('getOrderService')
             ->willReturn($serviceCustomModel);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store')
             ->willReturn(random_int(1, 100));
@@ -390,7 +390,7 @@ class ServiceTest extends \BBTestCase
             ->method('getOrderService')
             ->willReturn($serviceCustomModel);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('trash')
             ->willReturn(null);
@@ -454,7 +454,7 @@ class ServiceTest extends \BBTestCase
 
     public function testGetServiceCustomByOrderId(): void
     {
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getExistingModelById')
             ->willReturn(new \Model_ClientOrder());
@@ -476,7 +476,7 @@ class ServiceTest extends \BBTestCase
 
     public function testGetServiceCustomByOrderIdOrderServiceNotFoundException(): void
     {
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getExistingModelById')
             ->willReturn(new \Model_ClientOrder());
@@ -505,7 +505,7 @@ class ServiceTest extends \BBTestCase
             ->method('getServiceCustomByOrderId')
             ->willReturn($model);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store')
             ->willReturn(random_int(1, 100));
@@ -531,7 +531,7 @@ class ServiceTest extends \BBTestCase
             ->method('getServiceCustomByOrderId')
             ->willReturn($model);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->never())
             ->method('store')
             ->willReturn(random_int(1, 100));

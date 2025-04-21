@@ -46,7 +46,7 @@ class ServiceTest extends \BBTestCase
             'id' => 1,
         ];
 
-        $eventMock = $this->getMockBuilder('\Box_Event')
+        $eventMock = $this->getMockBuilder('\FOSSBilling\Event')
             ->onlyMethods(['getParameters', 'getDi'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -59,7 +59,7 @@ class ServiceTest extends \BBTestCase
         $model->id = 1;
         $model->type = 'mod';
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('load')
             ->willReturn($model);
@@ -86,7 +86,7 @@ class ServiceTest extends \BBTestCase
     {
         $eventParams = [];
 
-        $eventMock = $this->getMockBuilder('\Box_Event')
+        $eventMock = $this->getMockBuilder('\FOSSBilling\Event')
             ->onlyMethods(['getParameters'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -106,7 +106,7 @@ class ServiceTest extends \BBTestCase
             'id' => 1,
         ];
 
-        $eventMock = $this->getMockBuilder('\Box_Event')
+        $eventMock = $this->getMockBuilder('\FOSSBilling\Event')
             ->onlyMethods(['getParameters', 'getDi'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -114,7 +114,7 @@ class ServiceTest extends \BBTestCase
             ->method('getParameters')
             ->willReturn($eventParams);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('exec');
 
@@ -137,7 +137,7 @@ class ServiceTest extends \BBTestCase
 
         $data['mods'] = [$mod];
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getCell')
             ->willReturn(false);
@@ -168,7 +168,7 @@ class ServiceTest extends \BBTestCase
 
         $activityServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Activity\Service::class)->getMock();
 
-        $boxModMock = $this->getMockBuilder('\Box_Mod')->disableOriginalConstructor()->getMock();
+        $boxModMock = $this->getMockBuilder('\FOSSBilling\Mod')->disableOriginalConstructor()->getMock();
         $boxModMock->expects($this->atLeastOnce())
             ->method('hasService')
             ->willReturn(true);

@@ -50,7 +50,7 @@ class Service implements InjectionAwareInterface
         ];
     }
 
-    public static function onAfterAdminOrderActivate(\Box_Event $event)
+    public static function onAfterAdminOrderActivate(\FOSSBilling\Event $event)
     {
         $params = $event->getParameters();
         $order_id = $params['id'];
@@ -75,7 +75,7 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    public static function onAfterAdminOrderRenew(\Box_Event $event)
+    public static function onAfterAdminOrderRenew(\FOSSBilling\Event $event)
     {
         $params = $event->getParameters();
         $order_id = $params['id'];
@@ -101,7 +101,7 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    public static function onAfterAdminOrderSuspend(\Box_Event $event)
+    public static function onAfterAdminOrderSuspend(\FOSSBilling\Event $event)
     {
         $params = $event->getParameters();
         $order_id = $params['id'];
@@ -127,7 +127,7 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    public static function onAfterAdminOrderUnsuspend(\Box_Event $event)
+    public static function onAfterAdminOrderUnsuspend(\FOSSBilling\Event $event)
     {
         $params = $event->getParameters();
         $order_id = $params['id'];
@@ -153,7 +153,7 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    public static function onAfterAdminOrderCancel(\Box_Event $event)
+    public static function onAfterAdminOrderCancel(\FOSSBilling\Event $event)
     {
         $params = $event->getParameters();
         $order_id = $params['id'];
@@ -177,7 +177,7 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    public static function onAfterAdminOrderUncancel(\Box_Event $event)
+    public static function onAfterAdminOrderUncancel(\FOSSBilling\Event $event)
     {
         $params = $event->getParameters();
         $order_id = $params['id'];
@@ -270,7 +270,7 @@ class Service implements InjectionAwareInterface
     public function getLogger(\Model_ClientOrder $order)
     {
         $log = $this->di['logger'];
-        $log->addWriter(new \Box_LogDb('Model_ClientOrderStatus'));
+        $log->addWriter(new \FOSSBilling\LogDb('Model_ClientOrderStatus'));
         $log->setEventItem('client_order_id', $order->id);
         $log->setEventItem('status', $order->status);
 

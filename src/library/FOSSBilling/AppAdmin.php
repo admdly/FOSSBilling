@@ -9,13 +9,15 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
 
+namespace FOSSBilling;
+
 use DebugBar\Bridge\NamespacedTwigProfileCollector;
 use FOSSBilling\Environment;
 use FOSSBilling\TwigExtensions\DebugBar;
 use Twig\Extension\ProfilerExtension;
 use Twig\Profiler\Profile;
 
-class Box_AppAdmin extends Box_App
+class AppAdmin extends App
 {
     public function init(): void
     {
@@ -32,7 +34,7 @@ class Box_AppAdmin extends Box_App
 
         if ($this->mod !== 'extension' && $this->di['auth']->isAdminLoggedIn() && !$service->hasPermission(null, $this->mod)) {
             http_response_code(403);
-            $e = new FOSSBilling\InformationException('You do not have permission to access the :mod: module', [':mod:' => $this->mod], 403);
+            $e = new \FOSSBilling\InformationException('You do not have permission to access the :mod: module', [':mod:' => $this->mod], 403);
             echo $this->render('error', ['exception' => $e]);
             exit;
         }
@@ -52,12 +54,12 @@ class Box_AppAdmin extends Box_App
         exit;
     }
 
-    protected function getTwig(): Twig\Environment
+    protected function getTwig(): \Twig\Environment
     {
         $service = $this->di['mod_service']('theme');
         $theme = $service->getCurrentAdminAreaTheme();
 
-        $loader = new Box_TwigLoader(
+        $loader = new TwigLoader(
             [
                 'mods' => PATH_MODS,
                 'theme' => PATH_THEMES . DIRECTORY_SEPARATOR . $theme['code'],

@@ -8,7 +8,10 @@
  * @copyright FOSSBilling (https://www.fossbilling.org)
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
-class Box_TwigLoader extends Twig\Loader\FilesystemLoader
+
+namespace FOSSBilling;
+
+class TwigLoader extends \Twig\Loader\FilesystemLoader
 {
     protected $options = [];
 
@@ -21,15 +24,15 @@ class Box_TwigLoader extends Twig\Loader\FilesystemLoader
     {
         parent::__construct();
         if (!isset($options['mods'])) {
-            throw new FOSSBilling\Exception('Missing :missing: param for Box_TwigLoader', ['missing' => 'mods']);
+            throw new \FOSSBilling\Exception('Missing :missing: param for Box_TwigLoader', ['missing' => 'mods']);
         }
 
         if (!isset($options['theme'])) {
-            throw new FOSSBilling\Exception('Missing :missing: param for Box_TwigLoader', ['missing' => 'theme']);
+            throw new \FOSSBilling\Exception('Missing :missing: param for Box_TwigLoader', ['missing' => 'theme']);
         }
 
         if (!isset($options['type'])) {
-            throw new FOSSBilling\Exception('Missing :missing: param for Box_TwigLoader', ['missing' => 'type']);
+            throw new \FOSSBilling\Exception('Missing :missing: param for Box_TwigLoader', ['missing' => 'type']);
         }
 
         $this->options = $options;
@@ -65,6 +68,6 @@ class Box_TwigLoader extends Twig\Loader\FilesystemLoader
             }
         }
 
-        throw new Twig\Error\LoaderError(sprintf('Unable to find template "%s" (looked into: %s).', $name, implode(', ', $paths)));
+        throw new \Twig\Error\LoaderError(sprintf('Unable to find template "%s" (looked into: %s).', $name, implode(', ', $paths)));
     }
 }

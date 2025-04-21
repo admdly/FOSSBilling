@@ -36,7 +36,7 @@ class ServiceTest extends \BBTestCase
         $serviceMock->expects($this->atLeastOnce())
             ->method('setCurrentThemePreset');
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getCell')
             ->willReturn([]);
@@ -58,7 +58,7 @@ class ServiceTest extends \BBTestCase
 
     public function testsetCurrentThemePreset(): void
     {
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('exec');
 
@@ -80,7 +80,7 @@ class ServiceTest extends \BBTestCase
 
     public function testdeletePreset(): void
     {
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('exec');
 
@@ -108,7 +108,7 @@ class ServiceTest extends \BBTestCase
         $serviceMock->expects($this->atLeastOnce())
             ->method('updateSettings');
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getAssoc');
 
@@ -143,7 +143,7 @@ class ServiceTest extends \BBTestCase
 
     public function testgetThemePresetsThemeDoNotHaveSettingsDataFile(): void
     {
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getAssoc');
 
@@ -177,7 +177,7 @@ class ServiceTest extends \BBTestCase
         $extensionMetaModel->loadBean(new \DummyBean());
         $extensionMetaModel->meta_value = '{}';
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
             ->willReturn($extensionMetaModel);
@@ -205,7 +205,7 @@ class ServiceTest extends \BBTestCase
             ->method('getCurrentThemePreset')
             ->willReturn('default');
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
             ->willReturn(null);
@@ -233,7 +233,7 @@ class ServiceTest extends \BBTestCase
         $extensionMetaModel = new \Model_ExtensionMeta();
         $extensionMetaModel->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
             ->willReturn(null);
@@ -311,7 +311,7 @@ class ServiceTest extends \BBTestCase
 
     public function testgetCurrentAdminAreaTheme(): void
     {
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getCell')
             ->willReturn('');
@@ -346,7 +346,7 @@ class ServiceTest extends \BBTestCase
 
     public function testgetCurrentClientAreaThemeCode(): void
     {
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getCell')
             ->willReturn([]);

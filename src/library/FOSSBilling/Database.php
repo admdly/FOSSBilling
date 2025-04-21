@@ -9,11 +9,13 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
 
+namespace FOSSBilling;
+
 use FOSSBilling\InjectionAwareInterface;
 
-class Box_Database implements InjectionAwareInterface
+class Database implements InjectionAwareInterface
 {
-    protected ?Pimple\Container $di = null;
+    protected ?\Pimple\Container $di = null;
     protected $orm;
 
     public function setDataMapper($orm)
@@ -21,12 +23,12 @@ class Box_Database implements InjectionAwareInterface
         $this->orm = $orm;
     }
 
-    public function setDi(Pimple\Container $di): void
+    public function setDi(\Pimple\Container $di): void
     {
         $this->di = $di;
     }
 
-    public function getDi(): ?Pimple\Container
+    public function getDi(): ?\Pimple\Container
     {
         return $this->di;
     }
@@ -44,7 +46,7 @@ class Box_Database implements InjectionAwareInterface
 
     public function store($modelOrBean)
     {
-        if ($modelOrBean instanceof RedBeanPHP\SimpleModel) {
+        if ($modelOrBean instanceof \RedBeanPHP\SimpleModel) {
             $bean = $modelOrBean->unbox();
         } else {
             $bean = $modelOrBean;
@@ -148,7 +150,7 @@ class Box_Database implements InjectionAwareInterface
 
     public function trash($modelOrBean)
     {
-        if ($modelOrBean instanceof RedBeanPHP\SimpleModel) {
+        if ($modelOrBean instanceof \RedBeanPHP\SimpleModel) {
             $bean = $modelOrBean->unbox();
         } else {
             $bean = $modelOrBean;
@@ -169,7 +171,7 @@ class Box_Database implements InjectionAwareInterface
 
     public function toArray($modelOrBean)
     {
-        if ($modelOrBean instanceof RedBeanPHP\SimpleModel) {
+        if ($modelOrBean instanceof \RedBeanPHP\SimpleModel) {
             $bean = $modelOrBean->unbox();
         } else {
             $bean = $modelOrBean;
@@ -183,15 +185,15 @@ class Box_Database implements InjectionAwareInterface
      * @param int    $id
      * @param string $message
      *
-     * @return RedBeanPHP\SimpleModel
+     * @return \RedBeanPHP\SimpleModel
      *
-     * @throws FOSSBilling\Exception
+     * @throws Exception
      */
     public function getExistingModelById($modelName, $id, $message = 'Model :name not found in the database')
     {
         $model = $this->load($modelName, (int) $id);
         if ($model === null) {
-            throw new FOSSBilling\Exception($message, [':name' => $modelName]);
+            throw new Exception($message, [':name' => $modelName]);
         }
 
         return $model;

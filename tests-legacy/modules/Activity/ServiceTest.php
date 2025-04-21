@@ -83,7 +83,7 @@ class ServiceTest extends \BBTestCase
         $clientModel->loadBean(new \DummyBean());
 
         $expectionError = 'Client not found';
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getExistingModelById')
             ->with('Client', $clientHistoryModel->client_id, $expectionError)
@@ -117,7 +117,7 @@ class ServiceTest extends \BBTestCase
         $activitySystemModel = new \Model_ActivitySystem();
         $activitySystemModel->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('find')
             ->with('ActivitySystem', 'client_id = ?', [$clientModel->id])

@@ -8,16 +8,19 @@
  * @copyright FOSSBilling (https://www.fossbilling.org)
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
-class Box_EventManager implements FOSSBilling\InjectionAwareInterface
-{
-    protected ?Pimple\Container $di = null;
 
-    public function setDi(Pimple\Container $di): void
+namespace FOSSBilling;
+
+class EventManager implements InjectionAwareInterface
+{
+    protected ?\Pimple\Container $di = null;
+
+    public function setDi(\Pimple\Container $di): void
     {
         $this->di = $di;
     }
 
-    public function getDi(): ?Pimple\Container
+    public function getDi(): ?\Pimple\Container
     {
         return $this->di;
     }
@@ -36,9 +39,9 @@ class Box_EventManager implements FOSSBilling\InjectionAwareInterface
 
         $this->di['logger']->setChannel('event')->debug($event, $params);
 
-        $e = new Box_Event($subject, $event, $params);
+        $e = new Event($subject, $event, $params);
         $e->setDi($this->di);
-        $disp = new Box_EventDispatcher();
+        $disp = new EventDispatcher();
         $this->_connectDatabaseHooks($disp, $e->getName());
         $disp->notify($e);
 
@@ -46,8 +49,8 @@ class Box_EventManager implements FOSSBilling\InjectionAwareInterface
     }
 
     /**
-     * @param Box_EventDispatcher $disp
-     * @param string              $event
+     * @param EventDispatcher $disp
+     * @param string          $event
      */
     private function _connectDatabaseHooks(&$disp, $event)
     {
@@ -75,7 +78,7 @@ class Box_EventManager implements FOSSBilling\InjectionAwareInterface
                 if (method_exists($s, $event)) {
                     $disp->connect($event, [$s::class, $event]);
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 error_log($e->getMessage());
             }
         }

@@ -168,7 +168,7 @@ class ServiceTest extends \BBTestCase
         $clientModel = new \Model_Client();
         $clientModel->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('load')
             ->with('Client')
@@ -193,7 +193,7 @@ class ServiceTest extends \BBTestCase
             'support_helpdesk_id' => 1,
         ];
 
-        $boxEventMock = $this->getMockBuilder('\Box_Event')->disableOriginalConstructor()->getMock();
+        $boxEventMock = $this->getMockBuilder('\FOSSBilling\Event')->disableOriginalConstructor()->getMock();
         $boxEventMock->expects($this->atLeastOnce())
             ->method('getDi')
             ->willReturn($di);
@@ -212,7 +212,7 @@ class ServiceTest extends \BBTestCase
         $clientModel = new \Model_Client();
         $clientModel->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('load')
             ->with('Client')
@@ -237,7 +237,7 @@ class ServiceTest extends \BBTestCase
             'support_helpdesk_id' => 1,
         ];
 
-        $boxEventMock = $this->getMockBuilder('\Box_Event')->disableOriginalConstructor()->getMock();
+        $boxEventMock = $this->getMockBuilder('\FOSSBilling\Event')->disableOriginalConstructor()->getMock();
         $boxEventMock->expects($this->atLeastOnce())
             ->method('getDi')
             ->willReturn($di);
@@ -329,7 +329,7 @@ class ServiceTest extends \BBTestCase
         $clientModel = new \Model_Client();
         $clientModel->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('load')
             ->willReturnCallback(fn (...$args) => match ($args[0]) {
@@ -364,7 +364,7 @@ class ServiceTest extends \BBTestCase
             'support_helpdesk_id' => 1,
         ];
 
-        $boxEventMock = $this->getMockBuilder('\Box_Event')->disableOriginalConstructor()->getMock();
+        $boxEventMock = $this->getMockBuilder('\FOSSBilling\Event')->disableOriginalConstructor()->getMock();
         $boxEventMock->expects($this->atLeastOnce())
             ->method('getDi')
             ->willReturn($di);
@@ -386,7 +386,7 @@ class ServiceTest extends \BBTestCase
         $clientModel = new \Model_Client();
         $clientModel->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('load')
             ->willReturnCallback(fn (...$args) => match ($args[0]) {
@@ -414,7 +414,7 @@ class ServiceTest extends \BBTestCase
             'support_helpdesk_id' => 1,
         ];
 
-        $boxEventMock = $this->getMockBuilder('\Box_Event')->disableOriginalConstructor()->getMock();
+        $boxEventMock = $this->getMockBuilder('\FOSSBilling\Event')->disableOriginalConstructor()->getMock();
         $boxEventMock->expects($this->atLeastOnce())
             ->method('getDi')
             ->willReturn($di);
@@ -545,7 +545,7 @@ class ServiceTest extends \BBTestCase
     {
         $di = new \Pimple\Container();
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $model = new \Model_ExtensionMeta();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
@@ -566,7 +566,7 @@ class ServiceTest extends \BBTestCase
     {
         $di = new \Pimple\Container();
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $model = new \Model_ExtensionMeta();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')

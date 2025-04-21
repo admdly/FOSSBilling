@@ -10,8 +10,9 @@
  */
 
 use FOSSBilling\InjectionAwareInterface;
+use FOSSBilling\InformationException;
 
-class Box_Pagination implements InjectionAwareInterface
+class Pagination implements InjectionAwareInterface
 {
     protected ?Pimple\Container $di = null;
     protected $per_page = 100;
@@ -42,10 +43,10 @@ class Box_Pagination implements InjectionAwareInterface
         $per_page = $_GET['per_page'] ?? $per_page ?? 100;
 
         if (!is_numeric($page) || $page < 1) {
-            throw new FOSSBilling\InformationException('Invalid page number');
+            throw new InformationException('Invalid page number');
         }
         if (!is_numeric($per_page) || $per_page < 1) {
-            throw new FOSSBilling\InformationException('Invalid per page number');
+            throw new InformationException('Invalid per page number');
         }
 
         $offset = ($page - 1) * $per_page;
@@ -75,10 +76,10 @@ class Box_Pagination implements InjectionAwareInterface
         $per_page = $_GET['per_page'] ?? $per_page ?? 100;
 
         if (!is_numeric($page) || $page < 1) {
-            throw new FOSSBilling\InformationException('Invalid page number');
+            throw new InformationException('Invalid page number');
         }
         if (!is_numeric($per_page) || $per_page < 1) {
-            throw new FOSSBilling\InformationException('Invalid per page number');
+            throw new InformationException('Invalid per page number');
         }
 
         $offset = ($page - 1) * $per_page;

@@ -61,7 +61,7 @@ class ServiceTest extends \BBTestCase
         $serviceLicenseModel = new \Model_ServiceLicense();
         $serviceLicenseModel->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('dispense')
             ->willReturn($serviceLicenseModel);
@@ -98,7 +98,7 @@ class ServiceTest extends \BBTestCase
             ->method('getOrderService')
             ->willReturn($serviceLicenseModel);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
@@ -129,7 +129,7 @@ class ServiceTest extends \BBTestCase
             ->method('getOrderService')
             ->willReturn($serviceLicenseModel);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
         $dbMock->expects($this->exactly(3))
@@ -163,7 +163,7 @@ class ServiceTest extends \BBTestCase
             ->method('getOrderService')
             ->willReturn($serviceLicenseModel);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->never())
             ->method('store');
         $dbMock->expects($this->atLeastOnce())
@@ -244,7 +244,7 @@ class ServiceTest extends \BBTestCase
             ->method('getOrderService')
             ->willReturn($serviceLicenseModel);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('trash');
 
@@ -261,17 +261,17 @@ class ServiceTest extends \BBTestCase
         $serviceLicenseModel = new \Model_ServiceLicense();
         $serviceLicenseModel->loadBean(new \DummyBean());
 
-        $eventMock = $this->getMockBuilder('\Box_EventManager')->getMock();
+        $eventMock = $this->getMockBuilder('\FOSSBilling\EventManager')->getMock();
         $eventMock->expects($this->atLeastOnce())->
         method('fire');
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
         $di['events_manager'] = $eventMock;
 
         $this->service->setDi($di);
@@ -326,7 +326,7 @@ class ServiceTest extends \BBTestCase
         $serviceLicenseModel->ips = '{}';
         $value = '1.1.1.1';
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
@@ -346,7 +346,7 @@ class ServiceTest extends \BBTestCase
         $serviceLicenseModel->ips = '["2.2.2.2"]';
         $value = '1.1.1.1';
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
@@ -378,7 +378,7 @@ class ServiceTest extends \BBTestCase
         $serviceLicenseModel->versions = '{}';
         $value = '1.0';
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
@@ -398,7 +398,7 @@ class ServiceTest extends \BBTestCase
         $serviceLicenseModel->versions = '["2.0"]';
         $value = '1.0';
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
@@ -430,7 +430,7 @@ class ServiceTest extends \BBTestCase
         $serviceLicenseModel->paths = '{}';
         $value = '/var';
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
@@ -450,7 +450,7 @@ class ServiceTest extends \BBTestCase
         $serviceLicenseModel->paths = '["/"]';
         $value = '/var';
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
@@ -482,7 +482,7 @@ class ServiceTest extends \BBTestCase
         $serviceLicenseModel->hosts = '{}';
         $value = 'site.com';
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
@@ -502,7 +502,7 @@ class ServiceTest extends \BBTestCase
         $serviceLicenseModel->hosts = '["fossbilling.org"]';
         $value = 'site.com';
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
@@ -549,7 +549,7 @@ class ServiceTest extends \BBTestCase
 
         $expected = $clientModel->first_name . ' ' . $clientModel->last_name;
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('load')
             ->willReturn($clientModel);
@@ -628,7 +628,7 @@ class ServiceTest extends \BBTestCase
         $serviceLicenseModel = new \Model_ServiceLicense();
         $serviceLicenseModel->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
@@ -643,7 +643,7 @@ class ServiceTest extends \BBTestCase
 
     public function testcheckLicenseDetailsFormatEq2(): void
     {
-        $loggerMock = $this->getMockBuilder('\Box_Log')
+        $loggerMock = $this->getMockBuilder('\FOSSBilling\Log')
             ->getMock();
         $loggerMock->expects($this->atLeastOnce())
             ->method('setChannel');
@@ -673,7 +673,7 @@ class ServiceTest extends \BBTestCase
 
     public function testCheckLicenseDetails(): void
     {
-        $loggerMock = $this->getMockBuilder('\Box_Log')
+        $loggerMock = $this->getMockBuilder('\FOSSBilling\Log')
             ->getMock();
         $loggerMock->expects($this->atLeastOnce())
             ->method('setChannel');

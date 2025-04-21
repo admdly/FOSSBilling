@@ -20,7 +20,7 @@ class ServiceBalanceTest extends \BBTestCase
         $clientBalance = new \Model_ClientBalance();
         $clientBalance->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('dispense')
             ->with('ClientBalance')

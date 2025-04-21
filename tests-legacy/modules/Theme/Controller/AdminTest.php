@@ -19,7 +19,7 @@ class AdminTest extends \BBTestCase
 
     public function testregister(): void
     {
-        $boxAppMock = $this->getMockBuilder('\Box_App')->disableOriginalConstructor()->getMock();
+        $boxAppMock = $this->getMockBuilder('\FOSSBilling\App')->disableOriginalConstructor()->getMock();
         $boxAppMock->expects($this->exactly(1))
             ->method('get');
 
@@ -29,7 +29,7 @@ class AdminTest extends \BBTestCase
 
     public function testgetTheme(): void
     {
-        $boxAppMock = $this->getMockBuilder('\Box_App')->disableOriginalConstructor()->getMock();
+        $boxAppMock = $this->getMockBuilder('\FOSSBilling\App')->disableOriginalConstructor()->getMock();
         $boxAppMock->expects($this->atLeastOnce())
             ->method('render')
             ->with('mod_theme_preset')
@@ -61,7 +61,7 @@ class AdminTest extends \BBTestCase
         $themeServiceMock->expects($this->atLeastOnce())
             ->method('getThemePresets');
 
-        $modMock = $this->getMockBuilder('\Box_Mod')->disableOriginalConstructor()->getMock();
+        $modMock = $this->getMockBuilder('\FOSSBilling\Mod')->disableOriginalConstructor()->getMock();
         $modMock->expects($this->atLeastOnce())
             ->method('getService')
             ->willReturn($themeServiceMock);

@@ -86,7 +86,7 @@ class AdminTest extends \BBTestCase
             ->method('checkRequiredParamsForArray')
             ->willReturn(null);
 
-        $loggerMock = $this->getMockBuilder('\Box_Log')->getMock();
+        $loggerMock = $this->getMockBuilder('\FOSSBilling\Log')->getMock();
 
         $di = new \Pimple\Container();
         $di['mod_service'] = $di->protect(fn () => $systemServiceMock);
@@ -126,7 +126,7 @@ class AdminTest extends \BBTestCase
             ->method('checkRequiredParamsForArray')
             ->willReturn(null);
 
-        $loggerMock = $this->getMockBuilder('\Box_Log')->getMock();
+        $loggerMock = $this->getMockBuilder('\FOSSBilling\Log')->getMock();
 
         $di = new \Pimple\Container();
         $di['mod_service'] = $di->protect(fn () => $systemServiceMock);

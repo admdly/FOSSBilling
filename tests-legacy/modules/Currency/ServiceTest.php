@@ -282,7 +282,7 @@ class ServiceTest extends \BBTestCase
             ->willReturn(true);
 
         $di['db'] = $db;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
         $service->setDi($di);
         $result = $service->setAsDefault($model);
 
@@ -438,7 +438,7 @@ class ServiceTest extends \BBTestCase
         $currencyModel = new \Model_Tld();
         $currencyModel->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store')
             ->willReturn(random_int(1, 100));
@@ -447,7 +447,7 @@ class ServiceTest extends \BBTestCase
             ->willReturn($currencyModel);
 
         $di = new \Pimple\Container();
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
         $di['db'] = $dbMock;
         $di['mod_service'] = $di->protect(fn () => $systemService);
         $service->setDi($di);
@@ -478,7 +478,7 @@ class ServiceTest extends \BBTestCase
 
         $di = new \Pimple\Container();
         $db = $this->getMockBuilder('Box_Database')->getMock();
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
         $di['db'] = $db;
         $service->setDi($di);
 
@@ -570,7 +570,7 @@ class ServiceTest extends \BBTestCase
             ->method('find')
             ->willReturn($beansArray);
 
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
         $di['db'] = $db;
         $service->setDi($di);
 
@@ -608,7 +608,7 @@ class ServiceTest extends \BBTestCase
             ->method('find')
             ->willReturn($beansArray);
 
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
         $di['db'] = $db;
         $service->setDi($di);
 
@@ -641,7 +641,7 @@ class ServiceTest extends \BBTestCase
 
         $di = new \Pimple\Container();
         $db = $this->getMockBuilder('Box_Database')->getMock();
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
         $di['db'] = $db;
         $di['events_manager'] = $manager;
 

@@ -107,14 +107,14 @@ class GuestTest extends \BBTestCase
                 0 => ['id' => 1],
             ],
         ];
-        $pagerMock = $this->getMockBuilder('\Box_Pagination')->getMock();
+        $pagerMock = $this->getMockBuilder('\FOSSBilling\Pagination')->getMock();
         $pagerMock->expects($this->atLeastOnce())
             ->method('getAdvancedResultSet')
             ->willReturn($pager);
 
         $modelProductCategory = new \Model_ProductCategory();
         $modelProductCategory->loadBean(new \DummyBean());
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getExistingModelById')
             ->willReturn($modelProductCategory);
@@ -143,7 +143,7 @@ class GuestTest extends \BBTestCase
 
     public function testgetSliderEmptyList(): void
     {
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('find')
             ->willReturn([]);
@@ -162,7 +162,7 @@ class GuestTest extends \BBTestCase
     {
         $productModel = new \Model_Product();
         $productModel->loadBean(new \DummyBean());
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('find')
             ->willReturn([$productModel]);
@@ -193,7 +193,7 @@ class GuestTest extends \BBTestCase
     {
         $productModel = new \Model_Product();
         $productModel->loadBean(new \DummyBean());
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('find')
             ->willReturn([$productModel]);

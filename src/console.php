@@ -47,7 +47,7 @@ foreach ($modules as $module) {
 
     foreach ($commands as $command) {
         $command = basename($command, '.php');
-        $class = 'Box\\Mod\\' . $cap . '\\Commands\\' . $command;
+        $class = 'FOSSBilling\\Mod\\' . $cap . '\\Commands\\' . $command;
 
         $command = new $class();
         $command->setDi($di);

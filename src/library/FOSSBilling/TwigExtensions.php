@@ -10,10 +10,11 @@
  */
 
 use FOSSBilling\InjectionAwareInterface;
+use FOSSBilling\Exception;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
-class Box_TwigExtensions extends AbstractExtension implements InjectionAwareInterface
+class TwigExtensions extends AbstractExtension implements InjectionAwareInterface
 {
     protected ?Pimple\Container $di = null;
 

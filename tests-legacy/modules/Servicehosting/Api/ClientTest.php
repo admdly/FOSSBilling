@@ -110,7 +110,7 @@ class ClientTest extends \BBTestCase
         ];
 
         $clientOrderModel = new \Model_ClientOrder();
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
             ->willReturn($clientOrderModel);
@@ -144,7 +144,7 @@ class ClientTest extends \BBTestCase
         ];
 
         $clientOrderModel = new \Model_ClientOrder();
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
             ->willReturn($clientOrderModel);
@@ -178,7 +178,7 @@ class ClientTest extends \BBTestCase
         ];
 
         $clientOrderModel = null;
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
             ->willReturn($clientOrderModel);

@@ -174,13 +174,13 @@ class AdminTest extends \BBTestCase
             ->method('deactivate')
             ->willReturn(true);
 
-        $eventMock = $this->getMockBuilder('\Box_EventManager')->getMock();
+        $eventMock = $this->getMockBuilder('\FOSSBilling\EventManager')->getMock();
         $eventMock->expects($this->atLeastOnce())->
             method('fire');
 
         $di = new \Pimple\Container();
         $di['events_manager'] = $eventMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
 
         $validatorMock = $this->getMockBuilder('\\' . \FOSSBilling\Validate::class)->disableOriginalConstructor()->getMock();
         $validatorMock->expects($this->atLeastOnce())
@@ -213,13 +213,13 @@ class AdminTest extends \BBTestCase
             ->method('uninstall')
             ->willReturn(true);
 
-        $eventMock = $this->getMockBuilder('\Box_EventManager')->getMock();
+        $eventMock = $this->getMockBuilder('\FOSSBilling\EventManager')->getMock();
         $eventMock->expects($this->atLeastOnce())->
             method('fire');
 
         $di = new \Pimple\Container();
         $di['events_manager'] = $eventMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
         $validatorMock = $this->getMockBuilder('\\' . \FOSSBilling\Validate::class)->disableOriginalConstructor()->getMock();
         $validatorMock->expects($this->atLeastOnce())
             ->method('checkRequiredParamsForArray')
@@ -254,13 +254,13 @@ class AdminTest extends \BBTestCase
             ->method('downloadAndExtract')
             ->willReturn(true);
 
-        $eventMock = $this->getMockBuilder('\Box_EventManager')->getMock();
+        $eventMock = $this->getMockBuilder('\FOSSBilling\EventManager')->getMock();
         $eventMock->expects($this->atLeastOnce())->
             method('fire');
 
         $di = new \Pimple\Container();
         $di['events_manager'] = $eventMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
         $validatorMock = $this->getMockBuilder('\\' . \FOSSBilling\Validate::class)->disableOriginalConstructor()->getMock();
         $validatorMock->expects($this->atLeastOnce())
             ->method('checkRequiredParamsForArray')
@@ -296,15 +296,15 @@ class AdminTest extends \BBTestCase
             ->method('downloadAndExtract')
             ->willReturn(true);
 
-        $eventMock = $this->getMockBuilder('\Box_EventManager')->getMock();
+        $eventMock = $this->getMockBuilder('\FOSSBilling\EventManager')->getMock();
         $eventMock->expects($this->atLeastOnce())->
             method('fire');
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
 
         $di = new \Pimple\Container();
         $di['events_manager'] = $eventMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
         $di['db'] = $dbMock;
 
         $validatorMock = $this->getMockBuilder('\\' . \FOSSBilling\Validate::class)->disableOriginalConstructor()->getMock();

@@ -22,7 +22,7 @@ class AdminTest extends \BBTestCase
             ],
         ];
 
-        $paginatorMock = $this->getMockBuilder('\Box_Pagination')->disableOriginalConstructor()->getMock();
+        $paginatorMock = $this->getMockBuilder('\FOSSBilling\Pagination')->disableOriginalConstructor()->getMock();
         $paginatorMock->expects($this->atLeastOnce())
             ->method('getSimpleResultSet')
             ->willReturn($simpleResultArr);
@@ -37,7 +37,7 @@ class AdminTest extends \BBTestCase
 
         $model = new \Model_Cart();
         $model->loadBean(new \DummyBean());
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getExistingModelById')
             ->willReturn($model);
@@ -63,7 +63,7 @@ class AdminTest extends \BBTestCase
             ->method('checkRequiredParamsForArray')
             ->willReturn(null);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->disableOriginalConstructor()->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->disableOriginalConstructor()->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getExistingModelById')
             ->willReturn(new \Model_Cart());
@@ -90,7 +90,7 @@ class AdminTest extends \BBTestCase
 
     public function testBatchExpire(): void
     {
-        $dbMock = $this->getMockBuilder('\Box_Database')->disableOriginalConstructor()->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->disableOriginalConstructor()->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getAssoc')
             ->willReturn([random_int(1, 100), date('Y-m-d H:i:s')]);

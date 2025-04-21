@@ -8,7 +8,7 @@
  * @copyright FOSSBilling (https://www.fossbilling.org)
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
-class Box_Translate
+class Translate
 {
     protected $domain = 'messages';
 

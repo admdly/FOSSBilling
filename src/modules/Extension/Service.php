@@ -67,7 +67,7 @@ class Service implements InjectionAwareInterface
         return (bool) $id_or_null;
     }
 
-    public static function onBeforeAdminCronRun(\Box_Event $event)
+    public static function onBeforeAdminCronRun(\FOSSBilling\Event $event)
     {
         $di = $event->getDi();
         $extensionService = $di['mod_service']('extension');
@@ -742,7 +742,7 @@ class Service implements InjectionAwareInterface
     }
 
     // Checks if the current user has permission to edit a module's settings
-    public function hasManagePermission(string $module, ?\Box_App $app = null): void
+    public function hasManagePermission(string $module, ?\FOSSBilling\App $app = null): void
     {
         $staff_service = $this->di['mod_service']('Staff');
 

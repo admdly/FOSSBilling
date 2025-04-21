@@ -61,7 +61,7 @@ class ServiceTest extends \BBTestCase
                 'value' => 'work@example.eu',
             ],
         ];
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getAll')
             ->willReturn($multParamsResults);
@@ -98,7 +98,7 @@ class ServiceTest extends \BBTestCase
                 'value' => 'work@example.eu',
             ],
         ];
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getAll')
             ->willReturn($multParamsResults);
@@ -119,11 +119,11 @@ class ServiceTest extends \BBTestCase
             'company_name' => 'newValue',
         ];
 
-        $eventMock = $this->getMockBuilder('\Box_EventManager')->getMock();
+        $eventMock = $this->getMockBuilder('\FOSSBilling\EventManager')->getMock();
         $eventMock->expects($this->atLeastOnce())
             ->method('fire');
 
-        $logMock = $this->getMockBuilder('\Box_Log')->getMock();
+        $logMock = $this->getMockBuilder('\FOSSBilling\Log')->getMock();
 
         $systemServiceMock = $this->getMockBuilder('\\' . Service::class)->onlyMethods(['setParamValue'])->getMock();
         $systemServiceMock->expects($this->atLeastOnce())
@@ -202,7 +202,7 @@ class ServiceTest extends \BBTestCase
         $twigMock->method('createTemplate')
             ->will($this->throwException(new \Error('Error')));
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('load')
             ->willReturn(new \Model_Client());
@@ -236,7 +236,7 @@ class ServiceTest extends \BBTestCase
         $twigMock->method('render')
             ->willReturn('');
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('load')
             ->willReturn(new \Model_Client());
@@ -280,7 +280,7 @@ class ServiceTest extends \BBTestCase
 
     public function testgetCountries(): void
     {
-        $modMock = $this->getMockBuilder('\Box_Mod')->disableOriginalConstructor()->getMock();
+        $modMock = $this->getMockBuilder('\FOSSBilling\Mod')->disableOriginalConstructor()->getMock();
         $modMock->expects($this->atLeastOnce())
             ->method('getConfig')
             ->willReturn(['countries' => 'US']);
@@ -295,7 +295,7 @@ class ServiceTest extends \BBTestCase
 
     public function testgetEuCountries(): void
     {
-        $modMock = $this->getMockBuilder('\Box_Mod')->disableOriginalConstructor()->getMock();
+        $modMock = $this->getMockBuilder('\FOSSBilling\Mod')->disableOriginalConstructor()->getMock();
         $modMock->expects($this->atLeastOnce())
             ->method('getConfig')
             ->willReturn(['countries' => 'US']);

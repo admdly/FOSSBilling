@@ -27,7 +27,7 @@ class GuestTest extends \BBTestCase
         $model = new \Model_Product();
         $model->loadBean(new \DummyBean());
         $model->type = \Model_Product::HOSTING;
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getExistingModelById')
             ->willReturn($model);
@@ -58,7 +58,7 @@ class GuestTest extends \BBTestCase
 
         $model = new \Model_Product();
         $model->loadBean(new \DummyBean());
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getExistingModelById')
             ->willReturn($model);

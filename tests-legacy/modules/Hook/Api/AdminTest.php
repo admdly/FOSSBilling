@@ -30,7 +30,7 @@ class AdminTest extends \BBTestCase
             ->method('getSearchQuery')
             ->willReturn(['SqlString', []]);
 
-        $paginatorMock = $this->getMockBuilder('\Box_Pagination')->disableOriginalConstructor()->getMock();
+        $paginatorMock = $this->getMockBuilder('\FOSSBilling\Pagination')->disableOriginalConstructor()->getMock();
         $paginatorMock->expects($this->atLeastOnce())
             ->method('getSimpleResultSet')
             ->willReturn([]);
@@ -48,15 +48,15 @@ class AdminTest extends \BBTestCase
     {
         $data['event'] = 'testEvent';
 
-        $logMock = $this->getMockBuilder('\Box_log')->getMock();
+        $logMock = $this->getMockBuilder('\FOSSBilling\log')->getMock();
 
-        $eventManager = $this->getMockBuilder('\Box_EventManager')->getMock();
+        $eventManager = $this->getMockBuilder('\FOSSBilling\EventManager')->getMock();
         $eventManager->expects($this->atLeastOnce())
             ->method('fire')
             ->willReturn(1);
 
         $di = new \Pimple\Container();
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
         $di['events_manager'] = $eventManager;
 
         $this->api->setDi($di);

@@ -59,7 +59,7 @@ class Service implements InjectionAwareInterface
     }
 
     /** EVENTS  **/
-    public static function onAfterClientLogin(\Box_Event $event)
+    public static function onAfterClientLogin(FOSSBilling\Event $event)
     {
         $params = $event->getParameters();
         $di = $event->getDi();
@@ -80,7 +80,7 @@ class Service implements InjectionAwareInterface
         $di['db']->store($log);
     }
 
-    public static function onAfterAdminLogin(\Box_Event $event)
+    public static function onAfterAdminLogin(FOSSBilling\Event $event)
     {
         $params = $event->getParameters();
         $di = $event->getDi();
@@ -101,7 +101,7 @@ class Service implements InjectionAwareInterface
         $di['db']->store($log);
     }
 
-    public static function onBeforeAdminCronRun(\Box_Event $event): void
+    public static function onBeforeAdminCronRun(FOSSBilling\Event $event): void
     {
         $di = $event->getDi();
         $config = $di['mod_service']('extension')->getConfig('mod_activity');
@@ -154,12 +154,12 @@ class Service implements InjectionAwareInterface
 
         if ($no_info) {
             $where[] = 'm.priority < :priority';
-            $params[':priority'] = \Box_Log::INFO;
+            $params[':priority'] = FOSSBilling\Log::INFO;
         }
 
         if ($no_debug) {
             $where[] = 'm.priority < :priority';
-            $params[':priority'] = \Box_Log::DEBUG;
+            $params[':priority'] = FOSSBilling\Log::DEBUG;
         }
 
         if ($only_staff) {

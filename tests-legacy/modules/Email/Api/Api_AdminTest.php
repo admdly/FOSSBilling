@@ -315,7 +315,7 @@ class Api_AdminTest extends \BBTestCase
         $model = new \Model_EmailTemplate();
         $model->loadBean(new \DummyBean());
 
-        $db = $this->getMockBuilder('\Box_Database')->getMock();
+        $db = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $db->expects($this->atLeastOnce())
             ->method('getExistingModelById')
             ->willReturn($model);
@@ -465,7 +465,7 @@ class Api_AdminTest extends \BBTestCase
 
         $emailTemplateModel = new \Model_EmailTemplate();
         $emailTemplateModel->loadBean(new \DummyBean());
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getExistingModelById')
             ->willReturn($emailTemplateModel);

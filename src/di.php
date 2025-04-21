@@ -33,14 +33,14 @@ $di = new Pimple\Container();
  *
  * @param void
  *
- * @return Box_Log A new logger instance
+ * @return FOSSBilling\Log A new logger instance
  */
 $di['logger'] = function () use ($di) {
-    $log = new Box_Log();
+    $log = new FOSSBilling\Log();
     $log->setDi($di);
 
     $activity_service = $di['mod_service']('activity');
-    $dbWriter = new Box_LogDb($activity_service);
+    $dbWriter = new FOSSBilling\LogDb($activity_service);
     $log->addWriter($dbWriter);
 
     if ($di['auth']->isAdminLoggedIn()) {
@@ -61,10 +61,10 @@ $di['logger'] = function () use ($di) {
  *
  * @param void
  *
- * @return \Box_Crypt
+ * @return FOSSBilling\Crypt
  */
 $di['crypt'] = function () use ($di) {
-    $crypt = new Box_Crypt();
+    $crypt = new FOSSBilling\Crypt();
     $crypt->setDi($di);
 
     return $crypt;
@@ -92,7 +92,7 @@ $di['pdo'] = function () {
     );
 
     if (isset($config['debug']) && $config['debug']) {
-        $pdo->setAttribute(PDO::ATTR_STATEMENT_CLASS, ['Box_DbLoggedPDOStatement']);
+        $pdo->setAttribute(PDO::ATTR_STATEMENT_CLASS, ['DbLoggedPDOStatement']);
     }
 
     if ($config['type'] === 'mysql') {
@@ -117,13 +117,13 @@ $di['pdo'] = function () {
  *
  * @param void
  *
- * @return \Box_Database The new Box_Database object that was just created.
+ * @return FOSSBilling\Database The new FOSSBilling\Database object that was just created.
  */
 $di['db'] = function () use ($di) {
     RedBeanPHP\R::setup($di['pdo']);
     RedBeanPHP\Util\DispenseHelper::setEnforceNamingPolicy(false);
 
-    $helper = new Box_BeanHelper();
+    $helper = new FOSSBilling\BeanHelper();
     $helper->setDi($di);
 
     $mapper = new Facade();
@@ -131,7 +131,7 @@ $di['db'] = function () use ($di) {
     $freeze = Config::getProperty('db.freeze', true);
     $mapper->freeze($freeze);
 
-    $db = new Box_Database();
+    $db = new FOSSBilling\Database();
     $db->setDi($di);
     $db->setDataMapper($mapper);
 
@@ -145,7 +145,7 @@ $di['db'] = function () use ($di) {
  * @return Box_Pagination
  */
 $di['pager'] = function () use ($di) {
-    $service = new Box_Pagination();
+    $service = new Pagination();
     $service->setDi($di);
 
     return $service;
@@ -158,7 +158,7 @@ $di['pager'] = function () use ($di) {
  * @return Box_Url
  */
 $di['url'] = function () use ($di) {
-    $url = new Box_Url();
+    $url = new Url();
     $url->setDi($di);
     $url->setBaseUri(SYSTEM_URL);
 
@@ -170,10 +170,10 @@ $di['url'] = function () use ($di) {
  *
  * @param string $name The name of the module to create the object with.
  *
- * @return \Box_Mod The new Box_Mod object that was just created.
+ * @return FOSSBilling\Mod The new Box_Mod object that was just created.
  */
 $di['mod'] = $di->protect(function ($name) use ($di) {
-    $mod = new Box_Mod($name);
+    $mod = new FOSSBilling\Mod($name);
     $mod->setDi($di);
 
     return $mod;
@@ -199,10 +199,10 @@ $di['mod_config'] = $di->protect(fn ($name) => $di['mod']($name)->getConfig());
  *
  * @param void
  *
- * @return \Box_EventManager
+ * @return FOSSBilling\EventManager
  */
 $di['events_manager'] = function () use ($di) {
-    $service = new Box_EventManager();
+    $service = new FOSSBilling\EventManager();
     $service->setDi($di);
 
     return $service;
@@ -248,9 +248,9 @@ $di['cache'] = fn (): FilesystemAdapter => new FilesystemAdapter('sf_cache', 24 
  *
  * @param void
  *
- * @return Box_Authorization
+ * @return FOSSBilling\Authorization
  */
-$di['auth'] = fn (): Box_Authorization => new Box_Authorization($di);
+$di['auth'] = fn (): FOSSBilling\Authorization => new FOSSBilling\Authorization($di);
 
 /*
  * Creates a new Twig environment that's configured for FOSSBilling.
@@ -277,7 +277,7 @@ $di['twig'] = $di->factory(function () use ($di) {
     $loader = new Twig\Loader\ArrayLoader();
     $twig = new Twig\Environment($loader, $options);
 
-    $box_extensions = new Box_TwigExtensions();
+    $box_extensions = new TwigExtensions();
     $box_extensions->setDi($di);
 
     if ($di['encore_info']['is_encore_theme']) {
@@ -631,16 +631,16 @@ $di['server_manager'] = $di->protect(function ($manager, $config) use ($di) {
  *
  * @param string $code The two character period code to create the period object with.
  *
- * @return \Box_Period The new period object that was just created.
+ * @return FOSSBilling\Period The new period object that was just created.
  */
-$di['period'] = $di->protect(fn ($code): Box_Period => new Box_Period($code));
+$di['period'] = $di->protect(fn ($code): Period => new Period($code));
 
 /*
  * Gets the current client area theme.
  *
  * @param void
  *
- * @return \Box_Theme The current client area theme.
+ * @return FOSSBilling\Theme The current client area theme.
  */
 $di['theme'] = function () use ($di) {
     $service = $di['mod_service']('theme');
@@ -676,7 +676,7 @@ $di['cart'] = function () use ($di) {
  *
  * @param string $name The name of the table to create.
  *
- * @return \Box_Table The new table object that was just created.
+ * @return FOSSBilling\Table The new table object that was just created.
  */
 $di['table'] = $di->protect(function ($name) use ($di) {
     $tools = new FOSSBilling\Tools();
@@ -718,10 +718,10 @@ $di['password'] = fn (): FOSSBilling\PasswordManager => new FOSSBilling\Password
  *
  * @param string $textDomain The text domain to create the translation object with.
  *
- * @return \Box_Translate The new translation object that was just created.
+ * @return FOSSBilling\Translate The new translation object that was just created.
  */
 $di['translate'] = $di->protect(function ($textDomain = '') {
-    $tr = new Box_Translate();
+    $tr = new Translate();
 
     if (!empty($textDomain)) {
         $tr->setDomain($textDomain);

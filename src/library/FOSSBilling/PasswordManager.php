@@ -11,6 +11,8 @@
 
 namespace FOSSBilling;
 
+use FOSSBilling\Exception;
+
 class PasswordManager
 {
     private string $algo;
@@ -27,12 +29,12 @@ class PasswordManager
      *
      * @return object an instance of the current class, for use with chaining
      *
-     * @throws \Exception if the provided algorithm is not listed as a valid option in PHP
+     * @throws Exception if the provided algorithm is not listed as a valid option in PHP
      */
     public function setAlgo(string $algo): object
     {
         if (!in_array($algo, password_algos())) {
-            throw new \Exception('Invalid password hash provided');
+            throw new Exception('Invalid password hash provided');
         }
 
         $this->algo = $algo;
@@ -63,13 +65,13 @@ class PasswordManager
     /**
      * Creates a hash of the provided password.
      *
-     * @throws \Exception if there was an error when hashing the password
+     * @throws Exception if there was an error when hashing the password
      */
     public function hashIt(string $password): string
     {
         $hash = password_hash($password, $this->algo, $this->options);
         if (!is_string($hash)) {
-            throw new \Exception("Password hashing failed with $this->algo and the following options: " . print_r($this->options, true));
+            throw new Exception("Password hashing failed with $this->algo and the following options: " . print_r($this->options, true));
         } else {
             return $hash;
         }

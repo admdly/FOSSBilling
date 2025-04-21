@@ -17,6 +17,8 @@ use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
+use FOSSBilling\Exception;
+use FOSSBilling\InformationException;
 
 class Mail
 {
@@ -126,6 +128,7 @@ class Mail
      * @param array|null $options an optional array of options specific to the chosen transport method
      *
      * @throws InformationException If the transport method is unknown or if required options for the selected transport aren't defined
+     * @throws Exception If there was an error sending the email
      */
     public function send(?array $options = null): void
     {

@@ -34,7 +34,7 @@ class Service implements InjectionAwareInterface
         return $this->di;
     }
 
-    public static function onBeforeClientOpenTicket(\Box_Event $event)
+    public static function onBeforeClientOpenTicket(\FOSSBilling\Event $event)
     {
         $di = $event->getDi();
         $params = $event->getParameters();
@@ -53,7 +53,7 @@ class Service implements InjectionAwareInterface
     /**
      * @return bool
      */
-    public static function onAfterClientOpenTicket(\Box_Event $event)
+    public static function onAfterClientOpenTicket(\FOSSBilling\Event $event)
     {
         $di = $event->getDi();
         $params = $event->getParameters();

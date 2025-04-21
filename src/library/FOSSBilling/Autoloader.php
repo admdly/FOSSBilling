@@ -14,7 +14,7 @@ namespace FOSSBilling;
 
 use AntCMS\AntLoader;
 
-class AutoLoader
+class Autoloader
 {
     public AntLoader $AntLoader;
 
@@ -38,7 +38,7 @@ class AutoLoader
 
         if ($registerFOSSBillingDefaults) {
             $this->AntLoader->addNamespace('', PATH_LIBRARY, 'psr0');
-            $this->AntLoader->addNamespace('Box\\Mod\\', PATH_MODS);
+            $this->AntLoader->addNamespace('FOSSBilling\\Mod\\', PATH_MODS);
         }
 
         $this->AntLoader->checkClassMap();

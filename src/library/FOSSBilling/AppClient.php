@@ -9,13 +9,15 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
 
+namespace FOSSBilling;
+
 use DebugBar\Bridge\NamespacedTwigProfileCollector;
 use FOSSBilling\Environment;
 use FOSSBilling\TwigExtensions\DebugBar;
 use Twig\Extension\ProfilerExtension;
 use Twig\Profiler\Profile;
 
-class Box_AppClient extends Box_App
+class AppClient extends App
 {
     protected function init(): void
     {
@@ -62,12 +64,12 @@ class Box_AppClient extends Box_App
 
         try {
             return $this->render($tpl, ['post' => $_POST], $ext);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             if (DEBUG) {
                 error_log($e);
             }
         }
-        $e = new FOSSBilling\InformationException('Page :url not found', [':url' => $this->url], 404);
+        $e = new \FOSSBilling\InformationException('Page :url not found', [':url' => $this->url], 404);
 
         $this->di['logger']->setChannel('routing')->info($e->getMessage());
         http_response_code(404);
@@ -82,11 +84,11 @@ class Box_AppClient extends Box_App
     {
         try {
             $template = $this->getTwig()->load($fileName . '.' . $ext);
-        } catch (Twig\Error\LoaderError $e) {
+        } catch (\Twig\Error\LoaderError $e) {
             $this->di['logger']->setChannel('routing')->info($e->getMessage());
             http_response_code(404);
 
-            throw new FOSSBilling\InformationException('Page not found', null, 404);
+            throw new \FOSSBilling\InformationException('Page not found', null, 404);
         }
 
         if ($fileName . '.' . $ext == 'mod_page_sitemap.xml') {
@@ -96,14 +98,14 @@ class Box_AppClient extends Box_App
         return $template->render($variableArray);
     }
 
-    protected function getTwig(): Twig\Environment
+    protected function getTwig(): \Twig\Environment
     {
         $service = $this->di['mod_service']('theme');
         $code = $service->getCurrentClientAreaThemeCode();
         $theme = $service->getTheme($code);
         $settings = $service->getThemeSettings($theme);
 
-        $loader = new Box_TwigLoader(
+        $loader = new TwigLoader(
             [
                 'mods' => PATH_MODS,
                 'theme' => PATH_THEMES . DIRECTORY_SEPARATOR . $code,

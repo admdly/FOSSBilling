@@ -8,11 +8,14 @@
  * @copyright FOSSBilling (https://www.fossbilling.org)
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
-class Box_Authorization
+
+namespace FOSSBilling;
+
+class Authorization
 {
     private $session;
 
-    public function __construct(private Pimple\Container $di)
+    public function __construct(private \Pimple\Container $di)
     {
         $this->session = $di['session'];
     }

@@ -9,14 +9,16 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
 
+namespace FOSSBilling;
+
 use FOSSBilling\Config;
 use Symfony\Component\Filesystem\Path;
 
-class Box_Mod
+class Mod
 {
     private ?string $mod = null;
 
-    private ?Pimple\Container $di = null;
+    private ?\Pimple\Container $di = null;
 
     private array $core = [
         'api',
@@ -55,13 +57,13 @@ class Box_Mod
     public function __construct($mod)
     {
         if (!preg_match('#[a-zA-Z]#', $mod)) {
-            throw new FOSSBilling\Exception('Invalid module name');
+            throw new Exception('Invalid module name');
         }
 
         $this->mod = strtolower($mod);
     }
 
-    public function setDi(Pimple\Container $di): void
+    public function setDi(\Pimple\Container $di): void
     {
         $this->di = $di;
     }
@@ -74,12 +76,12 @@ class Box_Mod
     public function getManifest(): array
     {
         if (!$this->hasManifest()) {
-            throw new FOSSBilling\Exception('Module :mod manifest file is missing', [':mod' => $this->mod], 5897);
+            throw new Exception('Module :mod manifest file is missing', [':mod' => $this->mod], 5897);
         }
 
         $contents = file_get_contents(Path::normalize($this->_getModPath() . 'manifest.json'));
         if (!json_validate($contents)) {
-            throw new FOSSBilling\Exception('Module :mod manifest file is invalid. Check file syntax and permissions.', [':mod' => $this->mod]);
+            throw new Exception('Module :mod manifest file is invalid. Check file syntax and permissions.', [':mod' => $this->mod]);
         }
 
         $json = json_decode($contents, true);
@@ -123,9 +125,9 @@ class Box_Mod
     public function getService($sub = '')
     {
         if (!$this->hasService($sub)) {
-            throw new FOSSBilling\Exception('Module :mod does not have service class', [':mod' => $this->mod], 5898);
+            throw new Exception('Module :mod does not have service class', [':mod' => $this->mod], 5898);
         }
-        $class = 'Box\\Mod\\' . ucfirst($this->mod) . '\\Service' . ucfirst($sub);
+        $class = 'FOSSBilling\\Mod\\' . ucfirst($this->mod) . '\\Service' . ucfirst($sub);
         $service = new $class();
         if (method_exists($service, 'setDi')) {
             $service->setDi($this->di);
@@ -142,10 +144,10 @@ class Box_Mod
     public function getClientController()
     {
         if (!$this->hasClientController()) {
-            throw new FOSSBilling\Exception('Module :mod Client controller class was not found', [':mod' => $this->mod]);
+            throw new Exception('Module :mod Client controller class was not found', [':mod' => $this->mod]);
         }
 
-        $class = 'Box\\Mod\\' . ucfirst($this->mod) . '\\Controller\\Client';
+        $class = 'FOSSBilling\\Mod\\' . ucfirst($this->mod) . '\\Controller\\Client';
         $service = new $class();
         if (method_exists($service, 'setDi')) {
             $service->setDi($this->di);
@@ -169,7 +171,7 @@ class Box_Mod
         if (!$this->hasAdminController()) {
             return null;
         }
-        $class = 'Box\\Mod\\' . ucfirst($this->mod) . '\\Controller\\Admin';
+        $class = 'FOSSBilling\\Mod\\' . ucfirst($this->mod) . '\\Controller\\Admin';
         $service = new $class();
         if (method_exists($service, 'setDi')) {
             $service->setDi($this->di);
@@ -217,7 +219,7 @@ class Box_Mod
     public function update()
     {
         if ($this->isCore()) {
-            throw new FOSSBilling\InformationException('Core modules cannot be updated');
+            throw new InformationException('Core modules cannot be updated');
         }
 
         if ($this->hasService()) {
@@ -267,7 +269,7 @@ class Box_Mod
         return $this->mod;
     }
 
-    public function registerClientRoutes(Box_App &$app)
+    public function registerClientRoutes(App &$app)
     {
         if ($this->hasClientController()) {
             $cc = $this->getClientController();

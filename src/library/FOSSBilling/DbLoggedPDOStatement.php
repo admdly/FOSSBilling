@@ -8,7 +8,10 @@
  * @copyright FOSSBilling (https://www.fossbilling.org)
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
-class Box_DbLoggedPDOStatement extends PDOStatement
+
+namespace FOSSBilling;
+
+class DbLoggedPDOStatement extends \PDOStatement
 {
     public function execute(?array $input_parameters = null): bool
     {

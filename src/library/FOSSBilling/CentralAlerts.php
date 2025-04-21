@@ -17,6 +17,7 @@ use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use FOSSBilling\Exception;
 
 class CentralAlerts implements InjectionAwareInterface
 {

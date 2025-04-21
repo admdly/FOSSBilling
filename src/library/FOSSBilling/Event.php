@@ -8,9 +8,12 @@
  * @copyright FOSSBilling (https://www.fossbilling.org)
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
-class Box_Event implements ArrayAccess, FOSSBilling\InjectionAwareInterface
+
+namespace FOSSBilling;
+
+class Event implements \ArrayAccess, InjectionAwareInterface
 {
-    protected ?Pimple\Container $di = null;
+    protected ?\Pimple\Container $di = null;
     protected $value;
     protected $processed = false;
 
@@ -25,12 +28,12 @@ class Box_Event implements ArrayAccess, FOSSBilling\InjectionAwareInterface
     {
     }
 
-    public function setDi(Pimple\Container $di): void
+    public function setDi(\Pimple\Container $di): void
     {
         $this->di = $di;
     }
 
-    public function getDi(): ?Pimple\Container
+    public function getDi(): ?\Pimple\Container
     {
         return $this->di;
     }
@@ -137,7 +140,7 @@ class Box_Event implements ArrayAccess, FOSSBilling\InjectionAwareInterface
     public function offsetGet(mixed $name): mixed
     {
         if (!array_key_exists($name, $this->parameters)) {
-            throw new InvalidArgumentException(sprintf('The event "%s" has no "%s" parameter.', $this->name, $name));
+            throw new \InvalidArgumentException(sprintf('The event "%s" has no "%s" parameter.', $this->name, $name));
         }
 
         return $this->parameters[$name];

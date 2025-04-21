@@ -14,6 +14,8 @@ namespace FOSSBilling;
 
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\Cache\ItemInterface;
+use FOSSBilling\Exception;
+use FOSSBilling\InformationException;
 
 class Validate
 {

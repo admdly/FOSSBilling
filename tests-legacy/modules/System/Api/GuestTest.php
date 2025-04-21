@@ -24,7 +24,7 @@ class GuestTest extends \BBTestCase
 
     public function testVersionAdmin(): void
     {
-        $authorizationMock = $this->getMockBuilder('\Box_Authorization')->disableOriginalConstructor()->getMock();
+        $authorizationMock = $this->getMockBuilder('\FOSSBilling\Authorization')->disableOriginalConstructor()->getMock();
         $authorizationMock->expects($this->atLeastOnce())
             ->method('isAdminLoggedIn')
             ->willReturn(true);
@@ -47,7 +47,7 @@ class GuestTest extends \BBTestCase
 
     public function testVersionShowPublicOn(): void
     {
-        $authorizationMock = $this->getMockBuilder('\Box_Authorization')->disableOriginalConstructor()->getMock();
+        $authorizationMock = $this->getMockBuilder('\FOSSBilling\Authorization')->disableOriginalConstructor()->getMock();
         $authorizationMock->expects($this->atLeastOnce())
             ->method('isAdminLoggedIn')
             ->willReturn(false);
@@ -74,7 +74,7 @@ class GuestTest extends \BBTestCase
 
     public function testVersionShowPublicOff(): void
     {
-        $authorizationMock = $this->getMockBuilder('\Box_Authorization')->disableOriginalConstructor()->getMock();
+        $authorizationMock = $this->getMockBuilder('\FOSSBilling\Authorization')->disableOriginalConstructor()->getMock();
         $authorizationMock->expects($this->atLeastOnce())
             ->method('isAdminLoggedIn')
             ->willReturn(false);
@@ -100,7 +100,7 @@ class GuestTest extends \BBTestCase
     {
         $companyData = ['companyName' => 'TestCo'];
 
-        $authMock = $this->getMockBuilder('\Box_Authorization')->disableOriginalConstructor()->getMock();
+        $authMock = $this->getMockBuilder('\FOSSBilling\Authorization')->disableOriginalConstructor()->getMock();
         $authMock->method('isAdminLoggedIn')->willReturn(false);
         $authMock->method('isClientLoggedIn')->willReturn(false);
 
@@ -137,7 +137,7 @@ class GuestTest extends \BBTestCase
             'address_3' => 'Test Address 3',
         ];
 
-        $authMock = $this->getMockBuilder('\Box_Authorization')->disableOriginalConstructor()->getMock();
+        $authMock = $this->getMockBuilder('\FOSSBilling\Authorization')->disableOriginalConstructor()->getMock();
         $authMock->method('isAdminLoggedIn')->willReturn(false);
         $authMock->method('isClientLoggedIn')->willReturn(false);
 

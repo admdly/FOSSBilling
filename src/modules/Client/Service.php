@@ -57,7 +57,7 @@ class Service implements InjectionAwareInterface
         return $this->di['tools']->url('/client/confirm-email/' . $hash);
     }
 
-    public static function onAfterClientSignUp(\Box_Event $event)
+    public static function onAfterClientSignUp(\FOSSBilling\Event $event)
     {
         $di = $event->getDi();
         $params = $event->getParameters();
@@ -709,7 +709,7 @@ class Service implements InjectionAwareInterface
      *
      * @return void
      */
-    public static function onBeforeAdminCronRun(\Box_Event $event)
+    public static function onBeforeAdminCronRun(\FOSSBilling\Event $event)
     {
         $di = $event->getDi();
         $sql = 'DELETE FROM client_password_reset WHERE UNIX_TIMESTAMP() - 900 > UNIX_TIMESTAMP(created_at);';

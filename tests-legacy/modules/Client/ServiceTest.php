@@ -15,7 +15,7 @@ class ServiceTest extends \BBTestCase
 
     public function testapproveClientEmailByHash(): void
     {
-        $database = $this->getMockBuilder('\Box_Database')->getMock();
+        $database = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $database->expects($this->atLeastOnce())
             ->method('getRow')->willReturn(['client_id' => 2, 'id' => 1]);
 
@@ -33,7 +33,7 @@ class ServiceTest extends \BBTestCase
 
     public function testapproveClientEmailByHashException(): void
     {
-        $database = $this->getMockBuilder('\Box_Database')->getMock();
+        $database = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $database->expects($this->atLeastOnce())
             ->method('getRow')->willReturn([]);
 
@@ -53,7 +53,7 @@ class ServiceTest extends \BBTestCase
         $model = new \Model_ExtensionMeta();
         $model->loadBean(new \DummyBean());
 
-        $database = $this->getMockBuilder('\Box_Database')->getMock();
+        $database = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $database->expects($this->atLeastOnce())
             ->method('dispense')->willReturn($model);
 
@@ -85,7 +85,7 @@ class ServiceTest extends \BBTestCase
             'id' => 1,
         ];
 
-        $eventMock = $this->getMockBuilder('\Box_Event')->disableOriginalConstructor()->getMock();
+        $eventMock = $this->getMockBuilder('\FOSSBilling\Event')->disableOriginalConstructor()->getMock();
         $eventMock->expects($this->atLeastOnce())->
             method('getParameters')->willReturn($eventParams);
 
@@ -111,7 +111,7 @@ class ServiceTest extends \BBTestCase
 
     public function testRequireEmailConfirmonAfterClientSignUp(): void
     {
-        $eventMock = $this->getMockBuilder('\Box_Event')->disableOriginalConstructor()->getMock();
+        $eventMock = $this->getMockBuilder('\FOSSBilling\Event')->disableOriginalConstructor()->getMock();
         $eventParams = [
             'password' => 'testPassword',
             'id' => 1,
@@ -157,7 +157,7 @@ class ServiceTest extends \BBTestCase
             'id' => 1,
         ];
 
-        $eventMock = $this->getMockBuilder('\Box_Event')->disableOriginalConstructor()->getMock();
+        $eventMock = $this->getMockBuilder('\FOSSBilling\Event')->disableOriginalConstructor()->getMock();
         $eventMock->expects($this->atLeastOnce())->
             method('getParameters')->willReturn($eventParams);
 
@@ -276,7 +276,7 @@ class ServiceTest extends \BBTestCase
     {
         $data = [];
 
-        $database = $this->getMockBuilder('\Box_Database')->getMock();
+        $database = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $database->expects($this->atLeastOnce())->method('getAssoc')
             ->willReturn([]);
 
@@ -312,7 +312,7 @@ class ServiceTest extends \BBTestCase
         $email = 'test@example.com';
         $model = new \Model_Client();
         $model->loadBean(new \DummyBean());
-        $database = $this->getMockBuilder('\Box_Database')->getMock();
+        $database = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $database->expects($this->atLeastOnce())->method('findOne')
             ->willReturn($model);
 
@@ -347,7 +347,7 @@ class ServiceTest extends \BBTestCase
         $model->loadBean(new \DummyBean());
         $model->currency = 'USD';
 
-        $database = $this->getMockBuilder('\Box_Database')->getMock();
+        $database = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $database->expects($this->atLeastOnce())->method('findOne')
             ->willReturn(null);
 
@@ -367,7 +367,7 @@ class ServiceTest extends \BBTestCase
         $model = new \Model_Client();
         $model->loadBean(new \DummyBean());
 
-        $database = $this->getMockBuilder('\Box_Database')->getMock();
+        $database = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $database->expects($this->never())->method('findOne');
 
         $clientService = new \Box\Mod\Client\Service();
@@ -384,7 +384,7 @@ class ServiceTest extends \BBTestCase
         $model->loadBean(new \DummyBean());
         $model->currency = $currency;
 
-        $database = $this->getMockBuilder('\Box_Database')->getMock();
+        $database = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $database->expects($this->never())->method('findOne');
 
         $clientService = new \Box\Mod\Client\Service();
@@ -405,7 +405,7 @@ class ServiceTest extends \BBTestCase
         $invoiceModel = new \Model_Invoice();
         $invoiceModel->loadBean(new \DummyBean());
 
-        $database = $this->getMockBuilder('\Box_Database')->getMock();
+        $database = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $database->expects($this->once())
                  ->method('findOne')
             ->willReturn($invoiceModel);
@@ -433,7 +433,7 @@ class ServiceTest extends \BBTestCase
         $clientOrderModel = new \Model_ClientOrder();
         $clientOrderModel->loadBean(new \DummyBean());
 
-        $database = $this->getMockBuilder('\Box_Database')->getMock();
+        $database = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $database->expects($this->exactly(2))->method('findOne')
             ->will($this->onConsecutiveCalls($this->returnValue(null)));
 
@@ -502,7 +502,7 @@ class ServiceTest extends \BBTestCase
         $amount = '2.22';
         $description = 'test description';
 
-        $database = $this->getMockBuilder('\Box_Database')->getMock();
+        $database = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $database->expects($this->atLeastOnce())->method('dispense')
             ->willReturn($model);
 
@@ -566,7 +566,7 @@ class ServiceTest extends \BBTestCase
 
     public function testgetExpiredPasswordReminders(): void
     {
-        $database = $this->getMockBuilder('\Box_Database')->getMock();
+        $database = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $database->expects($this->atLeastOnce())->method('find')
             ->willReturn([]);
 
@@ -618,7 +618,7 @@ class ServiceTest extends \BBTestCase
 
     public function testcounter(): void
     {
-        $database = $this->getMockBuilder('\Box_Database')->getMock();
+        $database = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $database->expects($this->atLeastOnce())->method('getAssoc')
             ->willReturn([]);
 
@@ -641,7 +641,7 @@ class ServiceTest extends \BBTestCase
 
     public function testgetGroupPairs(): void
     {
-        $database = $this->getMockBuilder('\Box_Database')->getMock();
+        $database = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $database->expects($this->atLeastOnce())->method('getAssoc')
             ->willReturn([]);
 
@@ -659,7 +659,7 @@ class ServiceTest extends \BBTestCase
     {
         $model = new \Model_Client();
         $model->loadBean(new \DummyBean());
-        $database = $this->getMockBuilder('\Box_Database')->getMock();
+        $database = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $database->expects($this->atLeastOnce())->method('findOne')
             ->willReturn($model);
 
@@ -677,7 +677,7 @@ class ServiceTest extends \BBTestCase
     {
         $model = new \Model_Client();
         $model->loadBean(new \DummyBean());
-        $database = $this->getMockBuilder('\Box_Database')->getMock();
+        $database = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $database->expects($this->atLeastOnce())->method('findOne')
             ->willReturn($model);
 
@@ -705,7 +705,7 @@ class ServiceTest extends \BBTestCase
         $model = new \Model_Client();
         $model->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')->willReturn($model);
 
@@ -722,7 +722,7 @@ class ServiceTest extends \BBTestCase
 
     public function testgetClientNotFound(): void
     {
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')->willReturn([]);
 
@@ -743,7 +743,7 @@ class ServiceTest extends \BBTestCase
         $model = new \Model_Client();
         $model->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getCell')->willReturn(1.0);
 
@@ -767,7 +767,7 @@ class ServiceTest extends \BBTestCase
         $clientGroup->loadBean(new \DummyBean());
         $clientGroup->title = 'Group Title';
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('toArray')->willReturn([]);
         $dbMock->expects($this->atLeastOnce())
@@ -846,14 +846,14 @@ class ServiceTest extends \BBTestCase
             'first_name' => 'test',
         ];
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('dispense')
             ->willReturn($clientModel);
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
-        $eventManagerMock = $this->getMockBuilder('\Box_EventManager')->getMock();
+        $eventManagerMock = $this->getMockBuilder('\FOSSBilling\EventManager')->getMock();
         $eventManagerMock->expects($this->exactly(2))
             ->method('fire');
 
@@ -865,7 +865,7 @@ class ServiceTest extends \BBTestCase
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
         $di['events_manager'] = $eventManagerMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
         $di['password'] = $passwordMock;
 
         $service = new \Box\Mod\Client\Service();
@@ -877,7 +877,7 @@ class ServiceTest extends \BBTestCase
 
     public function testdeleteGroup(): void
     {
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne');
         $dbMock->expects($this->once())
@@ -885,7 +885,7 @@ class ServiceTest extends \BBTestCase
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
 
         $service = new \Box\Mod\Client\Service();
         $service->setDi($di);
@@ -899,7 +899,7 @@ class ServiceTest extends \BBTestCase
     public function testdeleteGroupGroupHasClients(): void
     {
         $clientModel = new \Model_Client();
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
             ->willReturn($clientModel);
@@ -922,13 +922,13 @@ class ServiceTest extends \BBTestCase
         $email = 'example@fossbilling.vm';
         $password = '123456';
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
             ->with('Client')
             ->willReturn(null);
 
-        $authMock = $this->getMockBuilder('\Box_Authorization')->disableOriginalConstructor()->getMock();
+        $authMock = $this->getMockBuilder('\FOSSBilling\Authorization')->disableOriginalConstructor()->getMock();
         $authMock->expects($this->atLeastOnce())
             ->method('authorizeUser')
             ->with(null, $password)
@@ -953,13 +953,13 @@ class ServiceTest extends \BBTestCase
         $clientModel = new \Model_Client();
         $clientModel->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
             ->with('Client')
             ->willReturn($clientModel);
 
-        $authMock = $this->getMockBuilder('\Box_Authorization')->disableOriginalConstructor()->getMock();
+        $authMock = $this->getMockBuilder('\FOSSBilling\Authorization')->disableOriginalConstructor()->getMock();
         $authMock->expects($this->atLeastOnce())
             ->method('authorizeUser')
             ->with($clientModel, $password)
@@ -985,13 +985,13 @@ class ServiceTest extends \BBTestCase
         $clientModel->loadBean(new \DummyBean());
         $clientModel->email_approved = 1;
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
             ->with('Client')
             ->willReturn($clientModel);
 
-        $authMock = $this->getMockBuilder('\Box_Authorization')->disableOriginalConstructor()->getMock();
+        $authMock = $this->getMockBuilder('\FOSSBilling\Authorization')->disableOriginalConstructor()->getMock();
         $authMock->expects($this->any())
             ->method('authorizeUser')
             ->with($clientModel, $password)

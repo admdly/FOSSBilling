@@ -555,7 +555,7 @@ class Service implements InjectionAwareInterface
     /**
      * If enabled, automatically call _getRate to fetch exchange rates whenever CRON jobs are run.
      */
-    public static function onBeforeAdminCronRun(\Box_Event $event)
+    public static function onBeforeAdminCronRun(\FOSSBilling\Event $event)
     {
         $di = $event->getDi();
         $currencyService = $di['mod_service']('currency');

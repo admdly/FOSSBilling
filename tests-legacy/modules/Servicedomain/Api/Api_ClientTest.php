@@ -31,7 +31,7 @@ class Api_ClientTest extends \BBTestCase
 
         $clientApiMock->setService($serviceMock);
 
-        $eventMock = $this->getMockBuilder('\Box_EventManager')->getMock();
+        $eventMock = $this->getMockBuilder('\FOSSBilling\EventManager')->getMock();
         $eventMock->expects($this->atLeastOnce())->
         method('fire');
 

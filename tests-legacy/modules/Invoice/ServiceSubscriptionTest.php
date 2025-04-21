@@ -28,7 +28,7 @@ class ServiceSubscriptionTest extends \BBTestCase
         $subscriptionModel->loadBean(new \DummyBean());
         $newId = 10;
 
-        $dbMock = $this->getMockBuilder('\Box_Database')
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')
             ->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('dispense')
@@ -37,14 +37,14 @@ class ServiceSubscriptionTest extends \BBTestCase
             ->method('store')
             ->willReturn($newId);
 
-        $eventsMock = $this->getMockBuilder('\Box_EventManager')
+        $eventsMock = $this->getMockBuilder('\FOSSBilling\EventManager')
             ->getMock();
         $eventsMock->expects($this->atLeastOnce())
             ->method('fire');
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
         $di['events_manager'] = $eventsMock;
 
         $this->service->setDi($di);
@@ -71,14 +71,14 @@ class ServiceSubscriptionTest extends \BBTestCase
             'currency' => '',
         ];
 
-        $dbMock = $this->getMockBuilder('\Box_Database')
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')
             ->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
 
         $this->service->setDi($di);
 
@@ -97,7 +97,7 @@ class ServiceSubscriptionTest extends \BBTestCase
         $gatewayModel = new \Model_PayGateway();
         $gatewayModel->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('load')
             ->will($this->onConsecutiveCalls($clientModel, $gatewayModel));
@@ -151,19 +151,19 @@ class ServiceSubscriptionTest extends \BBTestCase
         $subscriptionModel = new \Model_Subscription();
         $subscriptionModel->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')
             ->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('trash');
 
-        $eventsMock = $this->getMockBuilder('\Box_EventManager')
+        $eventsMock = $this->getMockBuilder('\FOSSBilling\EventManager')
             ->getMock();
         $eventsMock->expects($this->atLeastOnce())
             ->method('fire');
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
         $di['events_manager'] = $eventsMock;
         $this->service->setDi($di);
 
@@ -225,7 +225,7 @@ class ServiceSubscriptionTest extends \BBTestCase
 
     public function testisSubscribableisNotSusbcribable(): void
     {
-        $dbMock = $this->getMockBuilder('\Box_Database')
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')
             ->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getCell')
@@ -243,7 +243,7 @@ class ServiceSubscriptionTest extends \BBTestCase
 
     public function testisSubscribable(): void
     {
-        $dbMock = $this->getMockBuilder('\Box_Database')
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')
             ->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getCell')
@@ -277,7 +277,7 @@ class ServiceSubscriptionTest extends \BBTestCase
             ->willReturn(true);
 
         $period = '1W';
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getCell')
             ->willReturn($period);
@@ -298,7 +298,7 @@ class ServiceSubscriptionTest extends \BBTestCase
     {
         $subscribtionModel = new \Model_Subscription();
         $subscribtionModel->loadBean(new \DummyBean());
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
 

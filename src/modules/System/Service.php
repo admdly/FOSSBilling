@@ -503,12 +503,12 @@ class Service
 
     public function getPeriod($code)
     {
-        $p = \Box_Period::getPredefined();
+        $p = \FOSSBilling\Period::getPredefined();
         if (isset($p[$code])) {
             return $p[$code];
         }
 
-        $p = new \Box_Period($code);
+        $p = new \FOSSBilling\Period($code);
 
         return $p->getTitle();
     }
@@ -1001,7 +1001,7 @@ class Service
         return true;
     }
 
-    public static function onBeforeAdminCronRun(\Box_Event $event)
+    public static function onBeforeAdminCronRun(\FOSSBilling\Event $event)
     {
         $di = $event->getDi();
 

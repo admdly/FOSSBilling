@@ -47,7 +47,7 @@ class AdminTest extends \BBTestCase
 
         $di = new \Pimple\Container();
         $di['session'] = $sessionMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
 
         $adminApi = new \Box\Mod\Profile\Api\Admin();
         $adminApi->setDi($di);

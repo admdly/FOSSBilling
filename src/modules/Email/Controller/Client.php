@@ -9,7 +9,9 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
 
-namespace Box\Mod\Email\Controller;
+namespace FOSSBilling\Mod\Email\Controller;
+
+use FOSSBilling\App as Box_App;
 
 class Client implements \FOSSBilling\InjectionAwareInterface
 {
@@ -25,20 +27,20 @@ class Client implements \FOSSBilling\InjectionAwareInterface
         return $this->di;
     }
 
-    public function register(\Box_App &$app)
+    public function register(Box_App &$app)
     {
         $app->get('/email', 'get_emails', [], static::class);
         $app->get('/email/:id', 'get_email', ['id' => '[0-9]+'], static::class);
     }
 
-    public function get_emails(\Box_App $app)
+    public function get_emails(Box_App $app)
     {
         $this->di['is_client_logged'];
 
         return $app->render('mod_email_index');
     }
 
-    public function get_email(\Box_App $app, $id)
+    public function get_email(Box_App $app, $id)
     {
         $api = $this->di['api_client'];
         $data = ['id' => $id];

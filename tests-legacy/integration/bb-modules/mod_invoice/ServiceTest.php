@@ -96,7 +96,7 @@ class Box_Mod_Invoice_ServiceTest extends BBDbApiTestCase
 
         $this->assertGreaterThan(0, $invoiceNeedsToBeDeleted);
 
-        $eventMock = $this->getMockBuilder('\Box_Event')
+        $eventMock = $this->getMockBuilder('\FOSSBilling\Event')
             ->disableOriginalConstructor()
             ->onlyMethods(['getDi'])
             ->getMock();

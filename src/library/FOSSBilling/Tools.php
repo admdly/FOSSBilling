@@ -18,6 +18,8 @@ use Egulias\EmailValidator\Validation\MultipleValidationWithAnd;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\RetryableHttpClient;
+use FOSSBilling\Exception;
+use FOSSBilling\InformationException;
 
 class Tools
 {

@@ -213,7 +213,7 @@ class ServiceTest extends \BBTestCase
         $di = new \Pimple\Container();
         $db = $this->getMockBuilder('Box_Database')->getMock();
 
-        $cryptMock = $this->getMockBuilder('\Box_Crypt')->getMock();
+        $cryptMock = $this->getMockBuilder('\FOSSBilling\Crypt')->getMock();
         $cryptMock->expects($this->atLeastOnce())
             ->method('encrypt');
 
@@ -237,7 +237,7 @@ class ServiceTest extends \BBTestCase
         $di = new \Pimple\Container();
         $db = $this->getMockBuilder('Box_Database')->getMock();
 
-        $cryptMock = $this->getMockBuilder('\Box_Crypt')->getMock();
+        $cryptMock = $this->getMockBuilder('\FOSSBilling\Crypt')->getMock();
         $cryptMock->expects($this->atLeastOnce())
             ->method('decrypt')
             ->willReturn('{"param1":"value1"}');
@@ -279,7 +279,7 @@ class ServiceTest extends \BBTestCase
             ->method('store')
             ->willReturn(1);
 
-        $cryptMock = $this->getMockBuilder('\Box_Crypt')->getMock();
+        $cryptMock = $this->getMockBuilder('\FOSSBilling\Crypt')->getMock();
         $cryptMock->expects($this->atLeastOnce())
             ->method('encrypt');
 
@@ -352,7 +352,7 @@ class ServiceTest extends \BBTestCase
             ->willReturn(null);
         $di['validator'] = $validatorMock;
 
-        $cryptMock = $this->getMockBuilder('\Box_Crypt')
+        $cryptMock = $this->getMockBuilder('\FOSSBilling\Crypt')
             ->disableOriginalConstructor()
             ->getMock();
         $cryptMock->expects($this->atLeastOnce())
@@ -469,7 +469,7 @@ class ServiceTest extends \BBTestCase
         $loader = new \Twig\Loader\ArrayLoader();
         $twig = $this->getMockBuilder(\Twig\Environment::class)->setConstructorArgs([$loader, ['debug' => false]])->getMock();
 
-        $cryptMock = $this->getMockBuilder('\Box_Crypt')
+        $cryptMock = $this->getMockBuilder('\FOSSBilling\Crypt')
             ->disableOriginalConstructor()
             ->getMock();
         $cryptMock->expects($this->atLeastOnce())
@@ -740,7 +740,7 @@ class ServiceTest extends \BBTestCase
 
         $loggerMock = $this->getMockBuilder('Box_Log')->getMock();
 
-        $cryptMock = $this->getMockBuilder('\Box_Crypt')->getMock();
+        $cryptMock = $this->getMockBuilder('\FOSSBilling\Crypt')->getMock();
         $cryptMock->expects($this->atLeastOnce())
             ->method('decrypt');
         $configMock = ['salt' => md5(random_bytes(13))];
@@ -947,7 +947,7 @@ class ServiceTest extends \BBTestCase
             ->method('store')
             ->willReturn(true);
 
-        $modMock = $this->getMockBuilder('\Box_Mod')->disableOriginalConstructor()->getMock();
+        $modMock = $this->getMockBuilder('\FOSSBilling\Mod')->disableOriginalConstructor()->getMock();
         $modMock->expects($this->atLeastOnce())
             ->method('getConfig')
             ->willReturn([
@@ -991,7 +991,7 @@ class ServiceTest extends \BBTestCase
             ->method('findOne')
             ->willReturn($templateModel);
 
-        $cryptMock = $this->getMockBuilder('\Box_Crypt')->getMock();
+        $cryptMock = $this->getMockBuilder('\FOSSBilling\Crypt')->getMock();
         $cryptMock->expects($this->atLeastOnce())
             ->method('decrypt');
         $configMock = ['salt' => md5(random_bytes(13))];
@@ -1035,7 +1035,7 @@ class ServiceTest extends \BBTestCase
 
     public function testsendMail(): void
     {
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
 
         $queueEmail = new \Model_ModEmailQueue();
         $queueEmail->loadBean(new \DummyBean());

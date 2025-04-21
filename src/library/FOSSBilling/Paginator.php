@@ -10,11 +10,14 @@
  *
  * @www.inchoo.net
  */
-class Box_Paginator extends Paginator
+
+namespace FOSSBilling;
+
+class Paginator extends BasePaginator
 {
 }
 
-class Paginator
+class BasePaginator
 {
     /**
      * @var int total number of pages

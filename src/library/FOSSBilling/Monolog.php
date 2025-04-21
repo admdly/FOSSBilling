@@ -69,14 +69,14 @@ class Monolog
     {
         // Map numeric priority to Monolog priority
         $map = [
-            \Box_Log::EMERG => Level::Emergency->value,
-            \Box_Log::ALERT => Level::Alert->value,
-            \Box_Log::CRIT => Level::Critical->value,
-            \Box_Log::ERR => Level::Error->value,
-            \Box_Log::WARN => Level::Warning->value,
-            \Box_Log::NOTICE => Level::Notice->value,
-            \Box_Log::INFO => Level::Info->value,
-            \Box_Log::DEBUG => Level::Debug->value,
+            Log::EMERG => Level::Emergency->value,
+            Log::ALERT => Level::Alert->value,
+            Log::CRIT => Level::Critical->value,
+            Log::ERR => Level::Error->value,
+            Log::WARN => Level::Warning->value,
+            Log::NOTICE => Level::Notice->value,
+            Log::INFO => Level::Info->value,
+            Log::DEBUG => Level::Debug->value,
         ];
 
         return $map[$priority] ?? Level::Debug->value;

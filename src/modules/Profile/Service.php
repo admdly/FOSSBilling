@@ -229,7 +229,7 @@ class Service implements InjectionAwareInterface
     public function invalidateSessions(?string $type = null, ?int $id = null): bool
     {
         if (empty($type)) {
-            $auth = new \Box_Authorization($this->di);
+            $auth = new \FOSSBilling\Authorization($this->di);
             if ($auth->isAdminLoggedIn()) {
                 $type = 'admin';
             } elseif ($auth->isClientLoggedIn()) {

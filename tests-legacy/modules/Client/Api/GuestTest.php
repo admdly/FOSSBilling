@@ -176,7 +176,7 @@ class GuestTest extends \BBTestCase
             ->method('toSessionArray')
             ->willReturn([]);
 
-        $eventMock = $this->getMockBuilder('\Box_EventManager')->getMock();
+        $eventMock = $this->getMockBuilder('\FOSSBilling\EventManager')->getMock();
         $eventMock->expects($this->atLeastOnce())->method('fire');
 
         $sessionMock = $this->getMockBuilder('\\' . \FOSSBilling\Session::class)
@@ -202,7 +202,7 @@ class GuestTest extends \BBTestCase
         $di = new \Pimple\Container();
         $di['events_manager'] = $eventMock;
         $di['session'] = $sessionMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
         $di['validator'] = $validatorMock;
         $di['tools'] = $toolsMock;
         $di['mod_service'] = $di->protect(fn () => $cartServiceMock);
@@ -220,7 +220,7 @@ class GuestTest extends \BBTestCase
     {
         $data['email'] = 'John@exmaple.com';
 
-        $eventMock = $this->getMockBuilder('\Box_EventManager')->getMock();
+        $eventMock = $this->getMockBuilder('\FOSSBilling\EventManager')->getMock();
         $eventMock->expects($this->atLeastOnce())->method('fire');
 
         $modelClient = new \Model_Client();
@@ -229,7 +229,7 @@ class GuestTest extends \BBTestCase
         $modelPasswordReset = new \Model_ClientPasswordReset();
         $modelPasswordReset->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
 
         // Specify that 'findOne' will be called exactly twice
         $dbMock->expects($this->exactly(2))->method('findOne')
@@ -256,7 +256,7 @@ class GuestTest extends \BBTestCase
         $di['db'] = $dbMock;
         $di['events_manager'] = $eventMock;
         $di['mod_service'] = $di->protect(fn ($name) => $emailServiceMock);
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
         $di['tools'] = $toolsMock;
         $di['validator'] = $validatorMock;
 
@@ -271,10 +271,10 @@ class GuestTest extends \BBTestCase
     {
         $data['email'] = 'joghn@example.eu';
 
-        $eventMock = $this->getMockBuilder('\Box_EventManager')->getMock();
+        $eventMock = $this->getMockBuilder('\FOSSBilling\EventManager')->getMock();
         $eventMock->expects($this->atLeastOnce())->method('fire');
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')->willReturn(null);
 
@@ -308,7 +308,7 @@ class GuestTest extends \BBTestCase
         ];
 
         // Mocks for dependent services and classes
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
 
         $modelClient = new \Model_Client();
         $modelClient->loadBean(new \DummyBean());
@@ -329,7 +329,7 @@ class GuestTest extends \BBTestCase
         $dbMock->expects($this->once())
             ->method('trash');
 
-        $eventMock = $this->getMockBuilder('\Box_EventManager')->getMock();
+        $eventMock = $this->getMockBuilder('\FOSSBilling\EventManager')->getMock();
         $eventMock->expects($this->exactly(2))
             ->method('fire');
 
@@ -351,7 +351,7 @@ class GuestTest extends \BBTestCase
         $di['events_manager'] = $eventMock;
         $di['password'] = $passwordMock;
         $di['validator'] = $validatorMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
         $di['mod_service'] = $di->protect(fn ($name) => $emailServiceMock);
 
         $client = new Guest();
@@ -370,12 +370,12 @@ class GuestTest extends \BBTestCase
         ];
 
         // Mock for the database service
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->once())
             ->method('findOne')->willReturn(null);
 
         // Mock for the events manager
-        $eventMock = $this->getMockBuilder('\Box_EventManager')->getMock();
+        $eventMock = $this->getMockBuilder('\FOSSBilling\EventManager')->getMock();
         $eventMock->expects($this->once())
             ->method('fire');
 

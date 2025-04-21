@@ -129,7 +129,7 @@ class Guest extends \Api_Abstract
      */
     public function periods()
     {
-        return \Box_Period::getPredefined();
+        return \FOSSBilling\Period::getPredefined();
     }
 
     /**
@@ -159,7 +159,7 @@ class Guest extends \Api_Abstract
         $limit = $data['per_page'];
         $itemsCount = $data['total'];
 
-        $p = new \Box_Paginator($itemsCount, $current_page, $limit, $midrange);
+        $p = new \FOSSBilling\Paginator($itemsCount, $current_page, $limit, $midrange);
 
         return $p->toArray();
     }

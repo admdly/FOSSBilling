@@ -38,7 +38,7 @@ class ServiceTaxTest extends \BBTestCase
         $taxModel->loadBean(new \DummyBean());
         $taxModel->taxrate = $taxRateExpected;
 
-        $dbMock = $this->getMockBuilder('\Box_Database')
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')
             ->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
@@ -70,7 +70,7 @@ class ServiceTaxTest extends \BBTestCase
         $taxModel->loadBean(new \DummyBean());
         $taxModel->taxrate = $taxRateExpected;
 
-        $dbMock = $this->getMockBuilder('\Box_Database')
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')
             ->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
@@ -102,7 +102,7 @@ class ServiceTaxTest extends \BBTestCase
         $taxModel->loadBean(new \DummyBean());
         $taxModel->taxrate = $taxRateExpected;
 
-        $dbMock = $this->getMockBuilder('\Box_Database')
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')
             ->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
@@ -129,7 +129,7 @@ class ServiceTaxTest extends \BBTestCase
             ->method('isClientTaxable')
             ->willReturn(true);
 
-        $dbMock = $this->getMockBuilder('\Box_Database')
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')
             ->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
@@ -191,7 +191,7 @@ class ServiceTaxTest extends \BBTestCase
         $invoiceItemModel->loadBean(new \DummyBean());
         $invoiceItemModel->quantity = 1;
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('find')
             ->willReturn([$invoiceItemModel]);
@@ -215,14 +215,14 @@ class ServiceTaxTest extends \BBTestCase
         $taxModel = new \Model_Tax();
         $taxModel->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')
             ->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('trash');
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
         $this->service->setDi($di);
 
         $result = $this->service->delete($taxModel);
@@ -237,7 +237,7 @@ class ServiceTaxTest extends \BBTestCase
 
         $taxModel = new \Model_Tax();
         $taxModel->loadBean(new \DummyBean());
-        $dbMock = $this->getMockBuilder('\Box_Database')
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')
             ->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('dispense')
@@ -250,7 +250,7 @@ class ServiceTaxTest extends \BBTestCase
         $di = new \Pimple\Container();
         $di['mod_service'] = $di->protect(fn () => $systemService);
         $di['db'] = $dbMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
         $this->service->setDi($di);
 
         $data = [
@@ -266,7 +266,7 @@ class ServiceTaxTest extends \BBTestCase
     {
         $taxModel = new \Model_Tax();
         $taxModel->loadBean(new \DummyBean());
-        $dbMock = $this->getMockBuilder('\Box_Database')
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')
             ->getMock();
 
         $dbMock->expects($this->atLeastOnce())
@@ -275,7 +275,7 @@ class ServiceTaxTest extends \BBTestCase
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['logger'] = new \Box_Log();
+        $di['logger'] = new \FOSSBilling\Log();
         $this->service->setDi($di);
 
         $data = [
@@ -300,7 +300,7 @@ class ServiceTaxTest extends \BBTestCase
         $taxModel = new \Model_Tax();
         $taxModel->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')
             ->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('toArray')

@@ -34,7 +34,7 @@ class ServiceTest extends \BBTestCase
 
         $di = new \Pimple\Container();
         $di['mod_service'] = $di->protect(fn () => $spamCheckerService);
-        $boxEventMock = $this->getMockBuilder('\Box_Event')->disableOriginalConstructor()
+        $boxEventMock = $this->getMockBuilder('\FOSSBilling\Event')->disableOriginalConstructor()
             ->getMock();
         $boxEventMock->expects($this->atLeastOnce())
             ->method('getDi')
@@ -53,7 +53,7 @@ class ServiceTest extends \BBTestCase
 
         $di = new \Pimple\Container();
         $di['mod_service'] = $di->protect(fn () => $spamCheckerService);
-        $boxEventMock = $this->getMockBuilder('\Box_Event')->disableOriginalConstructor()
+        $boxEventMock = $this->getMockBuilder('\FOSSBilling\Event')->disableOriginalConstructor()
             ->getMock();
         $boxEventMock->expects($this->atLeastOnce())
             ->method('getDi')
@@ -78,7 +78,7 @@ class ServiceTest extends \BBTestCase
             }
         });
 
-        $boxEventMock = $this->getMockBuilder('\Box_Event')->disableOriginalConstructor()
+        $boxEventMock = $this->getMockBuilder('\FOSSBilling\Event')->disableOriginalConstructor()
             ->getMock();
         $boxEventMock->expects($this->atLeastOnce())
             ->method('getDi')
@@ -100,7 +100,7 @@ class ServiceTest extends \BBTestCase
             }
         });
 
-        $boxEventMock = $this->getMockBuilder('\Box_Event')->disableOriginalConstructor()
+        $boxEventMock = $this->getMockBuilder('\FOSSBilling\Event')->disableOriginalConstructor()
             ->getMock();
         $boxEventMock->expects($this->atLeastOnce())
             ->method('getDi')

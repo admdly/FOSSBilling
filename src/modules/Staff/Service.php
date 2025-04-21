@@ -198,7 +198,7 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    public static function onAfterClientOrderCreate(\Box_Event $event)
+    public static function onAfterClientOrderCreate(\FOSSBilling\Event $event)
     {
         $di = $event->getDi();
         $params = $event->getParameters();
@@ -219,7 +219,7 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    public static function onAfterClientOpenTicket(\Box_Event $event)
+    public static function onAfterClientOpenTicket(\FOSSBilling\Event $event)
     {
         $di = $event->getDi();
         $params = $event->getParameters();
@@ -251,7 +251,7 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    public static function onAfterClientReplyTicket(\Box_Event $event)
+    public static function onAfterClientReplyTicket(\FOSSBilling\Event $event)
     {
         $params = $event->getParameters();
         $di = $event->getDi();
@@ -273,7 +273,7 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    public static function onAfterClientCloseTicket(\Box_Event $event)
+    public static function onAfterClientCloseTicket(\FOSSBilling\Event $event)
     {
         $params = $event->getParameters();
         $di = $event->getDi();
@@ -294,7 +294,7 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    public static function onAfterGuestPublicTicketOpen(\Box_Event $event)
+    public static function onAfterGuestPublicTicketOpen(\FOSSBilling\Event $event)
     {
         $params = $event->getParameters();
         $di = $event->getDi();
@@ -314,7 +314,7 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    public static function onAfterClientSignUp(\Box_Event $event)
+    public static function onAfterClientSignUp(\FOSSBilling\Event $event)
     {
         $params = $event->getParameters();
         $di = $event->getDi();
@@ -335,7 +335,7 @@ class Service implements InjectionAwareInterface
         return true;
     }
 
-    public static function onAfterGuestPublicTicketReply(\Box_Event $event)
+    public static function onAfterGuestPublicTicketReply(\FOSSBilling\Event $event)
     {
         $params = $event->getParameters();
         $di = $event->getDi();
@@ -355,7 +355,7 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    public static function onAfterGuestPublicTicketClose(\Box_Event $event)
+    public static function onAfterGuestPublicTicketClose(\FOSSBilling\Event $event)
     {
         $params = $event->getParameters();
         $di = $event->getDi();

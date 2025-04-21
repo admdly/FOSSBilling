@@ -8,7 +8,7 @@
  * @copyright FOSSBilling (https://www.fossbilling.org)
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
-class Box_Period
+class Period
 {
     final public const UNIT_DAY = 'D';
     final public const UNIT_WEEK = 'W';

@@ -41,7 +41,7 @@ class GuestTest extends \BBTestCase
         $validatorMock->expects($this->atLeastOnce())
             ->method('checkRequiredParamsForArray');
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
             ->willReturn([]);
@@ -67,7 +67,7 @@ class GuestTest extends \BBTestCase
 
     public function testCreateException(): void
     {
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock = $this->getMockBuilder('\FOSSBilling\Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
             ->willReturn([[]]);
@@ -159,7 +159,7 @@ class GuestTest extends \BBTestCase
 
     public function testLoginCheckIpException(): void
     {
-        $modMock = $this->getMockBuilder('\Box_Mod')
+        $modMock = $this->getMockBuilder('\FOSSBilling\Mod')
             ->disableOriginalConstructor()
             ->getMock();
         $configArr = [

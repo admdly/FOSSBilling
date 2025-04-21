@@ -51,7 +51,7 @@ class Service implements InjectionAwareInterface
         return $row;
     }
 
-    public static function onAfterAdminActivateExtension(\Box_Event $event)
+    public static function onAfterAdminActivateExtension(\FOSSBilling\Event $event)
     {
         $params = $event->getParameters();
         if (!isset($params['id'])) {
@@ -67,7 +67,7 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    public static function onAfterAdminDeactivateExtension(\Box_Event $event)
+    public static function onAfterAdminDeactivateExtension(\FOSSBilling\Event $event)
     {
         $di = $event->getDi();
         $params = $event->getParameters();
@@ -106,7 +106,7 @@ class Service implements InjectionAwareInterface
                     if ($method->isPublic()
                         && isset($p[0])
                         && $p[0]->getType() instanceof \ReflectionType && !$p[0]->getType()->isBuiltin() ? new \ReflectionClass($p[0]->getType()->getName()) : null // @phpstan-ignore-line (The code is valid)
-                        && in_array($p[0]->getType() instanceof \ReflectionType && !$p[0]->getType()->isBuiltin() ? new \ReflectionClass($p[0]->getType()->getName()) : null, ['Box_Event', '\Box_Event'])) { // @phpstan-ignore-line (The code is valid)
+                        && in_array($p[0]->getType() instanceof \ReflectionType && !$p[0]->getType()->isBuiltin() ? new \ReflectionClass($p[0]->getType()->getName()) : null, ['Box_Event', '\FOSSBilling\Event'])) { // @phpstan-ignore-line (The code is valid)
                         $this->connect(['event' => $method->getName(), 'mod' => $mod->getName()]);
                     }
                 }

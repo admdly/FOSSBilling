@@ -53,7 +53,7 @@ class Config
      * @param mixed  $newValue   the new value to set the property to
      * @param bool   $clearCache if the function should clear the FOSSBilling cache after updating the config file
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public static function setProperty(string $property, mixed $newValue, bool $clearCache = true): void
     {
@@ -78,7 +78,7 @@ class Config
      * Updates the existing FOSSBilling configuration.
      * Will automatically create a backup of the existing config file and will pretty print the new one for easier legibility.
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public static function setConfig(array $newConfig, bool $clearCache = true): void
     {
@@ -87,13 +87,13 @@ class Config
         try {
             $filesystem->copy(PATH_CONFIG, substr(PATH_CONFIG, 0, -4) . '.old.php');
         } catch (FileNotFoundException|IOException) {
-            throw new Exception('An error occurred when creating a backup of the configuration file.');
+            throw new \Exception('An error occurred when creating a backup of the configuration file.');
         }
 
         try {
             $filesystem->dumpFile(PATH_CONFIG, self::prettyPrintArrayToPHP($newConfig));
         } catch (IOException) {
-            throw new Exception('An error occurred when writing the updated configuration file.');
+            throw new \Exception('An error occurred when writing the updated configuration file.');
         }
 
         if ($clearCache) {
@@ -121,7 +121,7 @@ class Config
      *
      * @return string the formatted code that can be written to a PHP file and then read again to fetch the array
      *
-     * @throws Exception if the number of recursive iterations passes this class's MAX_RECURSION_LEVEL
+     * @throws \Exception if the number of recursive iterations passes this class's MAX_RECURSION_LEVEL
      */
     private static function prettyPrintArrayToPHP(array $array): string
     {
@@ -137,12 +137,12 @@ class Config
     /**
      * Handles the recursive looping and formatting over each array key.
      *
-     * @throws Exception if the number of recursive iterations passes this class's MAX_RECURSION_LEVEL
+     * @throws \Exception if the number of recursive iterations passes this class's MAX_RECURSION_LEVEL
      */
     private static function recursivelyIdentAndFormat(array|string|bool|float|int $value, $level = 1): string
     {
         if ($level > self::MAX_RECURSION_LEVEL) {
-            throw new Exception('Too many iterations were performed while formatting the config file');
+            throw new \Exception('Too many iterations were performed while formatting the config file');
         }
 
         // Handle strings (Outputs `=> 'strict',`)

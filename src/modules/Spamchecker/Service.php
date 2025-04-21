@@ -31,7 +31,7 @@ class Service implements InjectionAwareInterface
         return $this->di;
     }
 
-    public static function onBeforeClientSignUp(\Box_Event $event)
+    public static function onBeforeClientSignUp(\FOSSBilling\Event $event)
     {
         $di = $event->getDi();
         $spamCheckerService = $di['mod_service']('Spamchecker');
@@ -40,7 +40,7 @@ class Service implements InjectionAwareInterface
         $spamCheckerService->isTemp($event);
     }
 
-    public static function onBeforeGuestPublicTicketOpen(\Box_Event $event)
+    public static function onBeforeGuestPublicTicketOpen(\FOSSBilling\Event $event)
     {
         $di = $event->getDi();
         $spamCheckerService = $di['mod_service']('Spamchecker');
@@ -50,7 +50,7 @@ class Service implements InjectionAwareInterface
     }
 
     /**
-     * @param \Box_Event $event
+     * @param \FOSSBilling\Event $event
      */
     public function isBlockedIp($event)
     {
@@ -65,7 +65,7 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    public function isSpam(\Box_Event $event)
+    public function isSpam(\FOSSBilling\Event $event)
     {
         $di = $event->getDi();
         $params = $event->getParameters();
@@ -112,7 +112,7 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    public function isTemp(\Box_Event $event)
+    public function isTemp(\FOSSBilling\Event $event)
     {
         $di = $event->getDi();
         $config = $di['mod_config']('Spamchecker');

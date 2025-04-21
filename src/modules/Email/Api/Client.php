@@ -13,7 +13,7 @@
  *Emails history listing and management.
  */
 
-namespace Box\Mod\Email\Api;
+namespace FOSSBilling\Mod\Email\Api;
 
 class Client extends \Api_Abstract
 {
