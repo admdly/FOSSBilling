@@ -699,34 +699,33 @@
 {% block js %}
 <script>
     var susp = {
-        showSuspendPopup: function() {
-            $('#suspend_popup').show();
-
-            return false;
+        showSuspendPopup: () => {
+            document.getElementById('suspend_popup').style.display = 'block';
         },
-        suspendOrder: function(url, name) {
+        suspendOrder: (url, name) => {
             var p = {};
             var inps = document.getElementsByName(name);
             var value = '';
 
-            $.each(inps, function(index, input) {
-                if (input.checked) {
-                    value = input.value;
-
-                }
-            });
+            for (var i = 0; i < inps.length; i++) {
+            if (inps[i].checked) {
+                value = inps[i].value;
+                break;
+            }
+            }
 
             p[name] = value;
-            bb.get(url, p, function(result) {
-                return bb._afterComplete($('#suspend_button'), result);
-            });
+            API.makeRequest('GET', Tools.getBaseURL(url), p,
+                (result) => {
+                    return bb._afterComplete(document.getElementById('suspend_button'), result);
+                });
 
-            $('#suspend_popup').hide();
+            document.getElementById('suspend_popup').style.display = 'none';
 
             return false;
         },
-        suspenderHide: function() {
-            $('#suspend_popup').hide();
+        suspenderHide: () => {
+            document.getElementById('suspend_popup').style.display = 'none';
         }
     };
 </script>

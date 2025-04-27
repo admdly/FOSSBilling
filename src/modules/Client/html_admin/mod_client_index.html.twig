@@ -277,7 +277,7 @@
 
                 <div class="card-footer d-flex align-items-center justify-content-between">
                     <div>
-                        {% include 'partial_batch_delete.html.twig' with { 'action': 'admin/client/batch_delete' } %}
+                        {% include 'partial_batch_delete.html.twig' with { 'action': 'client/batch_delete' } %}
                         {% include 'partial_pagination.html.twig' with { 'list': clients, 'url': 'client' } %}
                     </div>
                     <div>
@@ -459,5 +459,3 @@
         </div>
     </div>
 {% endblock %}
-
-{% block js %}{% endblock %}

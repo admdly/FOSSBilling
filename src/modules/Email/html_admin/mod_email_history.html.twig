@@ -73,7 +73,7 @@
     </table>
 
     <div class="card-footer d-flex align-items-center justify-content-between">
-        {% include "partial_batch_delete.html.twig" with { 'action': 'admin/email/batch_delete' } %}
+        {% include "partial_batch_delete.html.twig" with { 'action': 'email/batch_delete' } %}
         {% include "partial_pagination.html.twig" with { 'list': emails, 'url': 'email/history' } %}
     </div>
 </div>
