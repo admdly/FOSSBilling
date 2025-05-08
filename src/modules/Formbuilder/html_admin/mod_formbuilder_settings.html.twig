@@ -97,7 +97,6 @@
 {#        <div class="tab-pane fade" id="tab-import" role="tabpanel">#}
 {#            <form method="post" action="{{ 'api/admin/formbuilder/import'|link }}" class="mainForm api-form save"#}
 {#                data-api-reload="1">#}
-{#                <input type="hidden" name="CSRFToken" value="{{ CSRFToken }}" />#}
 {#                <fieldset>#}
 {#                    <div class="formBottom">#}
 {#                        <textarea name="form" cols="5" rows="5"#}
@@ -119,7 +118,6 @@
               data-api-msg="{{ 'Form options were updated'|trans }}">
             <div class="row row-cards">
                 <div class="card-body col-12">
-                    <input type="hidden" name="CSRFToken" value="{{ CSRFToken }}"/>
                     <input type="hidden" name="form_id" value="{{ form.id }}">
                     <div class="mb-3 row">
                         <label class="col-md-3 col-form-label"
@@ -167,35 +165,35 @@
             <div class="card-body col-12">
                 <div class="mb-3 row">
                     <div class="d-flex gap-2 flex-wrap mb-3" id="fields">
-                        <a href="{{ 'api/admin/formbuilder/add_field'|link({'form_id': form.id, 'type': 'text', 'CSRFToken': CSRFToken}) }}"
+                        <a href="{{ 'api/admin/formbuilder/add_field'|link({'form_id': form.id, 'type': 'text' }) }}"
                            class="btn btn-outline-primary api-link" data-api-reload="1">
                             <svg class="icon">
                                 <use xlink:href="#plus"/>
                             </svg>
                             <span>{{ 'Text'|trans }}</span>
                         </a>
-                        <a href="{{ 'api/admin/formbuilder/add_field'|link({'form_id': form.id, 'type': 'select', 'CSRFToken': CSRFToken}) }}"
+                        <a href="{{ 'api/admin/formbuilder/add_field'|link({'form_id': form.id, 'type': 'select' }) }}"
                            class="btn btn-outline-primary api-link" data-api-reload="1">
                             <svg class="icon">
                                 <use xlink:href="#plus"/>
                             </svg>
                             <span>{{ 'Dropdown'|trans }}</span>
                         </a>
-                        <a href="{{ 'api/admin/formbuilder/add_field'|link({'form_id': form.id, 'type': 'radio', 'CSRFToken': CSRFToken}) }}"
+                        <a href="{{ 'api/admin/formbuilder/add_field'|link({'form_id': form.id, 'type': 'radio' }) }}"
                            class="btn btn-outline-primary api-link" data-api-reload="1">
                             <svg class="icon">
                                 <use xlink:href="#plus"/>
                             </svg>
                             <span>{{ 'Radio'|trans }}</span>
                         </a>
-                        <a href="{{ 'api/admin/formbuilder/add_field'|link({'form_id': form.id, 'type': 'checkbox', 'CSRFToken': CSRFToken}) }}"
+                        <a href="{{ 'api/admin/formbuilder/add_field'|link({'form_id': form.id, 'type': 'checkbox' }) }}"
                            class="btn btn-outline-primary api-link" data-api-reload="1">
                             <svg class="icon">
                                 <use xlink:href="#plus"/>
                             </svg>
                             <span>{{ 'Checkbox'|trans }}</span>
                         </a>
-                        <a href="{{ 'api/admin/formbuilder/add_field'|link({'form_id': form.id, 'type': 'textarea', 'CSRFToken': CSRFToken}) }}"
+                        <a href="{{ 'api/admin/formbuilder/add_field'|link({'form_id': form.id, 'type': 'textarea' }) }}"
                            class="btn btn-outline-primary api-link" data-api-reload="1">
                             <svg class="icon">
                                 <use xlink:href="#plus"/>
@@ -292,7 +290,7 @@
                 value: 'My new form',
                 promptConfirmButton: 'Create',
                 promptConfirmCallback: function(title) {
-                    API.admin.post('formbuilder/create_form', { name: title, CSRFToken: "{{ CSRFToken }}" },
+                    API.admin.post('formbuilder/create_form', { name: title },
                         (id) => {
                             window.location = "{{ 'extension/settings/formbuilder'|alink({ 'id': '' }) }}" + id;
                         });
@@ -314,7 +312,7 @@
                     value: 'My duplicate form',
                     promptConfirmButton: 'Copy',
                     promptConfirmCallback: (title) => {
-                        API.admin.post('formbuilder/copy_form', { name: title, form_id: fid, CSRFToken: "{{ CSRFToken }}" },
+                        API.admin.post('formbuilder/copy_form', { name: title, form_id: fid },
                             (id) => {
                                 window.location = "{{ 'extension/settings/formbuilder'|alink({ 'id': '' }) }}" + id;
                             });

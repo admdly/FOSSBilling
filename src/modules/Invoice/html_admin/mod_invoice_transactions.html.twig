@@ -34,7 +34,7 @@
             <div class="mb-3 row">
                 <label class="form-label col-3 col-form-label">{{ 'Currency'|trans }}</label>
                 <div class="col">
-                    {{ mf.selectbox('currency', guest.currency_get_pairs, request.currency, 0, 'All currencies') }}
+                    {{ mf.selectbox('currency', guest.currency_get_pairs, request.currency, 0, 'All Currencies') }}
                 </div>
             </div>
             <div class="mb-3 row">
@@ -203,12 +203,12 @@
                             <use xlink:href="#edit" />
                         </svg>
                     </a>
-                    <a class="btn btn-icon api-link" href="{{ 'api/admin/invoice/transaction_process'|link({ 'id': tx.id, 'CSRFToken': CSRFToken }) }}" data-api-msg="Processed" title="Process again">
+                    <a class="btn btn-icon api-link" href="{{ 'api/admin/invoice/transaction_process'|link({ 'id': tx.id }) }}" data-api-msg="Processed" title="Process again">
                         <svg class="icon">
                             <use xlink:href="#refresh" />
                         </svg>
                     </a>
-                    <a class="btn btn-icon api-link" href="{{ 'api/admin/invoice/transaction_delete'|link({ 'id': tx.id, 'CSRFToken': CSRFToken }) }}" data-api-confirm="{{ 'Are you sure?'|trans }}" data-api-reload="1">
+                    <a class="btn btn-icon api-link" href="{{ 'api/admin/invoice/transaction_delete'|link({ 'id': tx.id }) }}" data-api-confirm="{{ 'Are you sure?'|trans }}" data-api-reload="1">
                         <svg class="icon">
                             <use xlink:href="#delete" />
                         </svg>

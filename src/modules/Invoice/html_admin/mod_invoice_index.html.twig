@@ -10,7 +10,7 @@
     {% if request.show_filter %}
     <section class="card mb-3">
         <div class="card-body">
-            <h5>{{ 'Filter invoices'|trans }}</h5>
+            <h5>{{ 'Filter Invoices'|trans }}</h5>
             <form method="get">
                 <input type="hidden" name="CSRFToken" value="{{ CSRFToken }}"/>
                 <div class="mb-3 row">
@@ -29,11 +29,10 @@
                     <label class="form-label col-3 col-form-label" for="client_id">{{ 'Client'|trans }}</label>
                     <div class="col">
                         <select class="form-control autocomplete-selector"
-                                placeholder="{{ 'Start typing the client name or ID'|trans }}"
+                                placeholder="{{ 'Start Typing the Client Name or ID'|trans }}"
                                 id="client_id"
                                 name="client_id"
-                                data-resturl="admin/client/get_pairs"
-                                data-csrf="{{ CSRFToken }}">
+                                data-resturl="admin/client/get_pairs">
                         {% if not request.client_id %}
                         {% else %}
                             {% set client = admin.client_get({ 'id': request.client_id }) %}
@@ -45,7 +44,7 @@
                 <div class="mb-3 row">
                     <label class="form-label col-3 col-form-label">{{ 'Currency'|trans }}</label>
                     <div class="col">
-                        {{ mf.selectbox('currency', guest.currency_get_pairs, request.currency, 0, 'All currencies') }}
+                        {{ mf.selectbox('currency', guest.currency_get_pairs, request.currency, 0, 'All Currencies') }}
                     </div>
                 </div>
                 <div class="mb-3 row">
@@ -81,7 +80,7 @@
                         </div>
                 </div> #}
                 <div class="mb-3 row">
-                    <label class="form-label col-3 col-form-label" for="issue_date">{{ 'Issue date'|trans }}</label>
+                    <label class="form-label col-3 col-form-label" for="issue_date">{{ 'Date Issued'|trans }}</label>
                     <div class="col">
                         <div class="input-group">
                             <div class="input-icon w-100">
@@ -258,7 +257,7 @@
                                     </svg>
                                 </a>
                                 <a class="btn btn-icon api-link"
-                                    href="{{ 'api/admin/invoice/delete'|link({ 'id': invoice.id, 'CSRFToken': CSRFToken }) }}"
+                                    href="{{ 'api/admin/invoice/delete'|link({ 'id': invoice.id }) }}"
                                     data-api-confirm="{{ 'Are you sure?'|trans }}"
                                     data-api-reload="1">
                                     <svg class="icon">
@@ -294,17 +293,15 @@
             <div class="tab-pane show" id="tab-new" role="tabpanel">
                 <div class="card-body">
                     <form method="post" action="{{ 'api/admin/invoice/prepare'|link }}" class="api-form" data-api-jsonp="onAfterInvoicePrepared">
-                        <input type="hidden" name="CSRFToken" value="{{ CSRFToken }}"/>
                         <div class="form-group mb-3 row">
                             <label class="form-label col-3 col-form-label" for="client_id">{{ 'Client'|trans }}</label>
                             <div class="col">
                                 {% if not request.client_id %}
                                     <select class="form-control autocomplete-selector"
-                                            placeholder="{{ 'Start typing the client name or ID'|trans }}"
+                                            placeholder="{{ 'Start Typing the Client Name or ID'|trans }}"
                                             id="client_id"
                                             name="client_id"
-                                            data-resturl="admin/client/get_pairs"
-                                            data-csrf="{{ CSRFToken }}">
+                                            data-resturl="admin/client/get_pairs">
                                     </select>
                                 {% else %}
                                     {% set client = admin.client_get({ 'id': request.client_id }) %}

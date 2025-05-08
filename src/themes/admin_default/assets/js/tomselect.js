@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
         restUrl.searchParams.append("search", query);
         restUrl.searchParams.append(
           "CSRFToken",
-          autocompleteSelectorEl.dataset.csrf
+          Tools.getCSRFToken()
         );
         restUrl.searchParams.append("per_page", 5);
         fetch(restUrl)
@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
       restUrl.searchParams.append('id', value);
       restUrl.searchParams.append(
         'CSRFToken',
-        cannedResponseSelectorEl.dataset.csrf,
+        Tools.getCSRFToken()
       );
       fetch(restUrl)
         .then((response) => response.json())
