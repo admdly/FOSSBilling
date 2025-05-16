@@ -20,7 +20,7 @@ class StandardsHelper
     {
         // Automatically select the locale that's currently in use if not otherwise specified.
         if ($locale === null) {
-            $locale = i18n::getActiveLocale();
+            $locale = i18n::getCurrentLocale();
         }
 
         $original = $locale;

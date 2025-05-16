@@ -12,154 +12,112 @@ declare(strict_types=1);
 
 namespace FOSSBilling;
 
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Filesystem\Path;
+use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\HttpFoundation\Request;
 
 class i18n
 {
     /**
-     * Attempts to get the correct locale for the current user, or a suitable fallback option if it's unavailable.
+     * Get locale for current request based on the following order:
      *
-     * @param bool $autoDetect indicates if the user's Accept-Language header should be used to select the correct locale for them
+     * 1. Cookie.
+     * 2. Browser's Accept-Language header.
+     * 3. Default locale from config.
      *
-     * @return string the locale code to use for the system
+     * @return string IETF BCP 47 language tag (e.g., `en_US`, `fr_FR`, etc.)
      */
-    public static function getActiveLocale(bool $autoDetect = true): string
+    public static function getCurrentLocale(): string
     {
         $locale = null;
+        $request = Request::createFromGlobals();
 
-        /*
-         * If the locale cookie is set and it's one of the enabled locales, use that.
-         * Otherwise, fallback to auto-detection when enable.
-         */
-        if (!empty($_COOKIE['BBLANG']) && in_array($_COOKIE['BBLANG'], self::getLocales())) {
-            $locale = $_COOKIE['BBLANG'];
-        } elseif ($autoDetect) {
-            $locale = self::getBrowserLocale();
-        }
+        if ($request->cookies->has('locale') && in_array($request->cookies->get('locale'), self::getInstalledLocales(true))) {
+            $locale = $request->cookies->get('locale');
+        } elseif ($request->getPreferredLanguage(self::getInstalledLocales(true))) {
+            $locale = $request->getPreferredLanguage(self::getInstalledLocales(true));
 
-        // If we somehow still don't have a locale, use the default / fallback.
-        if (!$locale) {
-            return Config::getProperty('i18n.locale', 'en_US');
+            if (!headers_sent()) {
+                setcookie('locale', $locale, ['expires' => strtotime('+1 month'), 'path' => '/']);
+            }
+        } else {
+            $locale = Config::getProperty('i18n.locale', 'en_US');
         }
 
         return $locale;
     }
 
     /**
-     * Retrieves the user's preferred language/locale based on the browser's Accept-Language header.
+     * Retrieve list of installed locales.
      *
-     * @return string|null the user's preferred language/locale or null if not found
+     * @param bool|null $status True to get the list of enabled locales. False returns the list of disabled locales. Null returns all locales.
+     *
+     * @return array Installed locales (IETF BCP 47 language tag) and their status. Example: `['en_US' => true, 'fr_FR' => false]`
      */
-    private static function getBrowserLocale(): ?string
+    public static function getInstalledLocales(bool $status): array
     {
-        $header = $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '';
+        $finder = new Finder();
 
-        try {
-            $detectedLocale = @\Locale::acceptFromHttp($header);
-            $detectedLocale = @\Locale::canonicalize($detectedLocale . '.utf8');
-        } catch (\Exception) {
-            $detectedLocale = '';
+        $enabledLocales = [];
+        if ($status === true || is_null($status)) {
+            $enabledLocales = iterator_to_array($finder->directories()->in(PATH_LANGS)->depth('== 0')->notPath('/^[a-z]{2}_[A-Z]{2}.disabled/')->sortByName());
+            $enabledLocalesArray = array_fill_keys($enabledLocales, true);
         }
 
-        if (empty($detectedLocale) || !$detectedLocale) {
-            $detectedLocale = '';
+        $disabledLocales = [];
+        if ($status === false || is_null($status)) {
+            $disabledLocales = iterator_to_array($finder->directories()->in(PATH_LANGS)->depth('== 0')->path('/^[a-z]{2}_[A-Z]{2}.disabled/')->sortByName());
+            $disabledLocalesArray = array_fill_keys($disabledLocales, false);
         }
 
-        try {
-            $matchingLocale = \Locale::lookup(self::getLocales(), $detectedLocale, false, null);
-        } catch (\Exception) {
-            $matchingLocale = null;
+        $installedLocales = array_merge($enabledLocalesArray, $disabledLocalesArray);
+
+        if (empty($installedLocales)) {
+            return ['en_US' => true];
         }
 
-        /* The system was unable to match the browser locale to one of our local ones.
-         * This is most likely because Locale::lookup will not match en with en_US. It will only match en_US with en.
-         * As a workaround, let's see if one of the available locales starts with the detected locale.
-         * If it does, return that.
-         */
-        if (empty($matchingLocale)) {
-            if (strlen($detectedLocale) < 2) {
-                return null;
-            }
-            foreach (self::getLocales() as $locale) {
-                if (str_starts_with($locale, substr($detectedLocale, 0, 2))) {
-                    if (!headers_sent()) {
-                        setcookie('BBLANG', $locale, ['expires' => strtotime('+1 month'), 'path' => '/']);
-                    }
-
-                    return $locale;
-                }
-            }
-        }
-
-        if (!headers_sent()) {
-            setcookie('BBLANG', $matchingLocale, ['expires' => strtotime('+1 month'), 'path' => '/']);
-        }
-
-        return $matchingLocale;
+        return $installedLocales;
     }
 
     /**
-     * Retrieve a list of available locales, optionally including their details.
+     * Enables or disables a locale depending on it's current status.
      *
-     * @param bool $includeLocaleDetails (optional) Whether to include locale details or not. Defaults to false.
-     * @param bool $disabled             set to true if you want it to return a list of the disabled locales, defaults to false which will return the enabled locales
+     * @param string $locale The locale code (IETF BCP 47 language tag) to toggle (Example: `en_US`).
      *
-     * @return array An array of locales, sorted alphabetically. If `$includeLocaleDetails` is true, the array will contain
-     *               subarrays with the following keys: `locale` (string), `title` (string), `name` (string).
-     *               If `$includeLocaleDetails` is false, the array will only contain the locale codes (strings).
-     */
-    public static function getLocales(bool $includeLocaleDetails = false, bool $disabled = false): array
-    {
-        $locales = self::getLocaleList($disabled);
-        if (!$includeLocaleDetails) {
-            return $locales;
-        }
-        $details = [];
-
-        // Handle when FOSSBilling is running with a dummy locale folder.
-        if (file_exists(Path::normalize(PATH_LANGS . '/locales.php'))) {
-            $array = include Path::normalize(PATH_LANGS . '/locales.php');
-        } else {
-            $array = ['en_US' => 'English'];
-        }
-
-        foreach ($locales as $locale) {
-            $title = ($array[$locale] ?? $locale) . " ($locale)";
-            $details[] = [
-                'locale' => $locale,
-                'title' => $title,
-                'name' => $array[$locale] ?? $locale,
-            ];
-        }
-
-        return $details;
-    }
-
-    /**
-     * Enables / disables a locale depending on it's current status.
-     *
-     * @param string $locale The locale code to toggle. (Example: `en_US`)
-     *
-     * @return bool To indicate if it was successful,
+     * @return bool To indicate if it was successful.
      *
      * @throws InformationException
      */
     public static function toggleLocale(string $locale): bool
     {
-        $basePath = PATH_LANGS . DIRECTORY_SEPARATOR . $locale;
-        if (!is_dir($basePath)) {
+        $filesystem = new Filesystem();
+
+        $localePath = Path::normalize(PATH_LANGS . "/{$locale}");
+        if (!$filesystem->exists($localePath)) {
             throw new InformationException('Unable to enable / disable the locale as it is not present in the locale folder.');
         }
 
-        $disablePath = $basePath . DIRECTORY_SEPARATOR . '.disabled';
+        $disableFile = Path::normalize("{$localePath}/.disabled");
 
         // Reverse the status of the locale
-        if (file_exists($disablePath)) {
-            return unlink($disablePath);
-        } else {
-            file_put_contents($disablePath, '');
+        if ($filesystem->exists($disableFile)) {
+            try {
+                $filesystem->remove($disableFile);
+            } catch (IOException $e) {
+                throw new InformationException('Unable to enable / disable the locale due to an error: ' . $e->getMessage());
+            }
 
-            return file_exists($disablePath);
+            return true;
+        } else {
+            try {
+                $filesystem->dumpFile($disableFile, '');
+            } catch (IOException $e) {
+                throw new InformationException('Unable to enable / disable the locale due to an error: ' . $e->getMessage());
+            }
+
+            return $filesystem->exists($disableFile);
         }
     }
 
@@ -167,46 +125,25 @@ class i18n
      * Returns how complete a locale is.
      * Will return 0 if the `completion.php` doesn't exist or if it doesn't include the specified locale.
      *
-     * @param string $locale The locale ID (Example: `en_US`)
+     * @param string $locale The locale IETF BCP 47 language tag (e.g., `en_US`, `fr_FR`, etc.).
      *
-     * @return int the percentage complete for the specified locale
+     * @return int Percentage complete for the specified locale.
      */
     public static function getLocaleCompletionPercent(string $locale): int
     {
+        $filesystem = new Filesystem();
+
         if ($locale === 'en_US') {
             return 100;
         }
 
         $completionFile = Path::normalize(PATH_LANGS . '/completion.php');
-        if (!file_exists($completionFile)) {
+        if (!$filesystem->exists($completionFile)) {
             return 0;
         }
 
         $completion = include $completionFile;
 
         return intval($completion[$locale] ?? 0);
-    }
-
-    /**
-     * Internal helper function that gets the list of locales off of the disk.
-     *
-     * @param bool $disabled Set to true to get the list of disabled locales. True returns the list of enabled locales.
-     *
-     * @return array the list of locale codes, sorted alphabetically
-     */
-    private static function getLocaleList(bool $disabled = false): array
-    {
-        if ($disabled) {
-            // Only get a list of the disabled locales
-            $locales = array_filter(glob(PATH_LANGS . DIRECTORY_SEPARATOR . '*'), fn ($dir): bool => is_dir($dir) && file_exists($dir . DIRECTORY_SEPARATOR . '.disabled'));
-        } else {
-            // Only get a list of the enabled locales
-            $locales = array_filter(glob(PATH_LANGS . DIRECTORY_SEPARATOR . '*'), fn ($dir): bool => is_dir($dir) && !file_exists($dir . DIRECTORY_SEPARATOR . '.disabled'));
-        }
-
-        $locales = array_map(basename(...), $locales); // get only the directory name
-        sort($locales);
-
-        return $locales;
     }
 }

@@ -72,6 +72,6 @@ class Guest extends \Api_Abstract
      */
     public function languages($deep = false)
     {
-        return \FOSSBilling\i18n::getLocales($deep);
+        return \FOSSBilling\i18n::getInstalledLocales($deep);
     }
 }

@@ -195,7 +195,7 @@ class Guest extends \Api_Abstract
      */
     public function locale()
     {
-        return i18n::getActiveLocale();
+        return i18n::getCurrentLocale();
     }
 
     public function get_pending_messages()

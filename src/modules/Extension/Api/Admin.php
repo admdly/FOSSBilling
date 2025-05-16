@@ -89,7 +89,7 @@ class Admin extends \Api_Abstract
         $data['disabled'] ??= false;
         $data['details'] ??= true;
 
-        return \FOSSBilling\i18n::getLocales($data['details'], $data['disabled']);
+        return \FOSSBilling\i18n::getInstalledLocales(false);
     }
 
     /**

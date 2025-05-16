@@ -91,7 +91,7 @@ class Reader
         $this->reader = new MaxMindReader($database);
 
         if ($locale === null) {
-            $locale = i18n::getActiveLocale();
+            $locale = i18n::getCurrentLocale();
         }
 
         $this->language = StandardsHelper::getLanguageObject(false, $locale);

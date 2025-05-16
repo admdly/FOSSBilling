@@ -268,7 +268,7 @@ $di['twig'] = $di->factory(function () use ($di) {
 
     // Get internationalisation settings from config, or use sensible defaults for
     // missing required settings.
-    $locale = FOSSBilling\i18n::getActiveLocale();
+    $locale = FOSSBilling\i18n::getCurrentLocale();
     $timezone = Config::getProperty('i18n.timezone', 'UTC');
     $date_format = strtoupper(Config::getProperty('i18n.date_format', 'MEDIUM'));
     $time_format = strtoupper(Config::getProperty('i18n.time_format', 'SHORT'));
@@ -727,7 +727,7 @@ $di['translate'] = $di->protect(function ($textDomain = '') {
         $tr->setDomain($textDomain);
     }
 
-    $locale = FOSSBilling\i18n::getActiveLocale();
+    $locale = FOSSBilling\i18n::getCurrentLocale();
 
     $tr->setLocale($locale);
     $tr->setup();
