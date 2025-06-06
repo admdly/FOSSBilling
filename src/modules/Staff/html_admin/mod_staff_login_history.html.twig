@@ -2,17 +2,19 @@
 
 {% import 'macro_functions.html.twig' as mf %}
 
-{% block meta_title %}{{ 'Staff members login history'|trans }}{% endblock %}
+{% block meta_title %}{{ 'Staff Login History'|trans }}{% endblock %}
 
 {% set active_menu = 'activity' %}
 
 {% block content %}
 <div class="card overflow-auto">
+    <div class="card-header">
+        <h3 class="card-title">{{ 'Staff Login History'|trans }}</h3>
+    </div>
     <div class="card-body">
-        <h5>{{ 'Staff members login history'|trans }}</h5>
+        {{ include('partial_search.html.twig') }}
     </div>
 
-    {% include 'partial_search.html.twig' %}
     <table class="table card-table table-vcenter table-striped text-nowrap">
         <thead>
             <tr>

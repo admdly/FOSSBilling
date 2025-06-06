@@ -2,7 +2,7 @@
 
 {% set active_menu = 'client' %}
 
-{% block meta_title %}{{ group.title}}{% endblock %}
+{% block meta_title %}{{ group.title }}{% endblock %}
 
 {% block breadcrumbs %}
     <ol class="breadcrumb">
@@ -14,7 +14,7 @@
             </a>
         </li>
         <li class="breadcrumb-item">
-            <a href="{{ 'client'|alink }}#tab-groups">{{ 'Client groups'|trans }}</a>
+            <a href="{{ 'client'|alink }}#tab-groups">{{ 'Client Groups'|trans }}</a>
         </li>
         <li class="breadcrumb-item active" aria-current="page">{{ group.title}}</li>
     </ol>
@@ -23,7 +23,7 @@
 {% block content %}
 <div class="card">
     <div class="card-header">
-        <h4>{{ 'Edit client group'|trans }} - {{ group.title }}</h4>
+        <h3>{{ 'Edit Client Group'|trans }} - {{ group.title }}</h3>
     </div>
     <form method="post" action="{{ 'api/admin/client/group_update'|link }}" class="api-form" data-api-redirect="{{ 'client'|alink }}">
         <input type="hidden" name="CSRFToken" value="{{ CSRFToken }}"/>
