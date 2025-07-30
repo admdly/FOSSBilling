@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 /**
  * Copyright 2022-2025 FOSSBilling
  * Copyright 2011-2021 BoxBilling, Inc.
@@ -9,30 +10,36 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
 
-namespace Box\Mod\Redirect\Api;
+namespace Box\Mod\Redirect;
 
 /**
  * Redirects management.
  */
-class Admin extends \Api_Abstract
+class Api extends \Api_Abstract
 {
     /**
      * Get list of redirects.
+     * 
+     * @admin
      *
      * @return array - list
      */
     public function get_list()
     {
+        $this->assertAdmin();
         return $this->getService()->getRedirects();
     }
 
     /**
      * Get redirect by id.
      *
+     * @admin
+     *
      * @return array
      */
     public function get($data)
     {
+        $this->assertAdmin();
         $required = [
             'id' => 'Redirect ID is required',
         ];
@@ -50,10 +57,14 @@ class Admin extends \Api_Abstract
     /**
      * Create new redirect.
      *
+     * @admin
+     *
      * @return int redirect id
      */
     public function create($data)
     {
+        $this->assertAdmin();
+
         $required = [
             'path' => 'Redirect path not passed',
             'target' => 'Redirect target not passed',
@@ -78,6 +89,8 @@ class Admin extends \Api_Abstract
     /**
      * Update redirect.
      *
+     * @admin
+     *
      * @optional string $path - redirect path
      * @optional string $target - redirect target
      *
@@ -85,6 +98,8 @@ class Admin extends \Api_Abstract
      */
     public function update($data)
     {
+        $this->assertAdmin();
+
         $required = [
             'id' => 'Redirect ID is required',
         ];
@@ -105,10 +120,13 @@ class Admin extends \Api_Abstract
     /**
      * Delete redirect.
      *
+     * @admin
+     *
      * @return true
      */
     public function delete($data)
     {
+        $this->assertAdmin();
         $required = [
             'id' => 'Redirect ID is required',
         ];
@@ -122,8 +140,13 @@ class Admin extends \Api_Abstract
         return true;
     }
 
+    /**
+     * @admin
+     */
     private function _getRedirect($id)
     {
+        $this->assertAdmin();
+
         $sql = " extension = 'mod_redirect' AND id = :id";
         $values = ['id' => $id];
         $bean = $this->di['db']->findOne('extension_meta', $sql, $values);

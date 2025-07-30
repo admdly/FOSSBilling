@@ -1,29 +1,24 @@
 <?php
 
+declare(strict_types=1);
 /**
  * Copyright 2022-2025 FOSSBilling
- * Copyright 2011-2021 BoxBilling, Inc.
  * SPDX-License-Identifier: Apache-2.0.
  *
  * @copyright FOSSBilling (https://www.fossbilling.org)
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
 
-/**
- *Staff management.
- */
+namespace Box\Mod\Staff;
 
-namespace Box\Mod\Staff\Api;
-
-class Admin extends \Api_Abstract
+class Api extends \Api_Abstract
 {
     /**
-     * Get paginated list of staff members.
-     *
-     * @return array
+     * @admin
      */
     public function get_list($data)
     {
+        $this->assertAdmin();
         $data['no_cron'] = true;
         [$sql, $params] = $this->getService()->getSearchQuery($data);
         $per_page = $data['per_page'] ?? $this->di['pager']->getDefaultPerPage();
@@ -32,86 +27,54 @@ class Admin extends \Api_Abstract
             $staff = $this->di['db']->getExistingModelById('Admin', $item['id'], 'Admin is not found');
             $pager['list'][$key] = $this->getService()->toModel_AdminApiArray($staff);
         }
-
         return $pager;
     }
 
     /**
-     * Get staff member by id.
-     *
-     * @return array
-     *
-     * @throws \FOSSBilling\Exception
+     * @admin
      */
     public function get($data)
     {
-        $required = [
-            'id' => 'ID is missing',
-        ];
+        $this->assertAdmin();
+        $required = [ 'id' => 'ID is missing' ];
         $this->di['validator']->checkRequiredParamsForArray($required, $data);
-
         $model = $this->di['db']->getExistingModelById('Admin', $data['id'], 'Staff member not found');
-
         return $this->getService()->toModel_AdminApiArray($model);
     }
 
     /**
-     * Update staff member.
-     *
-     * @optional string $email - new email
-     * @optional string $name - new name
-     * @optional string $status - new status
-     * @optional string $signature - new signature
-     * @optional int $admin_group_id - new group id
-     *
-     * @return bool
-     *
-     * @throws \FOSSBilling\Exception
+     * @admin
      */
     public function update($data)
     {
-        $required = [
-            'id' => 'ID is missing',
-        ];
+        $this->assertAdmin();
+        $required = [ 'id' => 'ID is missing' ];
         $this->di['validator']->checkRequiredParamsForArray($required, $data);
-
         if (!is_null($data['email'])) {
             $data['email'] = $this->di['tools']->validateAndSanitizeEmail($data['email']);
         }
-
         $model = $this->di['db']->getExistingModelById('Admin', $data['id'], 'Staff member not found');
-
         return $this->getService()->update($model, $data);
     }
 
     /**
-     * Completely delete staff member. Removes all related activity from logs.
-     *
-     * @return bool
-     *
-     * @throws \FOSSBilling\Exception
+     * @admin
      */
     public function delete($data)
     {
-        $required = [
-            'id' => 'ID is missing',
-        ];
+        $this->assertAdmin();
+        $required = [ 'id' => 'ID is missing' ];
         $this->di['validator']->checkRequiredParamsForArray($required, $data);
-
         $model = $this->di['db']->getExistingModelById('Admin', $data['id'], 'Staff member not found');
-
         return $this->getService()->delete($model);
     }
 
     /**
-     * Change staff member password.
-     *
-     * @return bool
-     *
-     * @throws \FOSSBilling\InformationException
+     * @admin
      */
     public function change_password($data)
     {
+        $this->assertAdmin();
         $required = [
             'id' => 'ID is missing',
             'password' => 'Password required',
@@ -119,29 +82,20 @@ class Admin extends \Api_Abstract
         ];
         $validator = $this->di['validator'];
         $validator->checkRequiredParamsForArray($required, $data);
-
         if ($data['password'] != $data['password_confirm']) {
             throw new \FOSSBilling\InformationException('Passwords do not match');
         }
-
         $validator->isPasswordStrong($data['password']);
-
         $model = $this->di['db']->getExistingModelById('Admin', $data['id'], 'Staff member not found');
-
         return $this->getService()->changePassword($model, $data['password']);
     }
 
     /**
-     * Create new staff member.
-     *
-     * @optional string $signature - signature of new staff member
-     *
-     * @return int - ID of newly created staff member
-     *
-     * @throws \FOSSBilling\Exception
+     * @admin
      */
     public function create($data)
     {
+        $this->assertAdmin();
         $required = [
             'email' => 'Email param is missing',
             'password' => 'Password param is missing',
@@ -150,70 +104,52 @@ class Admin extends \Api_Abstract
         ];
         $validator = $this->di['validator'];
         $validator->checkRequiredParamsForArray($required, $data);
-
         $data['email'] = $this->di['tools']->validateAndSanitizeEmail($data['email']);
-
         $validator->isPasswordStrong($data['password']);
-
         return $this->getService()->create($data);
     }
 
     /**
-     * Return staff member permissions.
-     *
-     * @return array
+     * @admin
      */
     public function permissions_get($data)
     {
-        $required = [
-            'id' => 'ID is missing',
-        ];
+        $this->assertAdmin();
+        $required = [ 'id' => 'ID is missing' ];
         $this->di['validator']->checkRequiredParamsForArray($required, $data);
-
         $model = $this->di['db']->getExistingModelById('Admin', $data['id'], 'Staff member not found');
-
         return $this->getService()->getPermissions($model->id);
     }
 
     /**
-     * Update staff member permissions.
-     *
-     * @return bool
+     * @admin
      */
     public function permissions_update($data)
     {
-        $required = [
-            'id' => 'ID is missing',
-            'permissions' => 'Permissions parameter missing',
-        ];
+        $this->assertAdmin();
+        $required = [ 'id' => 'ID is missing', 'permissions' => 'Permissions parameter missing' ];
         $this->di['validator']->checkRequiredParamsForArray($required, $data);
-
         $model = $this->di['db']->getExistingModelById('Admin', $data['id'], 'Staff member not found');
-
         $this->getService()->setPermissions($model->id, $data['permissions']);
-
         $this->di['logger']->info('Changed staff member %s permissions', $model->id);
-
         return true;
     }
 
     /**
-     * Return pairs of staff member groups.
-     *
-     * @return array
+     * @admin
      */
     public function group_get_pairs($data)
     {
+        $this->assertAdmin();
         return $this->getService()->getAdminGroupPair();
     }
 
     /**
-     * Return paginate list of staff members groups.
-     *
-     * @return array
+     * @admin
      */
     public function group_get_list($data)
     {
+        $this->assertAdmin();
         [$sql, $params] = $this->getService()->getAdminGroupSearchQuery($data);
         $per_page = $data['per_page'] ?? $this->di['pager']->getDefaultPerPage();
         $pager = $this->di['pager']->getPaginatedResultSet($sql, $params, $per_page);
@@ -221,93 +157,62 @@ class Admin extends \Api_Abstract
             $model = $this->di['db']->getExistingModelById('AdminGroup', $item['id'], 'Post not found');
             $pager['list'][$key] = $this->getService()->toAdminGroupApiArray($model, false, $this->getIdentity());
         }
-
         return $pager;
     }
 
     /**
-     * Create new staff members group.
-     *
-     * @return int - new staff group ID
-     *
-     * @throws \FOSSBilling\Exception
+     * @admin
      */
     public function group_create($data)
     {
-        $required = [
-            'name' => 'Staff group is missing',
-        ];
+        $this->assertAdmin();
+        $required = [ 'name' => 'Staff group is missing' ];
         $this->di['validator']->checkRequiredParamsForArray($required, $data);
-
         return $this->getService()->createGroup($data['name']);
     }
 
     /**
-     * Return staff group details.
-     *
-     * @return array - group details
-     *
-     * @throws \FOSSBilling\Exception
+     * @admin
      */
     public function group_get($data)
     {
-        $required = [
-            'id' => 'Group id is missing',
-        ];
+        $this->assertAdmin();
+        $required = [ 'id' => 'Group id is missing' ];
         $this->di['validator']->checkRequiredParamsForArray($required, $data);
-
         $model = $this->di['db']->getExistingModelById('AdminGroup', $data['id'], 'Group not found');
-
         return $this->getService()->toAdminGroupApiArray($model, true, $this->getIdentity());
     }
 
     /**
-     * Remove staff group.
-     *
-     * @return bool
-     *
-     * @throws \FOSSBilling\Exception
+     * @admin
      */
     public function group_delete($data)
     {
-        $required = [
-            'id' => 'Group id is missing',
-        ];
+        $this->assertAdmin();
+        $required = [ 'id' => 'Group id is missing' ];
         $this->di['validator']->checkRequiredParamsForArray($required, $data);
-
         $model = $this->di['db']->getExistingModelById('AdminGroup', $data['id'], 'Group not found');
-
         return $this->getService()->deleteGroup($model);
     }
 
     /**
-     * Update staff group.
-     *
-     * @optional int $name - new group name
-     *
-     * @return bool
-     *
-     * @throws \FOSSBilling\Exception
+     * @admin
      */
     public function group_update($data)
     {
-        $required = [
-            'id' => 'Group id is missing',
-        ];
+        $this->assertAdmin();
+        $required = [ 'id' => 'Group id is missing' ];
         $this->di['validator']->checkRequiredParamsForArray($required, $data);
-
         $model = $this->di['db']->getExistingModelById('AdminGroup', $data['id'], 'Group not found');
-
         return $this->getService()->updateGroup($model, $data);
     }
 
     /**
-     * Get paginated list of staff logins history.
-     *
-     * @return array
+     * @admin
      */
     public function login_history_get_list($data)
     {
+        $this->assertAdmin();
         [$sql, $params] = $this->getService()->getActivityAdminHistorySearchQuery($data);
         $per_page = $data['per_page'] ?? $this->di['pager']->getDefaultPerPage();
         $pager = $this->di['pager']->getPaginatedResultSet($sql, $params, $per_page);
@@ -317,59 +222,170 @@ class Admin extends \Api_Abstract
                 $pager['list'][$key] = $this->getService()->toActivityAdminHistoryApiArray($activity);
             }
         }
-
         return $pager;
     }
 
     /**
-     * Get details of login history event.
-     *
-     * @return array
+     * @admin
      */
     public function login_history_get($data)
     {
-        $required = [
-            'id' => 'Id not passed',
-        ];
+        $this->assertAdmin();
+        $required = [ 'id' => 'Id not passed' ];
         $this->di['validator']->checkRequiredParamsForArray($required, $data);
-
         $model = $this->di['db']->getExistingModelById('ActivityAdminHistory', $data['id'], 'Event not found');
-
         return $this->getService()->toActivityAdminHistoryApiArray($model);
     }
 
     /**
-     * Delete login history event.
-     *
-     * @return bool
+     * @admin
      */
     public function login_history_delete($data)
     {
-        $required = [
-            'id' => 'Id not passed',
-        ];
+        $this->assertAdmin();
+        $required = [ 'id' => 'Id not passed' ];
         $this->di['validator']->checkRequiredParamsForArray($required, $data);
         $model = $this->di['db']->getExistingModelById('ActivityAdminHistory', $data['id'], 'Event not found');
-
         return $this->getService()->deleteLoginHistory($model);
     }
 
     /**
-     * Deletes admin login logs with given IDs.
-     *
-     * @return bool
+     * @admin
      */
     public function batch_delete_logs($data)
     {
-        $required = [
-            'ids' => 'IDs not passed',
-        ];
+        $this->assertAdmin();
+        $required = [ 'ids' => 'IDs not passed' ];
         $this->di['validator']->checkRequiredParamsForArray($required, $data);
-
         foreach ($data['ids'] as $id) {
             $this->login_history_delete(['id' => $id]);
         }
-
         return true;
+    }
+
+    /**
+     * @guest
+     */
+    public function guest_create($data)
+    {
+        // Only allow if no admins exist
+        $allow = (!is_countable($this->di['db']->findOne('Admin', '1=1')) || count($this->di['db']->findOne('Admin', '1=1')) == 0);
+        if (!$allow) {
+            throw new \FOSSBilling\InformationException('Administrator account already exists', null, 55);
+        }
+        $required = [
+            'email' => 'Administrator email is missing.',
+            'password' => 'Administrator password is missing.',
+        ];
+        $validator = $this->di['validator'];
+        $validator->checkRequiredParamsForArray($required, $data);
+        $validator->isPasswordStrong($data['password']);
+        if (!is_null($data['email'])) {
+            $data['email'] = $this->di['tools']->validateAndSanitizeEmail($data['email']);
+        }
+        $result = $this->getService()->createAdmin($data);
+        if ($result) {
+            $this->guest_login($data);
+        }
+        return true;
+    }
+
+    /**
+     * @guest
+     */
+    public function guest_login($data)
+    {
+        $required = [ 'email' => 'Email required', 'password' => 'Password required' ];
+        $validator = $this->di['validator'];
+        $validator->checkRequiredParamsForArray($required, $data);
+        $data['email'] = $this->di['tools']->validateAndSanitizeEmail($data['email'], true, false);
+        $config = $this->getMod()->getConfig();
+        if (!empty($config['allowed_ips']) && isset($config['check_ip']) && $config['check_ip']) {
+            $allowed_ips = explode(PHP_EOL, $config['allowed_ips']);
+            if ($allowed_ips) {
+                $allowed_ips = array_map('trim', $allowed_ips);
+                if (!in_array($this->getIp(), $allowed_ips)) {
+                    throw new \FOSSBilling\InformationException('You are not allowed to login to admin area from :ip address', [':ip' => $this->getIp()], 403);
+                }
+            }
+        }
+        $result = $this->getService()->login($data['email'], $data['password'], $this->getIp());
+        $this->di['session']->delete('redirect_uri');
+        return $result;
+    }
+
+    /**
+     * @guest
+     */
+    public function update_password($data)
+    {
+        $config = $this->getMod()->getConfig();
+        if (isset($config['public']['reset_pw']) && $config['public']['reset_pw'] == '0') {
+            throw new \FOSSBilling\InformationException('Password reset has been disabled');
+        }
+        $this->di['events_manager']->fire(['event' => 'onBeforePasswordResetStaff']);
+        $required = [
+            'code' => 'Code required',
+            'password' => 'Password required',
+            'password_confirm' => 'Password confirmation required',
+        ];
+        $validator = $this->di['validator'];
+        $validator->checkRequiredParamsForArray($required, $data);
+        if ($data['password'] != $data['password_confirm']) {
+            throw new \FOSSBilling\InformationException('Passwords do not match');
+        }
+        $reset = $this->di['db']->findOne('AdminPasswordReset', 'hash = ?', [$data['code']]);
+        if (!$reset instanceof \Model_AdminPasswordReset) {
+            throw new \FOSSBilling\InformationException('The link has expired or you have already confirmed the password reset.');
+        }
+        if (strtotime($reset->created_at) - time() + 900 < 0) {
+            throw new \FOSSBilling\InformationException('The link has expired or you have already confirmed the password reset.');
+        }
+        $c = $this->di['db']->getExistingModelById('Admin', $reset->admin_id, 'User not found');
+        $c->pass = $this->di['password']->hashIt($data['password']);
+        $this->di['db']->store($c);
+        $this->di['logger']->info('Admin user requested password reset. Sent to email %s', $c->email);
+        $email = [];
+        $email['to_admin'] = $c->id;
+        $email['code'] = 'mod_staff_password_reset_approve';
+        $emailService = $this->di['mod_service']('email');
+        $emailService->sendTemplate($email);
+        $this->di['db']->trash($reset);
+    }
+
+    /**
+     * @guest
+     */
+    public function passwordreset($data)
+    {
+        $config = $this->getMod()->getConfig();
+        if (isset($config['public']['reset_pw']) && $config['public']['reset_pw'] == '0') {
+            throw new \FOSSBilling\InformationException('Password reset has been disabled');
+        }
+        $this->di['events_manager']->fire(['event' => 'onBeforePasswordResetStaff']);
+        $required = [ 'email' => 'Email required' ];
+        $validator = $this->di['validator'];
+        $validator->checkRequiredParamsForArray($required, $data);
+        $data['email'] = $this->di['tools']->validateAndSanitizeEmail($data['email']);
+        $c = $this->di['db']->findOne('Admin', 'email = ?', [$data['email']]);
+        if (!$c instanceof \Model_Admin) {
+            return true;
+        }
+        $hash = hash('sha256', time() . random_bytes(13));
+        $c->pass = $hash;
+        $reset = $this->di['db']->dispense('AdminPasswordReset');
+        $reset->admin_id = $c->id;
+        $reset->ip = $this->ip;
+        $reset->hash = $hash;
+        $reset->created_at = date('Y-m-d H:i:s');
+        $reset->updated_at = date('Y-m-d H:i:s');
+        $this->di['db']->store($reset);
+        $email = [];
+        $email['to_admin'] = $c->id;
+        $email['code'] = 'mod_staff_password_reset_request';
+        $email['hash'] = $hash;
+        $emailService = $this->di['mod_service']('email');
+        $emailService->sendTemplate($email);
+        $this->di['logger']->info('Admin user requested password reset. Sent to email %s', $c->email);
     }
 }

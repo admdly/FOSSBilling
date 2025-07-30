@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 /**
  * Copyright 2022-2025 FOSSBilling
  * Copyright 2011-2021 BoxBilling, Inc.
@@ -105,5 +106,47 @@ class Api_Abstract implements InjectionAwareInterface
     public function getIp()
     {
         return $this->ip;
+    }
+
+    protected function assertAdmin()
+    {
+        $identity = $this->getIdentity();
+        if (!$this->isAdmin($identity)) {
+            throw new \FOSSBilling\Exception('Admin privileges required.');
+        }
+    }
+
+    protected function assertClient()
+    {
+        $identity = $this->getIdentity();
+        if (!$this->isClient($identity)) {
+            throw new \FOSSBilling\Exception('Client authentication required.');
+        }
+    }
+
+    protected function assertAuthenticated()
+    {
+        $identity = $this->getIdentity();
+        if (!$identity) {
+            throw new \FOSSBilling\Exception('Authentication required.');
+        }
+    }
+
+    protected function isAdmin($identity = null)
+    {
+        $identity = $identity ?? $this->getIdentity();
+        return $identity && get_class($identity) === 'Model_Admin';
+    }
+
+    protected function isClient($identity = null)
+    {
+        $identity = $identity ?? $this->getIdentity();
+        return $identity && get_class($identity) === 'Model_Client';
+    }
+
+    protected function isGuest($identity = null)
+    {
+        $identity = $identity ?? $this->getIdentity();
+        return $identity && get_class($identity) === 'Model_Guest';
     }
 }

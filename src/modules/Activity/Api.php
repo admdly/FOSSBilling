@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 /**
  * Copyright 2022-2025 FOSSBilling
  * Copyright 2011-2021 BoxBilling, Inc.
@@ -9,16 +10,14 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
 
-/**
- * System activity messages management.
- */
+namespace Box\Mod\Activity;
 
-namespace Box\Mod\Activity\Api;
-
-class Admin extends \Api_Abstract
+class Api extends \Api_Abstract
 {
     /**
      * Get a list of activity messages.
+     *
+     * @admin
      *
      * @param array $data Search parameters
      *
@@ -26,6 +25,8 @@ class Admin extends \Api_Abstract
      */
     public function log_get_list($data)
     {
+        $this->assertAdmin();
+
         $data['no_debug'] = true;
         $per_page = $data['per_page'] ?? $this->di['pager']->getDefaultPerPage();
         [$sql, $params] = $this->getService()->getSearchQuery($data);
@@ -50,12 +51,16 @@ class Admin extends \Api_Abstract
     /**
      * Add a message to the log.
      *
+     * @admin
+     *
      * @param array $data Message data
      *
      * @return bool
      */
     public function log($data)
     {
+        $this->assertAdmin();
+
         if (!isset($data['m'])) {
             return false;
         }
@@ -78,12 +83,16 @@ class Admin extends \Api_Abstract
     /**
      * Add an email to the log.
      *
+     * @admin
+     *
      * @param array $data Email data
      *
      * @return bool
      */
     public function log_email($data)
     {
+        $this->assertAdmin();
+
         if (!isset($data['subject'])) {
             error_log('Email was not logged. Subject not passed');
 
@@ -103,12 +112,16 @@ class Admin extends \Api_Abstract
     /**
      * Remove an activity message from the log.
      *
+     * @admin
+     *
      * @param array $data Message data
      *
      * @return bool True if the message was deleted, false otherwise
      */
     public function log_delete($data)
     {
+        $this->assertAdmin();
+
         $required = [
             'id' => 'ID is required',
         ];
@@ -126,12 +139,16 @@ class Admin extends \Api_Abstract
     /**
      * Delete multiple activity messages from the log.
      *
+     * @admin
+     *
      * @param array $data Deletion data
      *
      * @return bool True if the messages were deleted, false otherwise
      */
     public function batch_delete($data)
     {
+        $this->assertAdmin();
+
         $required = [
             'ids' => 'IDs not passed',
         ];

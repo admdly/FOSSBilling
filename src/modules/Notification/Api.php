@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 /**
  * Copyright 2022-2025 FOSSBilling
  * Copyright 2011-2021 BoxBilling, Inc.
@@ -18,17 +19,21 @@
  * For example cron job can inform staff members
  */
 
-namespace Box\Mod\Notification\Api;
+namespace Box\Mod\Notification;
 
-class Admin extends \Api_Abstract
+class Api extends \Api_Abstract
 {
     /**
      * Get paginated list of notifications.
+     *
+     * @admin
      *
      * @return array
      */
     public function get_list($data)
     {
+        $this->assertAdmin();
+
         [$sql, $params] = $this->getService()->getSearchQuery($data);
         $per_page = $data['per_page'] ?? $this->di['pager']->getDefaultPerPage();
 
@@ -38,12 +43,16 @@ class Admin extends \Api_Abstract
     /**
      * Get notification message.
      *
+     * @admin
+     *
      * @return array
      *
      * @throws \FOSSBilling\Exception
      */
     public function get($data)
     {
+        $this->assertAdmin();
+
         $required = [
             'id' => 'Notification ID is missing',
         ];
@@ -60,10 +69,14 @@ class Admin extends \Api_Abstract
     /**
      * Add new notification message.
      *
+     * @admin
+     *
      * @return int|false - new message id
      */
     public function add($data): int|false
     {
+        $this->assertAdmin();
+
         if (!isset($data['message'])) {
             return false;
         }
@@ -76,12 +89,16 @@ class Admin extends \Api_Abstract
     /**
      * Remove notification message.
      *
+     * @admin
+     *
      * @return bool
      *
      * @throws \FOSSBilling\Exception
      */
     public function delete($data)
     {
+        $this->assertAdmin();
+
         $required = [
             'id' => 'Notification ID is missing',
         ];
@@ -99,14 +116,18 @@ class Admin extends \Api_Abstract
     /**
      * Remove all notification messages.
      *
+     * @admin
+     *
      * @return bool
      *
      * @throws \FOSSBilling\Exception
      */
     public function delete_all()
     {
+        $this->assertAdmin();
+
         $sql = "DELETE
-            FROM extension_meta 
+            FROM extension_meta
             WHERE extension = 'mod_notification'
             AND meta_key = 'message';";
         $this->di['db']->exec($sql);

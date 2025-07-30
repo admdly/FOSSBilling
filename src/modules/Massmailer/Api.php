@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 /**
  * Copyright 2022-2025 FOSSBilling
  * Copyright 2011-2021 BoxBilling, Inc.
@@ -9,12 +10,14 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
 
-namespace Box\Mod\Massmailer\Api;
+namespace Box\Mod\Massmailer;
 
-class Admin extends \Api_Abstract
+class Api extends \Api_Abstract
 {
     /**
      * Get paginated list of active mail messages.
+     *
+     * @admin
      *
      * @optional string $status - filter list by status
      * @optional string $search - search query to search for mail messages
@@ -23,6 +26,8 @@ class Admin extends \Api_Abstract
      */
     public function get_list($data)
     {
+        $this->assertAdmin();
+
         [$sql, $params] = $this->getService()->getSearchQuery($data);
         $per_page = $data['per_page'] ?? $this->di['pager']->getDefaultPerPage();
         $pager = $this->di['pager']->getPaginatedResultSet($sql, $params, $per_page);
@@ -36,10 +41,14 @@ class Admin extends \Api_Abstract
     /**
      * Get mail message by id.
      *
+     * @admin
+     *
      * @return array
      */
     public function get($data)
     {
+        $this->assertAdmin();
+
         $model = $this->_getMessage($data);
 
         return $this->getService()->toApiArray($model);
@@ -47,6 +56,8 @@ class Admin extends \Api_Abstract
 
     /**
      * Update mail message.
+     *
+     * @admin
      *
      * @optional string $subject - mail message title
      * @optional string $content - mail message content
@@ -59,6 +70,8 @@ class Admin extends \Api_Abstract
      */
     public function update($data)
     {
+        $this->assertAdmin();
+
         $model = $this->_getMessage($data);
 
         $model->content = $data['content'] ?? $model->content;
@@ -92,12 +105,16 @@ class Admin extends \Api_Abstract
     /**
      * Create mail message.
      *
+     * @admin
+     *
      * @optional string $content - mail message content
      *
      * @return bool
      */
     public function create($data)
     {
+        $this->assertAdmin();
+
         $required = [
             'subject' => 'Message subject not passed',
         ];
@@ -143,10 +160,14 @@ Order our services at {{ "order"|link }}
     /**
      * Send test mail message by ID to client.
      *
+     * @admin
+     *
      * @return bool
      */
     public function send_test($data)
     {
+        $this->assertAdmin();
+
         /** @var \Model_MassmailerMessage $model */
         $model = $this->_getMessage($data);
         $client_id = $this->_getTestClientId();
@@ -165,10 +186,14 @@ Order our services at {{ "order"|link }}
     /**
      * Send mail message by ID.
      *
+     * @admin
+     *
      * @return bool
      */
     public function send($data)
     {
+        $this->assertAdmin();
+
         /** @var \Model_MassmailerMessage $model */
         $model = $this->_getMessage($data);
 
@@ -193,10 +218,14 @@ Order our services at {{ "order"|link }}
     /**
      * Copy mail message by ID.
      *
+     * @admin
+     *
      * @return bool
      */
     public function copy($data)
     {
+        $this->assertAdmin();
+
         $model = $this->_getMessage($data);
 
         $copy = $this->di['db']->dispense('mod_massmailer');
@@ -219,10 +248,14 @@ Order our services at {{ "order"|link }}
     /**
      * Get message receivers list.
      *
+     * @admin
+     *
      * @return array
      */
     public function receivers($data)
     {
+        $this->assertAdmin();
+
         $model = $this->_getMessage($data);
 
         return $this->getService()->getMessageReceivers($model, $data);
@@ -231,10 +264,14 @@ Order our services at {{ "order"|link }}
     /**
      * Delete mail message by ID.
      *
+     * @admin
+     *
      * @return bool
      */
     public function delete($data)
     {
+        $this->assertAdmin();
+
         $model = $this->_getMessage($data);
         $id = $model->id;
 
@@ -248,10 +285,14 @@ Order our services at {{ "order"|link }}
     /**
      * Generate preview text.
      *
+     * @admin
+     *
      * @return array - parsed subject and content strings
      */
     public function preview($data)
     {
+        $this->assertAdmin();
+
         $model = $this->_getMessage($data);
         $client_id = $this->_getTestClientId();
         [$ps, $pc] = $this->getService()->getParsed($model, $client_id);
@@ -280,9 +321,12 @@ Order our services at {{ "order"|link }}
 
     /**
      * Returns the email associated with the test client.
+     *
+     * @admin
      */
     public function get_test_client(): string
     {
+        $this->assertAdmin();
         try {
             $client = $this->di['mod_service']('client')->get(['id' => $this->_getTestClientId()]);
         } catch (\Exception) {
@@ -292,8 +336,13 @@ Order our services at {{ "order"|link }}
         return $client->email;
     }
 
+    /**
+     * @admin
+     */
     private function _getTestClientId()
     {
+        $this->assertAdmin();
+
         $mod = $this->di['mod']('massmailer');
         $c = $mod->getConfig();
 
@@ -305,8 +354,13 @@ Order our services at {{ "order"|link }}
         return (int) $c['test_client_id'];
     }
 
+    /**
+     * @admin
+     */
     private function _getMessage($data)
     {
+        $this->assertAdmin();
+
         $required = [
             'id' => 'Message ID not passed',
         ];
