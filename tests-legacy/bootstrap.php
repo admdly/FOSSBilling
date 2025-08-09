@@ -36,5 +36,6 @@ $di['translate']();
 $testsLoader = new AntCMS\AntLoader([
     'mode' => 'filesystem',
 ]);
-$testsLoader->addNamespace('', DIRECTORY_SEPARATOR . 'library', 'psr0');
+$testsLoader->addNamespace('', PATH_TESTS . '/library', 'psr0');
+$testsLoader->addNamespace('Box\\Mod', PATH_ROOT . '/modules', 'psr4');
 $testsLoader->register();

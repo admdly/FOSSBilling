@@ -5,8 +5,8 @@
     <testsuite name="Library">
       <directory>tests-legacy/library</directory>
     </testsuite>
-    <testsuite name="Modules">
-      <directory>tests-legacy/modules</directory>
+    <testsuite name="Module Tests">
+      <directory suffix="Test.php">src/modules</directory>
     </testsuite>
   </testsuites>
   <php>
