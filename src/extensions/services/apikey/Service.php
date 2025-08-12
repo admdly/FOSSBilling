@@ -10,24 +10,13 @@ declare(strict_types=1);
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
 
-namespace Box\Mod\Serviceapikey;
+namespace FOSSBilling\Extension\Service\Apikey;
 
-use FOSSBilling\InjectionAwareInterface;
+use Box\Mod\Service\ServiceAbstract;
 use RedBeanPHP\OODBBean;
 
-class Service implements InjectionAwareInterface
+class Service extends ServiceAbstract
 {
-    protected ?\Pimple\Container $di = null;
-
-    public function setDi(\Pimple\Container $di): void
-    {
-        $this->di = $di;
-    }
-
-    public function getDi(): ?\Pimple\Container
-    {
-        return $this->di;
-    }
 
     public function attachOrderConfig(\Model_Product $product, array $data): array
     {
@@ -241,36 +230,6 @@ class Service implements InjectionAwareInterface
         $model->config = $config;
         $model->updated_at = date('Y-m-d H:i:s');
         $this->di['db']->store($model);
-
-        return true;
-    }
-
-    /**
-     * Creates the database structure to store the API keys in.
-     */
-    public function install(): bool
-    {
-        $sql = '
-        CREATE TABLE IF NOT EXISTS `service_apikey` (
-            `id` bigint(20) NOT NULL AUTO_INCREMENT UNIQUE,
-            `client_id` bigint(20) NOT NULL,
-            `api_key` varchar(255),
-            `config` text NOT NULL,
-            `created_at` datetime,
-            `updated_at` datetime,
-            PRIMARY KEY (`id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;';
-        $this->di['db']->exec($sql);
-
-        return true;
-    }
-
-    /**
-     * Removes the API keys from the database.
-     */
-    public function uninstall(): bool
-    {
-        $this->di['db']->exec('DROP TABLE IF EXISTS `service_apikey`');
 
         return true;
     }

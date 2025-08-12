@@ -1,0 +1,9 @@
+{
+    "id": "service",
+    "type": "mod",
+    "name": "Service",
+    "description": "Centralized service manager",
+    "version": "1.0.0",
+    "author": "FOSSBilling",
+    "icon_url": "service/icon.svg"
+}

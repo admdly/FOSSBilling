@@ -80,7 +80,16 @@ final class Api_Handler implements InjectionAwareInterface
             }
         }
 
-        $api_class = '\Box\Mod\\' . ucfirst($mod) . '\\Api\\' . ucfirst($this->type);
+        if ($mod === 'service') {
+            $service_name = strtolower($e[1]);
+            unset($e[1]);
+            $method_name = implode('_', $e);
+            $api_class = '\\FOSSBilling\\Extension\\Service\\' . ucfirst($service_name) . '\\Api\\' . ucfirst($this->type);
+            $service_instance = $this->di['mod_service']('service')->getService($service_name);
+        } else {
+            $method_name = implode('_', $e);
+            $api_class = '\Box\Mod\\' . ucfirst($mod) . '\\Api\\' . ucfirst($this->type);
+        }
 
         $api = new $api_class();
 
@@ -94,7 +103,9 @@ final class Api_Handler implements InjectionAwareInterface
         $api->setMod($bb_mod);
         $api->setIdentity($this->identity);
         $api->setIp($this->di['request']->getClientIp());
-        if ($bb_mod->hasService()) {
+        if ($mod === 'service') {
+            $api->setService($service_instance);
+        } else if ($bb_mod->hasService()) {
             $api->setService($this->di['mod_service']($mod));
         }
 

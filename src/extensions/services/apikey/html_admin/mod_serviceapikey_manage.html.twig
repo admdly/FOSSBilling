@@ -17,7 +17,7 @@
 <div class="card-footer text-center">
     {{ order_actions }}
     <a class="btn btn-primary api-link"
-        href="{{ 'api/admin/serviceapikey/reset'|link({ 'order_id': order.id, 'CSRFToken': CSRFToken }) }}"
+        href="{{ 'api/admin/service/apikey_reset'|link({ 'order_id': order.id, 'CSRFToken': CSRFToken }) }}"
         data-api-confirm="{{ 'Are you sure?'|trans }}"
         data-api-reload="1">
         <svg class="icon" width="24" height="24">
@@ -31,7 +31,7 @@
     <h2>{{ 'API key configuration'|trans }}</h2>
     <P>{{ 'Changing the API key generation options will not automatically regenerate the API key. You must do so manually.'|trans }}</p>
 
-    <form action="{{ 'api/admin/serviceapikey/update'|link }}" method="post" class="api-form" data-api-msg="{{ 'API key updated'|trans }}">
+    <form action="{{ 'api/admin/service/apikey_update'|link }}" method="post" class="api-form" data-api-msg="{{ 'API key updated'|trans }}">
         <input type="hidden" name="CSRFToken" value="{{ CSRFToken }}"/>
         <div class="mb-3 row">
             <label class="form-label col-3 col-form-label">{{ 'Length'|trans }}:</label>
