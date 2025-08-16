@@ -1,0 +1,45 @@
+{% extends "layout_default.html.twig" %}
+
+{% block meta_title %}{{ 'MAAS Configuration'|trans }}{% endblock %}
+
+{% block content %}
+<div class="card-body">
+    <h5>{{ 'MAAS Configuration'|trans }}</h5>
+
+    <form method="post" action="{{ 'api/admin/product/update_config'|link }}" class="api-form" data-api-msg="{{ 'MAAS configuration updated'|trans }}">
+        <input type="hidden" name="CSRFToken" value="{{ CSRFToken }}"/>
+        <input type="hidden" name="id" value="{{ product.id }}">
+
+        <div class="form-group mb-3 row">
+            <label class="form-label col-3 col-form-label">{{ 'OS Release (distro_series)'|trans }}</label>
+            <div class="col">
+                <input class="form-control" type="text" name="config[distro_series]" value="{{ product.config.distro_series }}" placeholder="ubuntu/jammy">
+            </div>
+        </div>
+
+        <div class="form-group mb-3 row">
+            <label class="form-label col-3 col-form-label">{{ 'CPU Cores'|trans }}</label>
+            <div class="col">
+                <input class="form-control" type="number" name="config[cpu_count]" value="{{ product.config.cpu_count }}" placeholder="2">
+            </div>
+        </div>
+
+        <div class="form-group mb-3 row">
+            <label class="form-label col-3 col-form-label">{{ 'RAM (MB)'|trans }}</label>
+            <div class="col">
+                <input class="form-control" type="number" name="config[mem]" value="{{ product.config.mem }}" placeholder="2048">
+            </div>
+        </div>
+
+        <div class="form-group mb-3 row">
+            <label class="form-label col-3 col-form-label">{{ 'Storage'|trans }}</label>
+            <div class="col">
+                <input class="form-control" type="text" name="config[storage]" value="{{ product.config.storage }}" placeholder="label:size(tag)">
+                <small class="form-hint">{{ 'Example: data:10G(ssd),os:20G(hdd)' }}</small>
+            </div>
+        </div>
+
+        <input type="submit" value="{{ 'Update configuration'|trans }}" class="btn btn-primary">
+    </form>
+</div>
+{% endblock %}

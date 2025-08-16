@@ -1,0 +1,22 @@
+{% extends "layout_default.html.twig" %}
+
+{% block meta_title %}{{ 'Manage MAAS Machine'|trans }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ 'Manage MAAS Machine'|trans }}</h3>
+    </div>
+    <div class="card-body">
+        <p><strong>{{ 'Hostname:'|trans }}</strong> {{ order.service.hostname }}</p>
+        <p><strong>{{ 'Status:'|trans }}</strong> {{ order.service.status }}</p>
+
+        <div class="mt-4">
+            <a class="btn btn-success api-link" href="{{ 'api/client/servicemaas/power_on'|link({ 'order_id': order.id, 'CSRFToken': CSRFToken }) }}" data-api-confirm="Are you sure?" data-api-redirect="{{ 'servicemaas/manage'|alink({ 'order_id': order.id }) }}">Power On</a>
+            <a class="btn btn-danger api-link" href="{{ 'api/client/servicemaas/power_off'|link({ 'order_id': order.id, 'CSRFToken': CSRFToken }) }}" data-api-confirm="Are you sure?" data-api-redirect="{{ 'servicemaas/manage'|alink({ 'order_id': order.id }) }}">Power Off</a>
+            <a class="btn btn-warning api-link" href="{{ 'api/client/servicemaas/reboot'|link({ 'order_id': order.id, 'CSRFToken': CSRFToken }) }}" data-api-confirm="Are you sure?" data-api-redirect="{{ 'servicemaas/manage'|alink({ 'order_id': order.id }) }}">Reboot</a>
+            <a class="btn btn-info api-link" href="{{ 'api/client/servicemaas/reinstall'|link({ 'order_id': order.id, 'CSRFToken': CSRFToken }) }}" data-api-confirm="Are you sure?" data-api-redirect="{{ 'servicemaas/manage'|alink({ 'order_id': order.id }) }}">Reinstall OS</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

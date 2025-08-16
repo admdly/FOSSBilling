@@ -1,0 +1,77 @@
+{% extends request.ajax ? 'layout_blank.html.twig' : 'layout_default.html.twig' %}
+
+{% block meta_title %}{{ 'MAAS Machines'|trans }}{% endblock %}
+
+{% set active_menu = 'maas' %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{{ '/'|alink }}">
+                <svg class="icon">
+                    <use xlink:href="#home" />
+                </svg>
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{{ 'servicemaas'|alink }}">{{ 'MAAS'|trans }}</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">{{ 'Machines'|trans }}</li>
+    </ol>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ 'MAAS Machines'|trans }}</h3>
+    </div>
+    <div class="card-body">
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table card-table table-vcenter text-nowrap datatable">
+                    <thead>
+                        <tr>
+                            <th>{{ 'Hostname'|trans }}</th>
+                            <th>{{ 'System ID'|trans }}</th>
+                            <th>{{ 'Status'|trans }}</th>
+                            <th>{{ 'OS'|trans }}</th>
+                            <th>{{ 'CPU Cores'|trans }}</th>
+                            <th>{{ 'RAM (MB)'|trans }}</th>
+                            <th>{{ 'Owner'|trans }}</th>
+                            <th>{{ 'Actions'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for machine in machines %}
+                            <tr>
+                                <td>{{ machine.hostname }}</td>
+                                <td>{{ machine.system_id }}</td>
+                                <td>{{ machine.status_name }}</td>
+                                <td>{{ machine.osystem }} {{ machine.distro_series }}</td>
+                                <td>{{ machine.cpu_count }}</td>
+                                <td>{{ machine.memory }}</td>
+                                <td>{{ machine.owner }}</td>
+                                <td>
+                                    <a class="btn btn-sm btn-success api-link" href="{{ 'api/admin/servicemaas/power_on'|link({ 'system_id': machine.system_id, 'CSRFToken': CSRFToken }) }}" data-api-confirm="Are you sure?" data-api-redirect="{{ 'servicemaas'|alink }}">Power On</a>
+                                    <a class="btn btn-sm btn-danger api-link" href="{{ 'api/admin/servicemaas/power_off'|link({ 'system_id': machine.system_id, 'CSRFToken': CSRFToken }) }}" data-api-confirm="Are you sure?" data-api-redirect="{{ 'servicemaas'|alink }}">Power Off</a>
+                                    <a class="btn btn-sm btn-warning api-link" href="{{ 'api/admin/servicemaas/mark_broken'|link({ 'system_id': machine.system_id, 'CSRFToken': CSRFToken }) }}" data-api-confirm="Are you sure?" data-api-redirect="{{ 'servicemaas'|alink }}">Mark Broken</a>
+                                    <a class="btn btn-sm btn-info api-link" href="{{ 'api/admin/servicemaas/mark_fixed'|link({ 'system_id': machine.system_id, 'CSRFToken': CSRFToken }) }}" data-api-confirm="Are you sure?" data-api-redirect="{{ 'servicemaas'|alink }}">Mark Fixed</a>
+                                    <a class="btn btn-sm btn-secondary api-link" href="{{ 'api/admin/servicemaas/release'|link({ 'system_id': machine.system_id, 'CSRFToken': CSRFToken }) }}" data-api-confirm="Are you sure?" data-api-redirect="{{ 'servicemaas'|alink }}">Release</a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="8" class="text-center">{{ 'No machines found.'|trans }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{
+    "id": "servicemaas",
+    "type": "mod",
+    "name": "MAAS",
+    "description": "MAAS integration module for provisioning bare-metal servers.",
+    "version": "1.0.0",
+    "author": "Jules",
+    "icon_url": "img/icons/cog.svg",
+    "license": "Apache-2.0",
+    "homepage": "https://fossbilling.org",
+    "url": "https://fossbilling.org",
+    "settings": [
+        {
+            "name": "maas_url",
+            "label": "MAAS API URL",
+            "description": "The URL of the MAAS API endpoint (e.g., http://<maas-ip>:5240/MAAS/)"
+        },
+        {
+            "name": "maas_api_key",
+            "label": "MAAS API Key",
+            "description": "Your MAAS API key"
+        }
+    ]
+}
