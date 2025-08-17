@@ -1,0 +1,82 @@
+{% extends request.ajax ? 'layout_blank.html.twig' : 'layout_default.html.twig' %}
+
+{% block meta_title %}{{ range.id ? 'Edit IP Range'|trans : 'Create IP Range'|trans }}{% endblock %}
+
+{% set active_menu = 'maas' %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{{ '/'|alink }}">
+                <svg class="icon">
+                    <use xlink:href="#home" />
+                </svg>
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{{ 'servicemaas'|alink }}">{{ 'MAAS'|trans }}</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{{ 'servicemaas/ip-management'|alink }}">{{ 'IP Management'|trans }}</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">{{ range.id ? 'Edit IP Range'|trans : 'Create IP Range'|trans }}</li>
+    </ol>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ range.id ? 'Edit IP Range'|trans : 'Create IP Range'|trans }}</h3>
+    </div>
+    <div class="card-body">
+        <form method="post" action="{{ range.id ? 'api/admin/servicemaas/iprange_update' : 'api/admin/servicemaas/iprange_create'|link }}" class="api-form" data-api-redirect="{{ 'servicemaas/ip-management'|alink }}">
+            <input type="hidden" name="CSRFToken" value="{{ CSRFToken }}">
+            {% if range.id %}
+                <input type="hidden" name="id" value="{{ range.id }}">
+            {% endif %}
+
+            <div class="form-group mb-3 row">
+                <label class="form-label col-3 col-form-label">{{ 'Type'|trans }}</label>
+                <div class="col">
+                    <select name="type" class="form-control">
+                        <option value="dynamic" {% if range.type == 'dynamic' %}selected{% endif %}>Dynamic</option>
+                        <option value="reserved" {% if range.type == 'reserved' %}selected{% endif %}>Reserved</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group mb-3 row">
+                <label class="form-label col-3 col-form-label">{{ 'Start IP'|trans }}</label>
+                <div class="col">
+                    <input class="form-control" type="text" name="start_ip" value="{{ range.start_ip }}">
+                </div>
+            </div>
+
+            <div class="form-group mb-3 row">
+                <label class="form-label col-3 col-form-label">{{ 'End IP'|trans }}</label>
+                <div class="col">
+                    <input class="form-control" type="text" name="end_ip" value="{{ range.end_ip }}">
+                </div>
+            </div>
+
+            <div class="form-group mb-3 row">
+                <label class="form-label col-3 col-form-label">{{ 'Comment'|trans }}</label>
+                <div class="col">
+                    <input class="form-control" type="text" name="comment" value="{{ range.comment }}">
+                </div>
+            </div>
+
+            <div class="form-group mb-3 row">
+                <label class="form-label col-3 col-form-label">{{ 'Subnet'|trans }}</label>
+                <div class="col">
+                    <input class="form-control" type="text" name="subnet" value="{{ range.subnet.id }}" placeholder="Subnet ID">
+                </div>
+            </div>
+
+            <div class="card-footer text-end">
+                <button class="btn btn-primary" type="submit">{{ 'Save'|trans }}</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

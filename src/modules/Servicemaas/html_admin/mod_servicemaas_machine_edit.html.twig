@@ -1,0 +1,80 @@
+{% extends request.ajax ? 'layout_blank.html.twig' : 'layout_default.html.twig' %}
+
+{% block meta_title %}{{ machine.system_id ? 'Edit Machine'|trans : 'Create Machine'|trans }}{% endblock %}
+
+{% set active_menu = 'maas' %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{{ '/'|alink }}">
+                <svg class="icon">
+                    <use xlink:href="#home" />
+                </svg>
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{{ 'servicemaas'|alink }}">{{ 'MAAS'|trans }}</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{{ 'servicemaas'|alink }}">{{ 'Machines'|trans }}</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">{{ machine.system_id ? 'Edit Machine'|trans : 'Create Machine'|trans }}</li>
+    </ol>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ machine.system_id ? 'Edit Machine'|trans : 'Create Machine'|trans }}</h3>
+    </div>
+    <div class="card-body">
+        <form method="post" action="{{ machine.system_id ? 'api/admin/servicemaas/machine_update' : 'api/admin/servicemaas/machine_create'|link }}" class="api-form" data-api-redirect="{{ 'servicemaas'|alink }}">
+            <input type="hidden" name="CSRFToken" value="{{ CSRFToken }}">
+            {% if machine.system_id %}
+                <input type="hidden" name="system_id" value="{{ machine.system_id }}">
+            {% endif %}
+
+            <div class="form-group mb-3 row">
+                <label class="form-label col-3 col-form-label">{{ 'Hostname'|trans }}</label>
+                <div class="col">
+                    <input class="form-control" type="text" name="hostname" value="{{ machine.hostname }}">
+                </div>
+            </div>
+
+            <div class="form-group mb-3 row">
+                <label class="form-label col-3 col-form-label">{{ 'Architecture'|trans }}</label>
+                <div class="col">
+                    <input class="form-control" type="text" name="architecture" value="{{ machine.architecture }}" placeholder="amd64/generic">
+                </div>
+            </div>
+
+            <div class="form-group mb-3 row">
+                <label class="form-label col-3 col-form-label">{{ 'MAC Addresses'|trans }}</label>
+                <div class="col">
+                    <input class="form-control" type="text" name="mac_addresses" value="{{ machine.macaddress_set.0.mac_address }}" placeholder="aa:bb:cc:dd:ee:ff">
+                </div>
+            </div>
+
+            <div class="form-group mb-3 row">
+                <label class="form-label col-3 col-form-label">{{ 'Power Type'|trans }}</label>
+                <div class="col">
+                    <input class="form-control" type="text" name="power_type" value="{{ machine.power_type }}" placeholder="ipmi">
+                </div>
+            </div>
+
+            <div class="form-group mb-3 row">
+                <label class="form-label col-3 col-form-label">{{ 'Power Parameters'|trans }}</label>
+                <div class="col">
+                    <textarea class="form-control" name="power_parameters" rows="5">{{ machine.power_parameters|json_encode(constant('JSON_PRETTY_PRINT')) }}</textarea>
+                    <small class="form-hint">JSON format. Example: {"power_address": "1.2.3.4", "power_user": "user"}</small>
+                </div>
+            </div>
+
+            <div class="card-footer text-end">
+                <button class="btn btn-primary" type="submit">{{ 'Save'|trans }}</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
