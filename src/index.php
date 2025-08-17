@@ -10,36 +10,14 @@ declare(strict_types=1);
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
 
+use FOSSBilling\Kernel;
+use Symfony\Component\HttpFoundation\Request;
+
 require __DIR__ . DIRECTORY_SEPARATOR . 'load.php';
-global $di;
 
-// Setting up the debug bar
-$debugBar = new DebugBar\StandardDebugBar();
-$debugBar['request']->useHtmlVarDumper();
-$debugBar['messages']->useHtmlVarDumper();
-
-$config = FOSSBilling\Config::getConfig();
-$config['info']['salt'] = '********';
-$config['db'] = array_fill_keys(array_keys($config['db']), '********');
-
-$configCollector = new DebugBar\DataCollector\ConfigCollector($config);
-$configCollector->useHtmlVarDumper();
-
-$debugBar->addCollector($configCollector);
-
-// Get the request URL
-$url = $_GET['_url'] ?? parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-
-// Rewrite for custom pages
-if (str_starts_with($url, '/page/')) {
-    $url = substr_replace($url, '/custompages/', 0, 6);
-}
-
-// Set the final URL
-$_GET['_url'] = $url;
-$http_err_code = $_GET['_errcode'] ?? null;
-
-$debugBar['time']->startMeasure('session_start', 'Starting / restoring the session');
+// TODO: Re-integrate DebugBar with the new Kernel
+// $debugBar = new DebugBar\StandardDebugBar();
+// ...
 
 /*
  * Workaround: Session IDs get reset when using PGs like PayPal because of the `samesite=strict` cookie attribute, resulting in the client getting logged out.
@@ -50,42 +28,28 @@ if (!empty($_GET['restore_session'])) {
 }
 
 $di['session'];
-$debugBar['time']->stopMeasure('session_start');
 
-if (strncasecmp($url, ADMIN_PREFIX, strlen(ADMIN_PREFIX)) === 0) {
-    define('ADMIN_AREA', true);
-    $appUrl = str_replace(ADMIN_PREFIX, '', preg_replace('/\?.+/', '', $url));
-    $app = new Box_AppAdmin([], $debugBar);
-} else {
-    define('ADMIN_AREA', false);
-    $appUrl = $url;
-    $app = new Box_AppClient([], $debugBar);
+// Determine the environment and debug mode
+// TODO: Use a .env file for this in the future
+$env = $_SERVER['APP_ENV'] ?? 'prod';
+$debug = (bool) ($_SERVER['APP_DEBUG'] ?? ($env !== 'prod'));
+
+$kernel = new Kernel($env, $debug);
+
+// Create a request object from the PHP globals
+$request = Request::createFromGlobals();
+
+// Rewrite for custom pages to maintain backwards compatibility
+if (str_starts_with($request->getPathInfo(), '/page/')) {
+    $path = substr_replace($request->getPathInfo(), '/custompages/', 0, 6);
+    $request->server->set('REQUEST_URI', $path);
 }
 
-$app->setUrl($appUrl);
-$app->setDi($di);
+// Handle the request
+$response = $kernel->handle($request);
 
-$debugBar['time']->startMeasure('translate', 'Setting up translations');
-$di['translate']();
-$debugBar['time']->stopMeasure('translate');
+// Send the response back to the browser
+$response->send();
 
-// If HTTP error code has been passed, handle it.
-if (!is_null($http_err_code)) {
-    switch ($http_err_code) {
-        case '404':
-            $e = new FOSSBilling\Exception('Page :url not found', [':url' => $url], 404);
-            echo $app->show404($e);
-
-            break;
-        default:
-            $http_err_code = intval($http_err_code);
-            http_response_code($http_err_code);
-            $e = new FOSSBilling\Exception('HTTP Error :err_code occurred while attempting to load :url', [':err_code' => $http_err_code, ':url' => $url], $http_err_code);
-            echo $app->render('error', ['exception' => $e]);
-    }
-    exit;
-}
-
-// If no HTTP error passed, run the app.
-echo $app->run();
-exit;
+// Terminate the request/response cycle
+$kernel->terminate($request, $response);

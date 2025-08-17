@@ -2,29 +2,17 @@
 
 namespace Box\Mod\Currency\Controller;
 
-class AdminTest extends \BBTestCase
+use FunctionalTestCase;
+
+class AdminTest extends FunctionalTestCase
 {
-    public function testDi(): void
+    public function testManagePage()
     {
-        $controller = new Admin();
+        $client = $this->createAdminClient();
+        $client->request('GET', '/currency/manage/USD');
 
-        $di = new \Pimple\Container();
-        $db = $this->getMockBuilder('Box_Database')->getMock();
-
-        $di['db'] = $db;
-        $controller->setDi($di);
-        $result = $controller->getDi();
-        $this->assertEquals($di, $result);
-    }
-
-    public function testregister(): void
-    {
-        $boxAppMock = $this->getMockBuilder('\Box_App')->disableOriginalConstructor()->getMock();
-        $boxAppMock->expects($this->once())
-            ->method('get')
-            ->with('/currency/manage/:code', 'get_manage', ['code' => '[a-zA-Z]+'], Admin::class);
-
-        $controllerAdmin = new Admin();
-        $controllerAdmin->register($boxAppMock);
+        $this->assertResponseIsSuccessful();
+        $responseContent = $client->getResponse()->getContent();
+        $this->assertStringContainsString('Update currency', $responseContent);
     }
 }

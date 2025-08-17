@@ -11,21 +11,13 @@
 
 namespace Box\Mod\News\Controller;
 
-class Admin implements \FOSSBilling\InjectionAwareInterface
+use FOSSBilling\Controller\AdminController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class Admin extends AdminController
 {
-    protected ?\Pimple\Container $di = null;
-
-    public function setDi(\Pimple\Container $di): void
-    {
-        $this->di = $di;
-    }
-
-    public function getDi(): ?\Pimple\Container
-    {
-        return $this->di;
-    }
-
-    public function fetchNavigation()
+    public function fetchNavigation(): array
     {
         return [
             'subpages' => [
@@ -40,27 +32,17 @@ class Admin implements \FOSSBilling\InjectionAwareInterface
         ];
     }
 
-    public function register(\Box_App &$app)
+    #[Route('/news', name: 'news_admin_index', methods: ['GET'])]
+    public function getIndex(): Response
     {
-        $app->get('/news', 'get_index', [], static::class);
-        $app->get('/news/', 'get_index', [], static::class);
-        $app->get('/news/index', 'get_index', [], static::class);
-        $app->get('/news/index/', 'get_index', [], static::class);
-        $app->get('/news/post/:id', 'get_post', ['id' => '[0-9]+'], static::class);
+        return $this->render('mod_news_index');
     }
 
-    public function get_index(\Box_App $app)
-    {
-        $this->di['is_admin_logged'];
-
-        return $app->render('mod_news_index');
-    }
-
-    public function get_post(\Box_App $app, $id)
+    #[Route('/news/post/{id}', name: 'news_admin_post', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function getPost(int $id): Response
     {
         $api = $this->di['api_admin'];
         $post = $api->news_get(['id' => $id]);
-
-        return $app->render('mod_news_post', ['post' => $post]);
+        return $this->render('mod_news_post', ['post' => $post]);
     }
 }

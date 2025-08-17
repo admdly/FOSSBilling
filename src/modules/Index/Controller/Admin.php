@@ -11,36 +11,16 @@
 
 namespace Box\Mod\Index\Controller;
 
-use FOSSBilling\InjectionAwareInterface;
+use FOSSBilling\Controller\AdminController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
-class Admin implements InjectionAwareInterface
+class Admin extends AdminController
 {
-    protected ?\Pimple\Container $di = null;
-
-    public function setDi(\Pimple\Container $di): void
+    #[Route('/', name: 'index_admin', methods: ['GET'])]
+    #[Route('/index', name: 'index_admin_index', methods: ['GET'])]
+    public function getIndex(): Response
     {
-        $this->di = $di;
-    }
-
-    public function getDi(): ?\Pimple\Container
-    {
-        return $this->di;
-    }
-
-    public function register(\Box_App &$app)
-    {
-        $app->get('', 'get_index', [], static::class);
-        $app->get('/', 'get_index', [], static::class);
-        $app->get('/index', 'get_index', [], static::class);
-        $app->get('/index/', 'get_index', [], static::class);
-    }
-
-    public function get_index(\Box_App $app)
-    {
-        if ($this->di['auth']->isAdminLoggedIn()) {
-            return $app->render('mod_index_dashboard');
-        } else {
-            return $app->redirect('/staff/login');
-        }
+        return $this->render('mod_index_dashboard');
     }
 }

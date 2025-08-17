@@ -11,39 +11,27 @@
 
 namespace Box\Mod\Email\Controller;
 
-class Client implements \FOSSBilling\InjectionAwareInterface
+use FOSSBilling\Controller\ClientController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class Client extends ClientController
 {
-    protected ?\Pimple\Container $di = null;
-
-    public function setDi(\Pimple\Container $di): void
-    {
-        $this->di = $di;
-    }
-
-    public function getDi(): ?\Pimple\Container
-    {
-        return $this->di;
-    }
-
-    public function register(\Box_App &$app)
-    {
-        $app->get('/email', 'get_emails', [], static::class);
-        $app->get('/email/:id', 'get_email', ['id' => '[0-9]+'], static::class);
-    }
-
-    public function get_emails(\Box_App $app)
+    #[Route('/email', name: 'email_client_index', methods: ['GET'])]
+    public function getEmails(): Response
     {
         $this->di['is_client_logged'];
-
-        return $app->render('mod_email_index');
+        return $this->render('mod_email_index');
     }
 
-    public function get_email(\Box_App $app, $id)
+    #[Route('/email/{id}', name: 'email_client_email', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function getEmail(int $id): Response
     {
+        $this->di['is_client_logged'];
         $api = $this->di['api_client'];
         $data = ['id' => $id];
         $email = $api->email_get($data);
 
-        return $app->render('mod_email_email', ['email' => $email]);
+        return $this->render('mod_email_email', ['email' => $email]);
     }
 }

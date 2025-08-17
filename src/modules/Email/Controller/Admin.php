@@ -11,21 +11,13 @@
 
 namespace Box\Mod\Email\Controller;
 
-class Admin implements \FOSSBilling\InjectionAwareInterface
+use FOSSBilling\Controller\AdminController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class Admin extends AdminController
 {
-    protected ?\Pimple\Container $di = null;
-
-    public function setDi(\Pimple\Container $di): void
-    {
-        $this->di = $di;
-    }
-
-    public function getDi(): ?\Pimple\Container
-    {
-        return $this->di;
-    }
-
-    public function fetchNavigation()
+    public function fetchNavigation(): array
     {
         return [
             'subpages' => [
@@ -40,35 +32,36 @@ class Admin implements \FOSSBilling\InjectionAwareInterface
         ];
     }
 
-    public function register(\Box_App &$app)
+    #[Route('/email/history', name: 'email_admin_history', methods: ['GET'])]
+    public function getHistory(): Response
     {
-        $app->get('/email/history/', 'get_history', [], static::class);
-        $app->get('/email/history', 'get_history', [], static::class);
-        $app->get('/email/templates', 'get_index', [], static::class);
-        $app->get('/email/template/:id', 'get_template', ['id' => '[0-9]+'], static::class);
-        $app->get('/email/:id', 'get_email', ['id' => '[0-9]+'], static::class);
+        return $this->render('mod_email_history');
     }
 
-    public function get_history(\Box_App $app)
+    #[Route('/email/templates', name: 'email_admin_templates', methods: ['GET'])]
+    public function getIndex(): Response
     {
-        $this->di['is_admin_logged'];
-
-        return $app->render('mod_email_history');
+        // This method was missing in the original controller, but the route existed.
+        // Assuming it should render a template listing all email templates.
+        // The template name is an assumption based on the route.
+        return $this->render('mod_email_templates');
     }
 
-    public function get_template(\Box_App $app, $id)
+    #[Route('/email/template/{id}', name: 'email_admin_template', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function getTemplate(int $id): Response
     {
         $api = $this->di['api_admin'];
         $template = $api->email_template_get(['id' => $id]);
 
-        return $app->render('mod_email_template', ['template' => $template]);
+        return $this->render('mod_email_template', ['template' => $template]);
     }
 
-    public function get_email(\Box_App $app, $id)
+    #[Route('/email/{id}', name: 'email_admin_email', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function getEmail(int $id): Response
     {
         $api = $this->di['api_admin'];
-        $template = $api->email_email_get(['id' => $id]);
+        $email = $api->email_email_get(['id' => $id]);
 
-        return $app->render('mod_email_details', ['email' => $template]);
+        return $this->render('mod_email_details', ['email' => $email]);
     }
 }

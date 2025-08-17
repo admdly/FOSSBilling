@@ -11,27 +11,15 @@
 
 namespace Box\Mod\Cart\Controller;
 
-class Client implements \FOSSBilling\InjectionAwareInterface
+use FOSSBilling\Controller\ClientController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class Client extends ClientController
 {
-    protected ?\Pimple\Container $di = null;
-
-    public function setDi(\Pimple\Container $di): void
+    #[Route('/cart', name: 'cart_index', methods: ['GET'])]
+    public function getCart(): Response
     {
-        $this->di = $di;
-    }
-
-    public function getDi(): ?\Pimple\Container
-    {
-        return $this->di;
-    }
-
-    public function register(\Box_App &$app)
-    {
-        $app->get('/cart', 'get_cart', [], static::class);
-    }
-
-    public function get_cart(\Box_App $app)
-    {
-        return $app->render('mod_cart_index');
+        return $this->render('mod_cart_index');
     }
 }

@@ -11,35 +11,22 @@
 
 namespace Box\Mod\News\Controller;
 
-class Client implements \FOSSBilling\InjectionAwareInterface
+use FOSSBilling\Controller\ClientController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class Client extends ClientController
 {
-    protected ?\Pimple\Container $di = null;
-
-    public function setDi(\Pimple\Container $di): void
+    #[Route('/news', name: 'news_client_index', methods: ['GET'])]
+    public function getNews(): Response
     {
-        $this->di = $di;
+        return $this->render('mod_news_index');
     }
 
-    public function getDi(): ?\Pimple\Container
-    {
-        return $this->di;
-    }
-
-    public function register(\Box_App &$app)
-    {
-        $app->get('/news', 'get_news', [], static::class);
-        $app->get('/news/:slug', 'get_news_item', ['slug' => '[a-z0-9-]+'], static::class);
-    }
-
-    public function get_news(\Box_App $app)
-    {
-        return $app->render('mod_news_index');
-    }
-
-    public function get_news_item(\Box_App $app, $slug)
+    #[Route('/news/{slug}', name: 'news_client_item', methods: ['GET'], requirements: ['slug' => '[a-z0-9-]+'])]
+    public function getNewsItem(string $slug): Response
     {
         $post = $this->di['api_guest']->news_get(['slug' => $slug]);
-
-        return $app->render('mod_news_post', ['post' => $post]);
+        return $this->render('mod_news_post', ['post' => $post]);
     }
 }

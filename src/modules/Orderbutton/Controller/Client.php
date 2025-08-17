@@ -11,35 +11,23 @@
 
 namespace Box\Mod\Orderbutton\Controller;
 
-class Client implements \FOSSBilling\InjectionAwareInterface
+use FOSSBilling\Controller\ClientController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class Client extends ClientController
 {
-    protected ?\Pimple\Container $di = null;
-
-    public function setDi(\Pimple\Container $di): void
+    #[Route('/orderbutton', name: 'orderbutton_client_index', methods: ['GET'])]
+    public function getIndex(): Response
     {
-        $this->di = $di;
+        return $this->render('mod_orderbutton_index');
     }
 
-    public function getDi(): ?\Pimple\Container
+    #[Route('/orderbutton/js', name: 'orderbutton_client_js', methods: ['GET'])]
+    public function getJs(): Response
     {
-        return $this->di;
-    }
-
-    public function register(\Box_App &$app)
-    {
-        $app->get('/orderbutton', 'get_index', [], static::class);
-        $app->get('/orderbutton/js', 'get_js', [], static::class);
-    }
-
-    public function get_index(\Box_App $app)
-    {
-        return $app->render('mod_orderbutton_index');
-    }
-
-    public function get_js(\Box_App $app)
-    {
-        header('Content-Type: application/javascript');
-
-        return $app->render('mod_orderbutton_js');
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/javascript');
+        return $this->render('mod_orderbutton_js', [], $response);
     }
 }

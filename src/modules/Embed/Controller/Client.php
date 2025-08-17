@@ -11,36 +11,16 @@
 
 namespace Box\Mod\Embed\Controller;
 
-class Client implements \FOSSBilling\InjectionAwareInterface
+use FOSSBilling\Controller\ClientController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class Client extends ClientController
 {
-    protected ?\Pimple\Container $di = null;
-
-    public function setDi(\Pimple\Container $di): void
-    {
-        $this->di = $di;
-    }
-
-    public function getDi(): ?\Pimple\Container
-    {
-        return $this->di;
-    }
-
-    /**
-     * Methods maps client areas urls to corresponding methods
-     * Always use your module prefix to avoid conflicts with other modules
-     * in future.
-     *
-     * @param \Box_App $app - returned by reference
-     */
-    public function register(\Box_App &$app)
-    {
-        $app->get('/embed/:what', 'get_object', ['what' => '[a-z0-9-]+'], static::class);
-    }
-
-    public function get_object(\Box_App $app, $what)
+    #[Route('/embed/{what}', name: 'embed_client_object', methods: ['GET'], requirements: ['what' => '[a-z0-9-]+'])]
+    public function getObject(string $what): Response
     {
         $tpl = 'mod_embed_' . $what;
-
-        return $app->render($tpl);
+        return $this->render($tpl);
     }
 }

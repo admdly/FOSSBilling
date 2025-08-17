@@ -11,21 +11,13 @@
 
 namespace Box\Mod\Invoice\Controller;
 
-class Admin implements \FOSSBilling\InjectionAwareInterface
+use FOSSBilling\Controller\AdminController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class Admin extends AdminController
 {
-    protected ?\Pimple\Container $di = null;
-
-    public function setDi(\Pimple\Container $di): void
-    {
-        $this->di = $di;
-    }
-
-    public function getDi(): ?\Pimple\Container
-    {
-        return $this->di;
-    }
-
-    public function fetchNavigation()
+    public function fetchNavigation(): array
     {
         return [
             'group' => [
@@ -89,104 +81,82 @@ class Admin implements \FOSSBilling\InjectionAwareInterface
         ];
     }
 
-    public function register(\Box_App &$app)
+    #[Route('/invoice', name: 'invoice_admin_index', methods: ['GET'])]
+    public function getIndex(): Response
     {
-        $app->get('/invoice', 'get_index', [], static::class);
-        $app->get('/invoice/subscriptions', 'get_subscriptions', [], static::class);
-        $app->get('/invoice/transactions', 'get_transactions', [], static::class);
-        $app->get('/invoice/gateways', 'get_gateways', [], static::class);
-        $app->get('/invoice/gateway/:id', 'get_gateway', ['id' => '[0-9]+'], static::class);
-        $app->get('/invoice/manage/:id', 'get_invoice', ['id' => '[0-9]+'], static::class);
-        $app->get('/invoice/transaction/:id', 'get_transaction', ['id' => '[0-9]+'], static::class);
-        $app->get('/invoice/subscription/:id', 'get_subscription', ['id' => '[0-9]+'], static::class);
-        $app->get('/invoice/tax', 'get_taxes', [], static::class);
-        $app->get('/invoice/tax/:id', 'get_tax', [], static::class);
-        $app->get('/invoice/pdf/:hash', 'get_pdf', ['hash' => '[a-z0-9]+'], static::class);
+        return $this->render('mod_invoice_index');
     }
 
-    public function get_taxes(\Box_App $app)
+    #[Route('/invoice/subscriptions', name: 'invoice_admin_subscriptions', methods: ['GET'])]
+    public function getSubscriptions(): Response
     {
-        $this->di['is_admin_logged'];
-
-        return $app->render('mod_invoice_tax');
+        return $this->render('mod_invoice_subscriptions');
     }
 
-    public function get_tax(\Box_App $app, $id)
+    #[Route('/invoice/transactions', name: 'invoice_admin_transactions', methods: ['GET'])]
+    public function getTransactions(): Response
     {
-        $api = $this->di['api_admin'];
-        $tax = $api->invoice_tax_get(['id' => $id]);
-
-        return $app->render('mod_invoice_taxupdate', ['tax' => $tax]);
+        return $this->render('mod_invoice_transactions');
     }
 
-    public function get_index(\Box_App $app)
+    #[Route('/invoice/gateways', name: 'invoice_admin_gateways', methods: ['GET'])]
+    public function getGateways(): Response
     {
-        $this->di['is_admin_logged'];
-
-        return $app->render('mod_invoice_index');
+        return $this->render('mod_invoice_gateways');
     }
 
-    public function get_invoice(\Box_App $app, $id)
-    {
-        $api = $this->di['api_admin'];
-        $invoice = $api->invoice_get(['id' => $id]);
-
-        return $app->render('mod_invoice_invoice', ['invoice' => $invoice]);
-    }
-
-    public function get_transaction(\Box_App $app, $id)
-    {
-        $api = $this->di['api_admin'];
-        $tx = $api->invoice_transaction_get(['id' => $id]);
-
-        return $app->render('mod_invoice_transaction', ['transaction' => $tx]);
-    }
-
-    public function get_transactions(\Box_App $app)
-    {
-        $this->di['is_admin_logged'];
-
-        return $app->render('mod_invoice_transactions');
-    }
-
-    public function get_subscriptions(\Box_App $app)
-    {
-        $this->di['is_admin_logged'];
-
-        return $app->render('mod_invoice_subscriptions');
-    }
-
-    public function get_subscription(\Box_App $app, $id)
-    {
-        $api = $this->di['api_admin'];
-        $tx = $api->invoice_subscription_get(['id' => $id]);
-
-        return $app->render('mod_invoice_subscription', ['subscription' => $tx]);
-    }
-
-    public function get_gateways(\Box_App $app)
-    {
-        $this->di['is_admin_logged'];
-
-        return $app->render('mod_invoice_gateways');
-    }
-
-    public function get_gateway(\Box_App $app, $id)
+    #[Route('/invoice/gateway/{id}', name: 'invoice_admin_gateway', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function getGateway(int $id): Response
     {
         $api = $this->di['api_admin'];
         $gateway = $api->invoice_gateway_get(['id' => $id]);
-
-        return $app->render('mod_invoice_gateway', ['gateway' => $gateway]);
+        return $this->render('mod_invoice_gateway', ['gateway' => $gateway]);
     }
 
-    public function get_pdf(\Box_App $app, $hash)
+    #[Route('/invoice/manage/{id}', name: 'invoice_admin_manage', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function getInvoice(int $id): Response
+    {
+        $api = $this->di['api_admin'];
+        $invoice = $api->invoice_get(['id' => $id]);
+        return $this->render('mod_invoice_invoice', ['invoice' => $invoice]);
+    }
+
+    #[Route('/invoice/transaction/{id}', name: 'invoice_admin_transaction', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function getTransaction(int $id): Response
+    {
+        $api = $this->di['api_admin'];
+        $tx = $api->invoice_transaction_get(['id' => $id]);
+        return $this->render('mod_invoice_transaction', ['transaction' => $tx]);
+    }
+
+    #[Route('/invoice/subscription/{id}', name: 'invoice_admin_subscription', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function getSubscription(int $id): Response
+    {
+        $api = $this->di['api_admin'];
+        $tx = $api->invoice_subscription_get(['id' => $id]);
+        return $this->render('mod_invoice_subscription', ['subscription' => $tx]);
+    }
+
+    #[Route('/invoice/tax', name: 'invoice_admin_tax', methods: ['GET'])]
+    public function getTaxes(): Response
+    {
+        return $this->render('mod_invoice_tax');
+    }
+
+    #[Route('/invoice/tax/{id}', name: 'invoice_admin_tax_manage', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function getTax(int $id): Response
+    {
+        $api = $this->di['api_admin'];
+        $tax = $api->invoice_tax_get(['id' => $id]);
+        return $this->render('mod_invoice_taxupdate', ['tax' => $tax]);
+    }
+
+    #[Route('/invoice/pdf/{hash}', name: 'invoice_admin_pdf', methods: ['GET'], requirements: ['hash' => '[a-z0-9]+'])]
+    public function getPdf(string $hash): Response
     {
         $api = $this->di['api_guest'];
-        $data = [
-            'hash' => $hash,
-        ];
+        $data = ['hash' => $hash];
         $invoice = $api->invoice_pdf($data);
-
-        return $app->render('mod_invoice_pdf', ['invoice' => $invoice]);
+        return $this->render('mod_invoice_pdf', ['invoice' => $invoice]);
     }
 }

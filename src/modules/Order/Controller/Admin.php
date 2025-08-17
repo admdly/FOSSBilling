@@ -11,21 +11,14 @@
 
 namespace Box\Mod\Order\Controller;
 
-class Admin implements \FOSSBilling\InjectionAwareInterface
+use FOSSBilling\Controller\AdminController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class Admin extends AdminController
 {
-    protected ?\Pimple\Container $di = null;
-
-    public function setDi(\Pimple\Container $di): void
-    {
-        $this->di = $di;
-    }
-
-    public function getDi(): ?\Pimple\Container
-    {
-        return $this->di;
-    }
-
-    public function fetchNavigation()
+    public function fetchNavigation(): array
     {
         return [
             'group' => [
@@ -54,38 +47,26 @@ class Admin implements \FOSSBilling\InjectionAwareInterface
         ];
     }
 
-    public function register(\Box_App &$app)
+    #[Route('/order', name: 'order_admin_index', methods: ['GET'])]
+    public function getIndex(): Response
     {
-        $app->get('/order', 'get_index', [], static::class);
-        $app->get('/order/', 'get_index', [], static::class);
-        $app->get('/order/index', 'get_index', [], static::class);
-        $app->get('/order/manage/:id', 'get_order', ['id' => '[0-9]+'], static::class);
-        $app->post('/order/new', 'get_new', [], static::class);
+        return $this->render('mod_order_index');
     }
 
-    public function get_index(\Box_App $app)
-    {
-        $this->di['is_admin_logged'];
-
-        return $app->render('mod_order_index');
-    }
-
-    public function get_new(\Box_App $app)
+    #[Route('/order/new', name: 'order_admin_new', methods: ['POST'])]
+    public function getNew(Request $request): Response
     {
         $api = $this->di['api_admin'];
-
-        $product = $api->product_get(['id' => $_POST['product_id'] ?? null]);
-        $client = $api->client_get(['id' => $_POST['client_id'] ?? null]);
-
-        return $app->render('mod_order_new', ['product' => $product, 'client' => $client]);
+        $product = $api->product_get(['id' => $request->request->get('product_id')]);
+        $client = $api->client_get(['id' => $request->request->get('client_id')]);
+        return $this->render('mod_order_new', ['product' => $product, 'client' => $client]);
     }
 
-    public function get_order(\Box_App $app, $id)
+    #[Route('/order/manage/{id}', name: 'order_admin_manage', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function getOrder(int $id): Response
     {
         $api = $this->di['api_admin'];
-        $data = [
-            'id' => $id,
-        ];
+        $data = ['id' => $id];
         $order = $api->order_get($data);
         $set = ['order' => $order];
 
@@ -93,6 +74,6 @@ class Admin implements \FOSSBilling\InjectionAwareInterface
             $set['plugin'] = 'plugin_' . $order['plugin'] . '_manage.html.twig';
         }
 
-        return $app->render('mod_order_manage', $set);
+        return $this->render('mod_order_manage', $set);
     }
 }

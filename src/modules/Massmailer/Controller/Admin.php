@@ -11,21 +11,13 @@
 
 namespace Box\Mod\Massmailer\Controller;
 
-class Admin implements \FOSSBilling\InjectionAwareInterface
+use FOSSBilling\Controller\AdminController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class Admin extends AdminController
 {
-    protected ?\Pimple\Container $di = null;
-
-    public function setDi(\Pimple\Container $di): void
-    {
-        $this->di = $di;
-    }
-
-    public function getDi(): ?\Pimple\Container
-    {
-        return $this->di;
-    }
-
-    public function fetchNavigation()
+    public function fetchNavigation(): array
     {
         return [
             'subpages' => [
@@ -40,24 +32,17 @@ class Admin implements \FOSSBilling\InjectionAwareInterface
         ];
     }
 
-    public function register(\Box_App &$app)
+    #[Route('/massmailer', name: 'massmailer_admin_index', methods: ['GET'])]
+    public function getIndex(): Response
     {
-        $app->get('/massmailer', 'get_index', [], static::class);
-        $app->get('/massmailer/message/:id', 'get_edit', ['id' => '[0-9]+'], static::class);
+        return $this->render('mod_massmailer_index');
     }
 
-    public function get_index(\Box_App $app)
-    {
-        $this->di['is_admin_logged'];
-
-        return $app->render('mod_massmailer_index');
-    }
-
-    public function get_edit(\Box_App $app, $id)
+    #[Route('/massmailer/message/{id}', name: 'massmailer_admin_message', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function getEdit(int $id): Response
     {
         $api = $this->di['api_admin'];
         $model = $api->massmailer_get(['id' => $id]);
-
-        return $app->render('mod_massmailer_message', ['msg' => $model]);
+        return $this->render('mod_massmailer_message', ['msg' => $model]);
     }
 }

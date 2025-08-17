@@ -11,21 +11,15 @@
 
 namespace Box\Mod\Client\Controller;
 
-class Admin implements \FOSSBilling\InjectionAwareInterface
+use FOSSBilling\Controller\AdminController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class Admin extends AdminController
 {
-    protected ?\Pimple\Container $di = null;
-
-    public function setDi(\Pimple\Container $di): void
-    {
-        $this->di = $di;
-    }
-
-    public function getDi(): ?\Pimple\Container
-    {
-        return $this->di;
-    }
-
-    public function fetchNavigation()
+    public function fetchNavigation(): array
     {
         return [
             'group' => [
@@ -61,63 +55,49 @@ class Admin implements \FOSSBilling\InjectionAwareInterface
         ];
     }
 
-    public function register(\Box_App &$app)
+    #[Route('/client', name: 'client_admin_index', methods: ['GET'])]
+    #[Route('/client/', name: 'client_admin_index_slash', methods: ['GET'])]
+    public function getIndex(): Response
     {
-        $app->get('/client', 'get_index', [], static::class);
-        $app->get('/client/', 'get_index', [], static::class);
-        $app->get('/client/index', 'get_index', [], static::class);
-        $app->get('/client/login/:id', 'get_login', ['id' => '[0-9]+'], static::class);
-        $app->get('/client/manage/:id', 'get_manage', ['id' => '[0-9]+'], static::class);
-        $app->get('/client/group/:id', 'get_group', ['id' => '[0-9]+'], static::class);
-        $app->get('/client/create', 'get_create', [], static::class);
-        $app->get('/client/logins', 'get_history', [], static::class);
+        return $this->render('mod_client_index');
     }
 
-    public function get_index(\Box_App $app)
-    {
-        $this->di['is_admin_logged'];
-
-        return $app->render('mod_client_index');
-    }
-
-    public function get_manage(\Box_App $app, $id)
-    {
-        $api = $this->di['api_admin'];
-        $client = $api->client_get(['id' => $id]);
-
-        return $app->render('mod_client_manage', ['client' => $client]);
-    }
-
-    public function get_group(\Box_App $app, $id)
-    {
-        $api = $this->di['api_admin'];
-        $model = $api->client_group_get(['id' => $id]);
-
-        return $app->render('mod_client_group', ['group' => $model]);
-    }
-
-    public function get_history(\Box_App $app)
-    {
-        $api = $this->di['api_admin'];
-
-        return $app->render('mod_client_login_history');
-    }
-
-    public function get_login(\Box_App $app, $id)
+    #[Route('/client/login/{id}', name: 'client_admin_login', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function getLogin(Request $request, int $id): Response
     {
         $api = $this->di['api_admin'];
         $api->client_login(['id' => $id]);
 
         $redirect_to = '/';
-
-        $query = $_GET['r'] ?? null;
-        if ($query) {
-            $r = $query;
+        $r = $request->query->get('r');
+        if ($r) {
             $redirect_to = '/' . trim($r, '/');
         }
 
-        header('HTTP/1.1 301 Moved Permanently');
-        header('Location: ' . $this->di['tools']->url($redirect_to));
-        exit;
+        return new RedirectResponse($this->di['tools']->url($redirect_to), 301);
+    }
+
+    #[Route('/client/manage/{id}', name: 'client_admin_manage', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function getManage(int $id): Response
+    {
+        $api = $this->di['api_admin'];
+        $client = $api->client_get(['id' => $id]);
+
+        return $this->render('mod_client_manage', ['client' => $client]);
+    }
+
+    #[Route('/client/group/{id}', name: 'client_admin_group', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function getGroup(int $id): Response
+    {
+        $api = $this->di['api_admin'];
+        $model = $api->client_group_get(['id' => $id]);
+
+        return $this->render('mod_client_group', ['group' => $model]);
+    }
+
+    #[Route('/client/logins', name: 'client_admin_history', methods: ['GET'])]
+    public function getHistory(): Response
+    {
+        return $this->render('mod_client_login_history');
     }
 }

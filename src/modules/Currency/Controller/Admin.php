@@ -11,31 +11,18 @@
 
 namespace Box\Mod\Currency\Controller;
 
-class Admin implements \FOSSBilling\InjectionAwareInterface
+use FOSSBilling\Controller\AdminController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class Admin extends AdminController
 {
-    protected ?\Pimple\Container $di = null;
-
-    public function setDi(\Pimple\Container $di): void
+    #[Route('/currency/manage/{code}', name: 'currency_admin_manage', methods: ['GET'], requirements: ['code' => '[a-zA-Z]+'])]
+    public function getManage(string $code): Response
     {
-        $this->di = $di;
-    }
-
-    public function getDi(): ?\Pimple\Container
-    {
-        return $this->di;
-    }
-
-    public function register(\Box_App &$app)
-    {
-        $app->get('/currency/manage/:code', 'get_manage', ['code' => '[a-zA-Z]+'], static::class);
-    }
-
-    public function get_manage(\Box_App $app, $code)
-    {
-        $this->di['is_admin_logged'];
         $guest_api = $this->di['api_guest'];
         $currency = $guest_api->currency_get(['code' => $code]);
 
-        return $app->render('mod_currency_manage', ['currency' => $currency]);
+        return $this->render('mod_currency_manage', ['currency' => $currency]);
     }
 }

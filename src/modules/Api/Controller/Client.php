@@ -1,98 +1,64 @@
 <?php
 
 declare(strict_types=1);
-/**
- * Copyright 2022-2025 FOSSBilling
- * Copyright 2011-2021 BoxBilling, Inc.
- * SPDX-License-Identifier: Apache-2.0.
- *
- * @copyright FOSSBilling (https://www.fossbilling.org)
- * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
- */
-
-/**
- * This file connects FOSSBilling client area interface and API.
- */
 
 namespace Box\Mod\Api\Controller;
 
 use FOSSBilling\Config;
+use FOSSBilling\Controller\ClientController;
 use FOSSBilling\Environment;
-use FOSSBilling\InjectionAwareInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
-class Client implements InjectionAwareInterface
+class Client extends ClientController
 {
     private int|float|null $_requests_left = null;
     private $_api_config;
     private readonly Filesystem $filesystem;
-    protected ?\Pimple\Container $di = null;
 
     public function __construct()
     {
+        parent::__construct();
         $this->filesystem = new Filesystem();
     }
 
-    public function setDi(\Pimple\Container $di): void
+    #[Route('/api/{role}/{class}/{method}', name: 'api_handler_get', methods: ['GET'])]
+    public function get_method(Request $request, string $role, string $class, string $method): Response
     {
-        $this->di = $di;
-    }
-
-    public function getDi(): ?\Pimple\Container
-    {
-        return $this->di;
-    }
-
-    public function register(\Box_App &$app)
-    {
-        $app->post('/api/:role/:class/:method', 'post_method', ['role', 'class', 'method'], static::class);
-        $app->get('/api/:role/:class/:method', 'get_method', ['role', 'class', 'method'], static::class);
-
-        // all other requests are error requests
-        $app->get('/api/:page', 'show_error', ['page' => '(.?)+'], static::class);
-        $app->post('/api/:page', 'show_error', ['page' => '(.?)+'], static::class);
-    }
-
-    public function show_error(\Box_App $app, $page)
-    {
-        $exc = new \FOSSBilling\Exception('Unknown API call :call', [':call' => $page], 879);
-
-        return $this->renderJson(null, $exc);
-    }
-
-    public function get_method(\Box_App $app, $role, $class, $method)
-    {
+        $params = $request->query->all();
         $call = $class . '_' . $method;
 
-        return $this->tryCall($role, $call, $_GET);
+        return $this->tryCall($role, $call, $params);
     }
 
-    public function post_method(\Box_App $app, $role, $class, $method)
+    #[Route('/api/{role}/{class}/{method}', name: 'api_handler_post', methods: ['POST'])]
+    public function post_method(Request $request, string $role, string $class, string $method): Response
     {
-        $p = $_POST;
+        $params = $request->request->all();
 
         // adding support for raw post input with json string
-        $input = $this->filesystem->readFile('php://input');
-        if (empty($p) && !empty($input)) {
-            $p = @json_decode($input, true);
+        if (empty($params)) {
+            $content = $request->getContent();
+            if (!empty($content)) {
+                $params = json_decode($content, true);
+            }
         }
 
         $call = $class . '_' . $method;
-
-        return $this->tryCall($role, $call, $p);
+        return $this->tryCall($role, $call, $params);
     }
 
-    /**
-     * @param string $call
-     */
-    private function tryCall($role, $call, $p)
+    private function tryCall($role, $call, $p): Response
     {
         try {
-            $this->_apiCall($role, $call, $p);
+            return $this->_apiCall($role, $call, $p);
         } catch (\Exception $exc) {
             // Sentry by default only captures unhandled exceptions, so we need to manually capture these.
             \Sentry\captureException($exc);
-            $this->renderJson(null, $exc);
+            return $this->renderJson(null, $exc);
         }
     }
 
@@ -170,7 +136,7 @@ class Client implements InjectionAwareInterface
         return true;
     }
 
-    private function _apiCall($role, $method, $params)
+    private function _apiCall($role, $method, $params): Response
     {
         $this->_loadConfig();
         $this->checkAllowedIps();
@@ -232,7 +198,6 @@ class Client implements InjectionAwareInterface
                     throw new \FOSSBilling\InformationException('Authentication Failed', null, 204);
                 }
                 $this->di['session']->set('client_id', $model->id);
-
                 break;
 
             case 'admin':
@@ -247,62 +212,53 @@ class Client implements InjectionAwareInterface
                     'role' => $model->role,
                 ];
                 $this->di['session']->set('admin', $sessionAdminArray);
-
                 break;
 
-            case 'guest': // do not allow at the moment
+            case 'guest':
             default:
                 throw new \FOSSBilling\InformationException('Authentication Failed', null, 203);
         }
     }
 
-    /**
-     * @param string $role
-     *
-     * @throws \FOSSBilling\Exception
-     */
     private function isRoleAllowed($role)
     {
         $allowed = ['guest', 'client', 'admin'];
         if (!in_array($role, $allowed)) {
-            new \FOSSBilling\Exception('Unknown API call :call', [':call' => ''], 701);
+            throw new \FOSSBilling\Exception('Unknown API call', [], 701);
         }
-
         return true;
     }
 
-    public function renderJson($data = null, ?\Exception $e = null)
+    public function renderJson($data = null, ?\Exception $e = null): JsonResponse
     {
-        // do not emit response if headers already sent
-        if (headers_sent()) {
-            return;
-        }
-
         $this->_loadConfig();
+        $response = new JsonResponse();
+        $response->headers->set('Cache-Control', 'no-cache, must-revalidate');
+        $response->headers->set('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT');
+        $response->headers->set('X-FOSSBilling-Version', \FOSSBilling\Version::VERSION);
+        $response->headers->set('X-RateLimit-Span', (string) $this->_api_config['rate_span']);
+        $response->headers->set('X-RateLimit-Limit', (string) $this->_api_config['rate_limit']);
+        $response->headers->set('X-RateLimit-Remaining', (string) $this->_requests_left);
 
-        header('Cache-Control: no-cache, must-revalidate');
-        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-        header('Content-type: application/json; charset=utf-8');
-        header('X-FOSSBilling-Version: ' . \FOSSBilling\Version::VERSION);
-        header('X-RateLimit-Span: ' . $this->_api_config['rate_span']);
-        header('X-RateLimit-Limit: ' . $this->_api_config['rate_limit']);
-        header('X-RateLimit-Remaining: ' . $this->_requests_left);
         if ($e instanceof \Exception) {
-            error_log("{$e->getMessage()} {$e->getCode()}.");
+            error_log($e->getMessage() . ' ' . $e->getCode());
             $code = $e->getCode() ?: 9999;
             $result = ['result' => null, 'error' => ['message' => $e->getMessage(), 'code' => $code]];
             $authFailed = [201, 202, 206, 204, 205, 203, 403, 1004, 1002];
 
             if (in_array($code, $authFailed)) {
-                header('HTTP/1.1 401 Unauthorized');
+                $response->setStatusCode(401);
             } elseif ($code == 701 || $code == 879) {
-                header('HTTP/1.1 400 Bad Request');
+                $response->setStatusCode(400);
+            } else {
+                $response->setStatusCode(500);
             }
         } else {
             $result = ['result' => $data, 'error' => null];
         }
-        echo json_encode($result);
-        exit;
+
+        $response->setData($result);
+        return $response;
     }
 
     private function _getIp()
@@ -310,11 +266,6 @@ class Client implements InjectionAwareInterface
         return $this->di['request']->getClientIp();
     }
 
-    /**
-     * Checks if the CSRF token provided is valid.
-     *
-     * @throws \FOSSBilling\InformationException
-     */
     public function _checkCSRFToken()
     {
         $this->_loadConfig();
@@ -323,23 +274,16 @@ class Client implements InjectionAwareInterface
             return true;
         }
 
-        $input = $this->filesystem->readFile('php://input') ?? '';
-        $data = json_decode($input);
-        if (!is_object($data)) {
-            $data = new \stdClass();
-        }
+        $request = $this->di['request'];
+        $token = $request->get('CSRFToken') ?? $request->request->get('CSRFToken');
 
-        $token = $data->CSRFToken ?? $_POST['CSRFToken'] ?? $_GET['CSRFToken'] ?? null;
         if (session_status() !== PHP_SESSION_ACTIVE) {
-            $expectedToken = (!is_null($_COOKIE['PHPSESSID'])) ? hash('md5', $_COOKIE['PHPSESSID']) : null;
+            $expectedToken = $request->cookies->get('PHPSESSID') ? hash('md5', $request->cookies->get('PHPSESSID')) : null;
         } else {
             $expectedToken = hash('md5', session_id());
         }
 
-        /* Due to the way the cart works, it creates a new session which causes issues with the CSRF token system.
-         * Due to this, we whitelist the checkout URL.
-         */
-        if (str_contains($_SERVER['REQUEST_URI'], '/api/client/cart/checkout')) {
+        if (str_contains($request->server->get('REQUEST_URI'), '/api/client/cart/checkout')) {
             return true;
         }
 

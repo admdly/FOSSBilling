@@ -11,98 +11,68 @@
 
 namespace Box\Mod\Invoice\Controller;
 
-class Client implements \FOSSBilling\InjectionAwareInterface
+use FOSSBilling\Controller\ClientController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class Client extends ClientController
 {
-    protected ?\Pimple\Container $di = null;
-
-    public function setDi(\Pimple\Container $di): void
-    {
-        $this->di = $di;
-    }
-
-    public function getDi(): ?\Pimple\Container
-    {
-        return $this->di;
-    }
-
-    public function register(\Box_App &$app)
-    {
-        $app->get('/invoice', 'get_invoices', [], static::class);
-        $app->post('/invoice', 'get_invoices', [], static::class);
-        $app->get('/invoice/:hash', 'get_invoice', ['hash' => '[a-z0-9]+'], static::class);
-        $app->post('/invoice/:hash', 'get_invoice', ['hash' => '[a-z0-9]+'], static::class);
-        $app->get('/invoice/print/:hash', 'get_invoice_print', ['hash' => '[a-z0-9]+'], static::class);
-        $app->post('/invoice/print/:hash', 'get_invoice_print', ['hash' => '[a-z0-9]+'], static::class);
-        $app->get('/invoice/banklink/:hash/:id', 'get_banklink', ['id' => '[0-9]+', 'hash' => '[a-z0-9]+'], static::class);
-        $app->get('/invoice/thank-you/:hash', 'get_thankyoupage', ['hash' => '[a-z0-9]+'], static::class);
-        $app->post('/invoice/thank-you/:hash', 'get_thankyoupage', ['hash' => '[a-z0-9]+'], static::class);
-        $app->get('/invoice/pdf/:hash', 'get_pdf', ['hash' => '[a-z0-9]+'], static::class);
-    }
-
-    public function get_invoices(\Box_App $app)
+    #[Route('/invoice', name: 'invoice_client_index', methods: ['GET', 'POST'])]
+    public function getInvoices(): Response
     {
         $this->di['is_client_logged'];
-
-        return $app->render('mod_invoice_index');
+        return $this->render('mod_invoice_index');
     }
 
-    public function get_invoice(\Box_App $app, $hash)
+    #[Route('/invoice/{hash}', name: 'invoice_client_invoice', methods: ['GET', 'POST'], requirements: ['hash' => '[a-z0-9]+'])]
+    public function getInvoice(string $hash): Response
     {
         $api = $this->di['api_guest'];
-        $data = [
-            'hash' => $hash,
-        ];
+        $data = ['hash' => $hash];
         $invoice = $api->invoice_get($data);
-
-        return $app->render('mod_invoice_invoice', ['invoice' => $invoice]);
+        return $this->render('mod_invoice_invoice', ['invoice' => $invoice]);
     }
 
-    public function get_invoice_print(\Box_App $app, $hash)
+    #[Route('/invoice/print/{hash}', name: 'invoice_client_print', methods: ['GET', 'POST'], requirements: ['hash' => '[a-z0-9]+'])]
+    public function getInvoicePrint(string $hash): Response
     {
         $api = $this->di['api_guest'];
-        $data = [
-            'hash' => $hash,
-        ];
+        $data = ['hash' => $hash];
         $invoice = $api->invoice_get($data);
-
-        return $app->render('mod_invoice_print', ['invoice' => $invoice]);
+        return $this->render('mod_invoice_print', ['invoice' => $invoice]);
     }
 
-    public function get_thankyoupage(\Box_App $app, $hash)
+    #[Route('/invoice/thank-you/{hash}', name: 'invoice_client_thankyou', methods: ['GET', 'POST'], requirements: ['hash' => '[a-z0-9]+'])]
+    public function getThankYouPage(string $hash): Response
     {
         $api = $this->di['api_guest'];
-        $data = [
-            'hash' => $hash,
-        ];
+        $data = ['hash' => $hash];
         $invoice = $api->invoice_get($data);
-
-        return $app->render('mod_invoice_thankyou', ['invoice' => $invoice]);
+        return $this->render('mod_invoice_thankyou', ['invoice' => $invoice]);
     }
 
-    public function get_banklink(\Box_App $app, $hash, $id)
+    #[Route('/invoice/banklink/{hash}/{id}', name: 'invoice_client_banklink', methods: ['GET'], requirements: ['id' => '\d+', 'hash' => '[a-z0-9]+'])]
+    public function getBanklink(Request $request, string $hash, int $id): Response
     {
         $api = $this->di['api_guest'];
         $data = [
-            'allow_subscription' => $_GET['allow_subscription'] ?? true,
+            'allow_subscription' => $request->query->getBoolean('allow_subscription', true),
             'hash' => $hash,
             'gateway_id' => $id,
             'auto_redirect' => true,
         ];
-
         $invoice = $api->invoice_get($data);
         $result = $api->invoice_payment($data);
-
-        return $app->render('mod_invoice_banklink', ['payment' => $result, 'invoice' => $invoice]);
+        return $this->render('mod_invoice_banklink', ['payment' => $result, 'invoice' => $invoice]);
     }
 
-    public function get_pdf(\Box_App $app, $hash)
+    #[Route('/invoice/pdf/{hash}', name: 'invoice_client_pdf', methods: ['GET'], requirements: ['hash' => '[a-z0-9]+'])]
+    public function getPdf(string $hash): Response
     {
         $api = $this->di['api_guest'];
-        $data = [
-            'hash' => $hash,
-        ];
+        $data = ['hash' => $hash];
         $invoice = $api->invoice_pdf($data);
-
-        return $app->render('mod_invoice_pdf', ['invoice' => $invoice]);
+        return $this->render('mod_invoice_pdf', ['invoice' => $invoice]);
     }
 }

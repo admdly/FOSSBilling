@@ -11,75 +11,57 @@
 
 namespace Box\Mod\Client\Controller;
 
-class Client implements \FOSSBilling\InjectionAwareInterface
+use FOSSBilling\Controller\ClientController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class Client extends ClientController
 {
-    protected ?\Pimple\Container $di = null;
-
-    public function setDi(\Pimple\Container $di): void
-    {
-        $this->di = $di;
-    }
-
-    public function getDi(): ?\Pimple\Container
-    {
-        return $this->di;
-    }
-
-    public function register(\Box_App &$app)
-    {
-        $app->get('/client/reset-password-confirm/:hash', 'get_reset_password_confirm', ['hash' => '[a-z0-9]+'], static::class);
-        $app->get('/client', 'get_client_index', [], static::class);
-        $app->get('/client/logout', 'get_client_logout', [], static::class);
-        $app->get('/client/:page', 'get_client_page', ['page' => '[a-z0-9-]+'], static::class);
-        $app->get('/client/confirm-email/:hash', 'get_client_confirmation', ['page' => '[a-z0-9-]+'], static::class);
-    }
-
-    public function get_client_index(\Box_App $app)
+    #[Route('/client', name: 'client_index', methods: ['GET'])]
+    public function getIndex(): Response
     {
         $this->di['is_client_logged'];
-
-        return $app->render('mod_client_index');
+        return $this->render('mod_client_index');
     }
 
-    public function get_client_confirmation(\Box_App $app, $hash): never
+    #[Route('/client/logout', name: 'client_logout', methods: ['GET'])]
+    public function getLogout(): Response
+    {
+        $api = $this->di['api_client'];
+        $api->profile_logout();
+        return new RedirectResponse($this->di['url']->link('/'));
+    }
+
+    #[Route('/client/confirm-email/{hash}', name: 'client_confirm_email', methods: ['GET'], requirements: ['hash' => '[a-z0-9]+'])]
+    public function getEmailConfirmation(string $hash): Response
     {
         $service = $this->di['mod_service']('client');
         $service->approveClientEmailByHash($hash);
         $systemService = $this->di['mod_service']('System');
         $systemService->setPendingMessage(__trans('Email address was confirmed'));
-        $app->redirect('/');
+        return new RedirectResponse($this->di['url']->link('/'));
     }
 
-    public function get_client_logout(\Box_App $app): never
-    {
-        $api = $this->di['api_client'];
-        $api->profile_logout();
-        $app->redirect('/');
-    }
-
-    public function get_client_page(\Box_App $app, $page)
-    {
-        $this->di['is_client_logged'];
-        $template = 'mod_client_' . $page;
-
-        return $app->render($template);
-    }
-
-    public function get_reset_password_confirm(\Box_App $app, $hash)
+    #[Route('/client/reset-password-confirm/{hash}', name: 'client_reset_password_confirm', methods: ['GET'], requirements: ['hash' => '[a-z0-9]+'])]
+    public function getResetPasswordConfirm(string $hash): Response
     {
         $service = $this->di['mod_service']('client');
         $this->di['events_manager']->fire(['event' => 'onBeforePasswordResetClient']);
-        $data = [
-            'hash' => $hash,
-        ];
-        $template = 'mod_client_set_new_password';
+        $data = ['hash' => $hash];
 
-        // Call password_reset_valid function and if true, then render the template, otherwise redirect to the index page
-        $result = $service->password_reset_valid($data);
-        if ($result !== false) {
-            return $app->render($template);
+        if ($service->password_reset_valid($data)) {
+            return $this->render('mod_client_set_new_password');
         } else {
-            $app->redirect('/');
+            return new RedirectResponse($this->di['url']->link('/'));
         }
+    }
+
+    #[Route('/client/{page}', name: 'client_page', methods: ['GET'], requirements: ['page' => '[a-z0-9-]+'])]
+    public function getPage(string $page): Response
+    {
+        $this->di['is_client_logged'];
+        $template = 'mod_client_' . $page;
+        return $this->render($template);
     }
 }

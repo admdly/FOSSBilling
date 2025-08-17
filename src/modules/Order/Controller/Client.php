@@ -11,73 +11,56 @@
 
 namespace Box\Mod\Order\Controller;
 
-class Client implements \FOSSBilling\InjectionAwareInterface
+use FOSSBilling\Controller\ClientController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class Client extends ClientController
 {
-    protected ?\Pimple\Container $di = null;
-
-    public function setDi(\Pimple\Container $di): void
+    #[Route('/order', name: 'order_client_products', methods: ['GET'])]
+    public function getProducts(): Response
     {
-        $this->di = $di;
+        return $this->render('mod_order_index');
     }
 
-    public function getDi(): ?\Pimple\Container
+    #[Route('/order/service', name: 'order_client_orders', methods: ['GET'])]
+    public function getOrders(): Response
     {
-        return $this->di;
+        $this->di['is_client_logged'];
+        return $this->render('mod_order_list');
     }
 
-    public function register(\Box_App &$app)
+    #[Route('/order/service/manage/{id}', name: 'order_client_manage', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function getOrder(int $id): Response
     {
-        $app->get('/order', 'get_products', [], static::class);
-        $app->get('/order/service', 'get_orders', [], static::class);
-        $app->get('/order/:id', 'get_configure_product', ['id' => '[0-9]+'], static::class);
-        $app->get('/order/:slug', 'get_configure_product_by_slug', ['slug' => '[a-z0-9-]+'], static::class);
-        $app->get('/order/service/manage/:id', 'get_order', ['id' => '[0-9]+'], static::class);
+        $this->di['is_client_logged'];
+        $api = $this->di['api_client'];
+        $data = ['id' => $id];
+        $order = $api->order_get($data);
+        return $this->render('mod_order_manage', ['order' => $order]);
     }
 
-    public function get_products(\Box_App $app)
-    {
-        return $app->render('mod_order_index');
-    }
-
-    public function get_configure_product_by_slug(\Box_App $app, $slug)
+    #[Route('/order/{slug}', name: 'order_client_configure_product_by_slug', methods: ['GET'], requirements: ['slug' => '[a-z0-9-]+'])]
+    public function getConfigureProductBySlug(string $slug): Response
     {
         $api = $this->di['api_guest'];
         $product = $api->product_get(['slug' => $slug]);
         $tpl = 'mod_service' . $product['type'] . '_order';
         if ($api->system_template_exists(['file' => $tpl . '.html.twig'])) {
-            return $app->render($tpl, ['product' => $product]);
+            return $this->render($tpl, ['product' => $product]);
         }
-
-        return $app->render('mod_order_product', ['product' => $product]);
+        return $this->render('mod_order_product', ['product' => $product]);
     }
 
-    public function get_configure_product(\Box_App $app, $id)
+    #[Route('/order/{id}', name: 'order_client_configure_product', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function getConfigureProduct(int $id): Response
     {
         $api = $this->di['api_guest'];
         $product = $api->product_get(['id' => $id]);
         $tpl = 'mod_service' . $product['type'] . '_order';
         if ($api->system_template_exists(['file' => $tpl . '.html.twig'])) {
-            return $app->render($tpl, ['product' => $product]);
+            return $this->render($tpl, ['product' => $product]);
         }
-
-        return $app->render('mod_order_product', ['product' => $product]);
-    }
-
-    public function get_orders(\Box_App $app)
-    {
-        $this->di['is_client_logged'];
-
-        return $app->render('mod_order_list');
-    }
-
-    public function get_order(\Box_App $app, $id)
-    {
-        $api = $this->di['api_client'];
-        $data = [
-            'id' => $id,
-        ];
-        $order = $api->order_get($data);
-
-        return $app->render('mod_order_manage', ['order' => $order]);
+        return $this->render('mod_order_product', ['product' => $product]);
     }
 }

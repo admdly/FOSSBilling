@@ -11,21 +11,13 @@
 
 namespace Box\Mod\Custompages\Controller;
 
-class Admin implements \FOSSBilling\InjectionAwareInterface
+use FOSSBilling\Controller\AdminController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class Admin extends AdminController
 {
-    protected ?\Pimple\Container $di = null;
-
-    public function setDi(\Pimple\Container $di): void
-    {
-        $this->di = $di;
-    }
-
-    public function getDi(): ?\Pimple\Container
-    {
-        return $this->di;
-    }
-
-    public function fetchNavigation()
+    public function fetchNavigation(): array
     {
         return [
             'subpages' => [
@@ -40,21 +32,15 @@ class Admin implements \FOSSBilling\InjectionAwareInterface
         ];
     }
 
-    public function register(\Box_App &$app)
+    #[Route('/custompages', name: 'custompages_admin_index', methods: ['GET'])]
+    public function getIndex(): Response
     {
-        $app->get('/custompages', 'get_index', [], static::class);
-        $app->get('/custompages/:id', 'get_page', ['id' => '[0-9]+'], static::class);
+        return $this->render('mod_custompages_index');
     }
 
-    public function get_index(\Box_App $app)
+    #[Route('/custompages/{id}', name: 'custompages_admin_page', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function getPage(int $id): Response
     {
-        $this->di['is_admin_logged'];
-
-        return $app->render('mod_custompages_index');
-    }
-
-    public function get_page(\Box_App $app, $id)
-    {
-        return $app->render('mod_custompages_page', ['page_id' => $id]);
+        return $this->render('mod_custompages_page', ['page_id' => $id]);
     }
 }

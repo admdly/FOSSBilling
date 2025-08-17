@@ -11,27 +11,15 @@
 
 namespace Box\Mod\Formbuilder\Controller;
 
-class Client implements \FOSSBilling\InjectionAwareInterface
+use FOSSBilling\Controller\ClientController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class Client extends ClientController
 {
-    protected ?\Pimple\Container $di = null;
-
-    public function setDi(\Pimple\Container $di): void
+    #[Route('/formbuilder/{id}', name: 'formbuilder_client_form', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function getForm(int $id): Response
     {
-        $this->di = $di;
-    }
-
-    public function getDi(): ?\Pimple\Container
-    {
-        return $this->di;
-    }
-
-    public function register(\Box_App &$app)
-    {
-        $app->get('/formbuilder/:id', 'get_form', ['id' => '[0-9]+'], static::class);
-    }
-
-    public function get_form(\Box_App $app, $id)
-    {
-        return $app->render('mod_formbuilder_build', ['id' => $id]);
+        return $this->render('mod_formbuilder_build', ['id' => $id]);
     }
 }

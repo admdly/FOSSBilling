@@ -11,29 +11,16 @@
 
 namespace Box\Mod\Dashboard\Controller;
 
-class Client implements \FOSSBilling\InjectionAwareInterface
+use FOSSBilling\Controller\ClientController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class Client extends ClientController
 {
-    protected ?\Pimple\Container $di = null;
-
-    public function setDi(\Pimple\Container $di): void
-    {
-        $this->di = $di;
-    }
-
-    public function getDi(): ?\Pimple\Container
-    {
-        return $this->di;
-    }
-
-    public function register(\Box_App &$app)
-    {
-        $app->get('/dashboard', 'get_dashboard_index', [], static::class);
-    }
-
-    public function get_dashboard_index(\Box_App $app)
+    #[Route('/dashboard', name: 'dashboard_client_index', methods: ['GET'])]
+    public function getIndex(): Response
     {
         $this->di['is_client_logged'];
-
-        return $app->render('mod_dashboard_index');
+        return $this->render('mod_dashboard_index');
     }
 }

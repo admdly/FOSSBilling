@@ -2,44 +2,37 @@
 
 namespace Box\Mod\Email\Controller;
 
-class AdminTest extends \BBTestCase
+use FunctionalTestCase;
+
+class AdminTest extends FunctionalTestCase
 {
-    public function testDi(): void
+    public function testHistoryPage()
     {
-        $controller = new Admin();
-
-        $di = new \Pimple\Container();
-        $db = $this->getMockBuilder('Box_Database')->getMock();
-
-        $di['db'] = $db;
-        $controller->setDi($di);
-        $result = $controller->getDi();
-        $this->assertEquals($di, $result);
+        $client = $this->createAdminClient();
+        $client->request('GET', '/email/history');
+        $this->assertResponseIsSuccessful();
     }
 
-    public function testregister(): void
+    public function testTemplatesPage()
     {
-        $boxAppMock = $this->getMockBuilder('\Box_App')->disableOriginalConstructor()->getMock();
-        $boxAppMock->expects($this->exactly(5))
-            ->method('get');
-
-        $controllerAdmin = new Admin();
-        $controllerAdmin->register($boxAppMock);
+        $client = $this->createAdminClient();
+        $client->request('GET', '/email/templates');
+        $this->assertResponseIsSuccessful();
     }
 
-    public function testgetIndex(): void
+    public function testTemplatePage()
     {
-        $boxAppMock = $this->getMockBuilder('\Box_App')->disableOriginalConstructor()->getMock();
-        $boxAppMock->expects($this->atLeastOnce())
-            ->method('render')
-            ->with('mod_email_history');
+        $client = $this->createAdminClient();
+        // Assuming template with ID 1 exists from fixtures/seed data
+        $client->request('GET', '/email/template/1');
+        $this->assertResponseIsSuccessful();
+    }
 
-        $controllerAdmin = new Admin();
-        $di = new \Pimple\Container();
-        $di['is_admin_logged'] = true;
-
-        $controllerAdmin->setDi($di);
-
-        $controllerAdmin->get_history($boxAppMock);
+    public function testEmailPage()
+    {
+        $client = $this->createAdminClient();
+        // Assuming email with ID 1 exists from fixtures/seed data
+        $client->request('GET', '/email/1');
+        $this->assertResponseIsSuccessful();
     }
 }

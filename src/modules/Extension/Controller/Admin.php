@@ -11,21 +11,13 @@
 
 namespace Box\Mod\Extension\Controller;
 
-class Admin implements \FOSSBilling\InjectionAwareInterface
+use FOSSBilling\Controller\AdminController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class Admin extends AdminController
 {
-    protected ?\Pimple\Container $di = null;
-
-    public function setDi(\Pimple\Container $di): void
-    {
-        $this->di = $di;
-    }
-
-    public function getDi(): ?\Pimple\Container
-    {
-        return $this->di;
-    }
-
-    public function fetchNavigation()
+    public function fetchNavigation(): array
     {
         return [
             'group' => [
@@ -53,35 +45,26 @@ class Admin implements \FOSSBilling\InjectionAwareInterface
         ];
     }
 
-    public function register(\Box_App &$app)
+    #[Route('/extension', name: 'extension_admin_index', methods: ['GET'])]
+    public function getIndex(): Response
     {
-        $app->get('/extension', 'get_index', [], static::class);
-        $app->get('/extension/settings/:mod', 'get_settings', ['mod' => '[a-z0-9-]+'], static::class);
-        $app->get('/extension/languages', 'get_langs', [], static::class);
+        return $this->render('mod_extension_index');
     }
 
-    public function get_index(\Box_App $app)
+    #[Route('/extension/languages', name: 'extension_admin_languages', methods: ['GET'])]
+    public function getLangs(): Response
     {
-        $this->di['is_admin_logged'];
-
-        return $app->render('mod_extension_index');
+        return $this->render('mod_extension_languages');
     }
 
-    public function get_langs(\Box_App $app)
+    #[Route('/extension/settings/{mod}', name: 'extension_admin_settings', methods: ['GET'], requirements: ['mod' => '[a-z0-9-]+'])]
+    public function getSettings(string $mod): Response
     {
-        $this->di['is_admin_logged'];
-
-        return $app->render('mod_extension_languages');
-    }
-
-    public function get_settings(\Box_App $app, $mod)
-    {
-        $this->di['is_admin_logged'];
         $extensionService = $this->di['mod_service']('Extension');
-        $extensionService->hasManagePermission($mod, $app);
+        // The hasManagePermission method redirects if the user does not have permission, so we don't need to handle the return value.
+        $extensionService->hasManagePermission($mod);
 
         $file = 'mod_' . $mod . '_settings';
-
-        return $app->render($file);
+        return $this->render($file);
     }
 }

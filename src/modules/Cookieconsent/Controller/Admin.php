@@ -11,21 +11,13 @@
 
 namespace Box\Mod\Cookieconsent\Controller;
 
-class Admin implements \FOSSBilling\InjectionAwareInterface
+use FOSSBilling\Controller\AdminController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class Admin extends AdminController
 {
-    protected ?\Pimple\Container $di = null;
-
-    public function setDi(\Pimple\Container $di): void
-    {
-        $this->di = $di;
-    }
-
-    public function getDi(): ?\Pimple\Container
-    {
-        return $this->di;
-    }
-
-    public function fetchNavigation()
+    public function fetchNavigation(): array
     {
         return [
             'subpages' => [
@@ -40,15 +32,9 @@ class Admin implements \FOSSBilling\InjectionAwareInterface
         ];
     }
 
-    public function register(\Box_App &$app)
+    #[Route('/cookieconsent', name: 'cookieconsent_admin_index', methods: ['GET'])]
+    public function getIndex(): Response
     {
-        $app->get('/cookieconsent', 'get_index', [], static::class);
-    }
-
-    public function get_index(\Box_App $app)
-    {
-        $this->di['is_admin_logged'];
-
-        return $app->render('mod_cookieconsent_index');
+        return $this->render('mod_cookieconsent_index');
     }
 }
