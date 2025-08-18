@@ -36,7 +36,7 @@ class ServiceBalance implements InjectionAwareInterface
     {
         $sql = '
         SELECT SUM(amount) as client_total
-        FROM client_balance
+        FROM transaction
         WHERE client_id = ?
         GROUP BY client_id
         ';
@@ -73,7 +73,7 @@ class ServiceBalance implements InjectionAwareInterface
     public function getSearchQuery($data)
     {
         $q = 'SELECT m.*, c.currency  as currency
-              FROM client_balance as m
+              FROM transaction as m
                 LEFT JOIN client as c on c.id = m.client_id';
 
         $id = $data['id'] ?? null;
@@ -130,16 +130,18 @@ class ServiceBalance implements InjectionAwareInterface
             throw new \FOSSBilling\InformationException('Funds description is invalid');
         }
 
-        $credit = $this->di['db']->dispense('ClientBalance');
-        $credit->client_id = $client->id;
-        $credit->type = $data['type'] ?? 'default';
-        $credit->rel_id = $data['rel_id'] ?? null;
-        $credit->description = $description;
-        $credit->amount = -$amount;
-        $credit->created_at = date('Y-m-d H:i:s');
-        $credit->updated_at = date('Y-m-d H:i:s');
-        $this->di['db']->store($credit);
+        $billingService = $this->di['mod_service']('Billing');
 
-        return $credit;
+        $tx = [
+            'client_id' => $client->id,
+            'type'      => 'withdrawal',
+            'status'    => 'processed',
+            'amount'    => -$amount,
+            'currency'  => $client->currency,
+            'note'      => $description,
+        ];
+        $billingService->create($tx);
+
+        return true;
     }
 }

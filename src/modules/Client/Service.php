@@ -247,17 +247,17 @@ class Service implements InjectionAwareInterface
             throw new \FOSSBilling\InformationException('Funds description is invalid');
         }
 
-        $credit = $this->di['db']->dispense('ClientBalance');
+        $billingService = $this->di['mod_service']('Billing');
 
-        $credit->client_id = $client->id;
-        $credit->type = $data['type'] ?? 'gift';
-        $credit->rel_id = $data['rel_id'] ?? null;
-        $credit->description = $description;
-        $credit->amount = $amount;
-        $credit->created_at = date('Y-m-d H:i:s');
-        $credit->updated_at = date('Y-m-d H:i:s');
-
-        $this->di['db']->store($credit);
+        $tx = [
+            'client_id' => $client->id,
+            'type'      => 'deposit',
+            'status'    => 'processed',
+            'amount'    => $amount,
+            'currency'  => $client->currency,
+            'note'      => $description,
+        ];
+        $billingService->create($tx);
 
         return true;
     }

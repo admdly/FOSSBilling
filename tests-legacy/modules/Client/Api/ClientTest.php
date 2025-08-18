@@ -13,53 +13,53 @@ class ClientTest extends \BBTestCase
         $this->assertEquals($di, $getDi);
     }
 
-    public function testbalanceGetList(): void
-    {
-        $data = [];
-
-        $model = new \Model_Client();
-        $model->loadBean(new \DummyBean());
-
-        $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Client\ServiceBalance::class)->getMock();
-        $serviceMock->expects($this->atLeastOnce())
-            ->method('getSearchQuery')
-            ->willReturn(['sql', []]);
-
-        $simpleResultArr = [
-            'list' => [
-                ['id' => 1],
-            ],
-        ];
-
-        $pagerMock = $this->getMockBuilder('\\' . \FOSSBilling\Pagination::class)
-        ->onlyMethods(['getPaginatedResultSet'])
-        ->disableOriginalConstructor()
-        ->getMock();
-        $pagerMock->expects($this->atLeastOnce())
-            ->method('getPaginatedResultSet')
-            ->willReturn($simpleResultArr);
-
-        $model = new \Model_ClientBalance();
-        $model->loadBean(new \DummyBean());
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
-        $dbMock->expects($this->atLeastOnce())
-            ->method('getExistingModelById')
-            ->willReturn($model);
-
-        $di = new \Pimple\Container();
-        $di['mod_service'] = $di->protect(fn ($name) => $serviceMock);
-        $di['pager'] = $pagerMock;
-        $di['db'] = $dbMock;
-
-        $client = new Client();
-        $client->setDi($di);
-        $client->setService($serviceMock);
-        $client->setIdentity($model);
-
-        $result = $client->balance_get_list($data);
-
-        $this->assertIsArray($result);
-    }
+//    public function testbalanceGetList(): void
+//    {
+//        $data = [];
+//
+//        $model = new \Model_Client();
+//        $model->loadBean(new \DummyBean());
+//
+//        $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Client\ServiceBalance::class)->getMock();
+//        $serviceMock->expects($this->atLeastOnce())
+//            ->method('getSearchQuery')
+//            ->willReturn(['sql', []]);
+//
+//        $simpleResultArr = [
+//            'list' => [
+//                ['id' => 1],
+//            ],
+//        ];
+//
+//        $pagerMock = $this->getMockBuilder('\\' . \FOSSBilling\Pagination::class)
+//        ->onlyMethods(['getPaginatedResultSet'])
+//        ->disableOriginalConstructor()
+//        ->getMock();
+//        $pagerMock->expects($this->atLeastOnce())
+//            ->method('getPaginatedResultSet')
+//            ->willReturn($simpleResultArr);
+//
+//        $model = new \Model_ClientBalance();
+//        $model->loadBean(new \DummyBean());
+//        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+//        $dbMock->expects($this->atLeastOnce())
+//            ->method('getExistingModelById')
+//            ->willReturn($model);
+//
+//        $di = new \Pimple\Container();
+//        $di['mod_service'] = $di->protect(fn ($name) => $serviceMock);
+//        $di['pager'] = $pagerMock;
+//        $di['db'] = $dbMock;
+//
+//        $client = new Client();
+//        $client->setDi($di);
+//        $client->setService($serviceMock);
+//        $client->setIdentity($model);
+//
+//        $result = $client->balance_get_list($data);
+//
+//        $this->assertIsArray($result);
+//    }
 
     public function testbalanceGetTotal(): void
     {

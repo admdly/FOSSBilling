@@ -266,25 +266,6 @@ CREATE TABLE `client` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `client_balance`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `client_balance` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `client_id` bigint(20) DEFAULT NULL,
-  `type` varchar(100) DEFAULT NULL,
-  `rel_id` varchar(20) DEFAULT NULL,
-  `amount` decimal(18,2) DEFAULT '0.00',
-  `description` text,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `client_id_idx` (`client_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
 --
 -- Table structure for table `client_group`
 --
@@ -1425,13 +1406,14 @@ CREATE TABLE `tld_registrar` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `transaction` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `client_id` bigint(20) DEFAULT NULL,
   `invoice_id` bigint(20) DEFAULT NULL,
   `gateway_id` int(11) DEFAULT NULL,
   `txn_id` varchar(255) DEFAULT NULL,
   `txn_status` varchar(255) DEFAULT NULL,
   `s_id` varchar(255) DEFAULT NULL,
   `s_period` varchar(255) DEFAULT NULL,
-  `amount` varchar(255) DEFAULT NULL,
+  `amount` decimal(18,2) DEFAULT '0.00',
   `currency` varchar(10) DEFAULT NULL,
   `type` varchar(255) DEFAULT NULL,
   `status` varchar(255) DEFAULT 'received',
@@ -1445,7 +1427,8 @@ CREATE TABLE `transaction` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `invoice_id_idx` (`invoice_id`)
+  KEY `invoice_id_idx` (`invoice_id`),
+  KEY `client_id_idx` (`client_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

@@ -609,18 +609,19 @@ class Service implements InjectionAwareInterface
                 $this->di['logger']->setChannel('billing')->info("Setting invoice {$invoice->id} as paid with credits for the amount of {$required}.");
             }
 
-            $balanceTransaction = $this->di['db']->dispense('ClientBalance');
-            $balanceTransaction->client_id = $client->id;
-            $balanceTransaction->type = 'invoice';
-            $balanceTransaction->rel_id = $invoice->id;
-
+            $billingService = $this->di['mod_service']('Billing');
             $invoiceIdentifier = $invoice->serie_nr ?: $invoice->id;
-            $balanceTransaction->description = "Payment for invoice #{$invoiceIdentifier} using account credit.";
 
-            $balanceTransaction->amount = -$required;
-            $balanceTransaction->created_at = date('Y-m-d H:i:s');
-            $balanceTransaction->updated_at = date('Y-m-d H:i:s');
-            $this->di['db']->store($balanceTransaction);
+            $data = [
+                'client_id' => $client->id,
+                'invoice_id' => $invoice->id,
+                'type'      => 'internal',
+                'status'    => 'processed',
+                'amount'    => -$required,
+                'currency'  => $invoice->currency,
+                'note'      => "Payment for invoice #{$invoiceIdentifier} using account credit.",
+            ];
+            $billingService->create($data);
 
             $this->markAsPaid($invoice, false, true);
 

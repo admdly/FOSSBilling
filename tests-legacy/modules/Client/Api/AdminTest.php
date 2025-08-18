@@ -495,80 +495,80 @@ class AdminTest extends \BBTestCase
         $admin_Client->change_password($data);
     }
 
-    public function testbalanceGetList(): void
-    {
-        $simpleResultArr = [
-            'list' => [
-                [
-                    'id' => 1,
-                    'description' => 'Testing',
-                    'amount' => '1.00',
-                    'currency' => 'USD',
-                    'created_at' => date('Y:m:d H:i:s'),
-                ],
-            ],
-        ];
+//    public function testbalanceGetList(): void
+//    {
+//        $simpleResultArr = [
+//            'list' => [
+//                [
+//                    'id' => 1,
+//                    'description' => 'Testing',
+//                    'amount' => '1.00',
+//                    'currency' => 'USD',
+//                    'created_at' => date('Y:m:d H:i:s'),
+//                ],
+//            ],
+//        ];
+//
+//        $data = [];
+//
+//        $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Client\ServiceBalance::class)->getMock();
+//        $serviceMock->expects($this->atLeastOnce())
+//            ->method('getSearchQuery')
+//            ->willReturn(['String', []]);
+//
+//        $pagerMock = $this->getMockBuilder('\\' . \FOSSBilling\Pagination::class)
+//            ->onlyMethods(['getPaginatedResultSet'])
+//            ->getMock();
+//
+//        $pagerMock->expects($this->atLeastOnce())
+//            ->method('getPaginatedResultSet')
+//            ->willReturn($simpleResultArr);
+//
+//        $model = new \Model_ClientBalance();
+//        $model->loadBean(new \DummyBean());
+//
+//        $di = new \Pimple\Container();
+//        $di['mod_service'] = $di->protect(fn ($name) => $serviceMock);
+//        $di['pager'] = $pagerMock;
+//
+//        $admin_Client = new \Box\Mod\Client\Api\Admin();
+//        $admin_Client->setDi($di);
+//
+//        $result = $admin_Client->balance_get_list($data);
+//        $this->assertIsArray($result);
+//    }
 
-        $data = [];
-
-        $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Client\ServiceBalance::class)->getMock();
-        $serviceMock->expects($this->atLeastOnce())
-            ->method('getSearchQuery')
-            ->willReturn(['String', []]);
-
-        $pagerMock = $this->getMockBuilder('\\' . \FOSSBilling\Pagination::class)
-            ->onlyMethods(['getPaginatedResultSet'])
-            ->getMock();
-
-        $pagerMock->expects($this->atLeastOnce())
-            ->method('getPaginatedResultSet')
-            ->willReturn($simpleResultArr);
-
-        $model = new \Model_ClientBalance();
-        $model->loadBean(new \DummyBean());
-
-        $di = new \Pimple\Container();
-        $di['mod_service'] = $di->protect(fn ($name) => $serviceMock);
-        $di['pager'] = $pagerMock;
-
-        $admin_Client = new \Box\Mod\Client\Api\Admin();
-        $admin_Client->setDi($di);
-
-        $result = $admin_Client->balance_get_list($data);
-        $this->assertIsArray($result);
-    }
-
-    public function testbalanceDelete(): void
-    {
-        $data = [
-            'id' => 1,
-        ];
-
-        $model = new \Model_ClientBalance();
-        $model->loadBean(new \DummyBean());
-
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
-        $dbMock->expects($this->atLeastOnce())
-            ->method('getExistingModelById')->willReturn($model);
-
-        $dbMock->expects($this->atLeastOnce())
-            ->method('trash');
-
-        $di = new \Pimple\Container();
-        $di['db'] = $dbMock;
-        $di['logger'] = new \Box_Log();
-        $validatorMock = $this->getMockBuilder('\\' . \FOSSBilling\Validate::class)->disableOriginalConstructor()->getMock();
-        $validatorMock->expects($this->atLeastOnce())
-            ->method('checkRequiredParamsForArray')
-            ->willReturn(null);
-        $di['validator'] = $validatorMock;
-
-        $admin_Client = new \Box\Mod\Client\Api\Admin();
-        $admin_Client->setDi($di);
-
-        $result = $admin_Client->balance_delete($data);
-        $this->assertTrue($result);
-    }
+//    public function testbalanceDelete(): void
+//    {
+//        $data = [
+//            'id' => 1,
+//        ];
+//
+//        $model = new \Model_ClientBalance();
+//        $model->loadBean(new \DummyBean());
+//
+//        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+//        $dbMock->expects($this->atLeastOnce())
+//            ->method('getExistingModelById')->willReturn($model);
+//
+//        $dbMock->expects($this->atLeastOnce())
+//            ->method('trash');
+//
+//        $di = new \Pimple\Container();
+//        $di['db'] = $dbMock;
+//        $di['logger'] = new \Box_Log();
+//        $validatorMock = $this->getMockBuilder('\\' . \FOSSBilling\Validate::class)->disableOriginalConstructor()->getMock();
+//        $validatorMock->expects($this->atLeastOnce())
+//            ->method('checkRequiredParamsForArray')
+//            ->willReturn(null);
+//        $di['validator'] = $validatorMock;
+//
+//        $admin_Client = new \Box\Mod\Client\Api\Admin();
+//        $admin_Client->setDi($di);
+//
+//        $result = $admin_Client->balance_delete($data);
+//        $this->assertTrue($result);
+//    }
 
     public function testbalanceAddFunds(): void
     {

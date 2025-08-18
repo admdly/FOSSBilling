@@ -43,27 +43,9 @@ class ServiceTransaction implements InjectionAwareInterface
 
     public function update(\Model_Transaction $model, array $data)
     {
-        $this->di['events_manager']->fire(['event' => 'onBeforeAdminTransactionUpdate', 'params' => ['id' => $model->id]]);
+        $billingService = $this->di['mod_service']('Billing');
 
-        $model->invoice_id = $data['invoice_id'] ?? $model->invoice_id;
-        $model->txn_id = $data['txn_id'] ?? $model->txn_id;
-        $model->txn_status = $data['txn_status'] ?? $model->txn_status;
-        $model->gateway_id = $data['gateway_id'] ?? $model->gateway_id;
-        $model->amount = $data['amount'] ?? $model->amount;
-        $model->currency = $data['currency'] ?? $model->currency;
-        $model->type = $data['type'] ?? $model->type;
-        $model->note = $data['note'] ?? $model->note;
-        $model->status = $data['status'] ?? $model->status;
-        $model->error = $data['error'] ?? $model->error;
-        $model->error_code = $data['error_code'] ?? $model->error_code;
-        $model->validate_ipn = $data['validate_ipn'] ?? $model->validate_ipn;
-        $model->updated_at = date('Y-m-d H:i:s');
-        $this->di['db']->store($model);
-        $this->di['events_manager']->fire(['event' => 'onAfterAdminTransactionUpdate', 'params' => ['id' => $model->id]]);
-
-        $this->di['logger']->info('Updated transaction #%s', $model->id);
-
-        return true;
+        return $billingService->update($model, $data);
     }
 
     public function createAndProcess($ipn)
@@ -76,45 +58,9 @@ class ServiceTransaction implements InjectionAwareInterface
 
     public function create(array $data)
     {
-        $this->di['events_manager']->fire(['event' => 'onBeforeAdminTransactionCreate', 'params' => $data]);
+        $billingService = $this->di['mod_service']('Billing');
 
-        $skip_validation = isset($data['skip_validation']) && (bool) $data['skip_validation'];
-        if (!$skip_validation) {
-            if (!isset($data['invoice_id'])) {
-                throw new \FOSSBilling\InformationException('Transaction invoice ID is missing');
-            }
-
-            if (!isset($data['gateway_id'])) {
-                throw new \FOSSBilling\InformationException('Payment gateway ID is missing');
-            }
-            $this->di['db']->getExistingModelById('Invoice', $data['invoice_id'], 'Invoice was not found');
-            $this->di['db']->getExistingModelById('PayGateway', $data['gateway_id'], 'Gateway was not found');
-        }
-
-        $ipn = [
-            'get' => (isset($data['get']) && is_array($data['get'])) ? $data['get'] : null,
-            'post' => (isset($data['post']) && is_array($data['post'])) ? $data['post'] : null,
-            'http_raw_post_data' => $data['http_raw_post_data'] ?? null,
-            'server' => $data['server'] ?? null,
-        ];
-
-        $transaction = $this->di['db']->dispense('Transaction');
-        $transaction->gateway_id = $data['gateway_id'] ?? null;
-        $transaction->invoice_id = $data['invoice_id'] ?? null;
-        $transaction->txn_id = $data['txn_id'] ?? null;
-        $transaction->status = 'received';
-        $transaction->ip = $this->di['request']->getClientIp();
-        $transaction->ipn = json_encode($ipn);
-        $transaction->note = $data['note'] ?? null;
-        $transaction->created_at = date('Y-m-d H:i:s');
-        $transaction->updated_at = date('Y-m-d H:i:s');
-        $newId = $this->di['db']->store($transaction);
-
-        $this->di['logger']->info('Received transaction %s from payment gateway %s', $newId, $transaction->gateway_id);
-
-        $this->di['events_manager']->fire(['event' => 'onAfterAdminTransactionCreate', 'params' => ['id' => $newId]]);
-
-        return $newId;
+        return $billingService->create($data);
     }
 
     public function delete(\Model_Transaction $model)
@@ -128,128 +74,16 @@ class ServiceTransaction implements InjectionAwareInterface
 
     public function toApiArray(\Model_Transaction $model, $deep = false, $identity = null): array
     {
-        $gateway = null;
-        if ($model->gateway_id) {
-            $gtw = $this->di['db']->load('PayGateway', $model->gateway_id);
-            if ($gtw instanceof \Model_PayGateway) {
-                $gateway = $gtw->name;
-            }
-        }
+        $billingService = $this->di['mod_service']('Billing');
 
-        $result = [
-            'id' => $model->id,
-            'invoice_id' => $model->invoice_id,
-            'txn_id' => $model->txn_id,
-            'txn_status' => $model->txn_status,
-            'gateway_id' => $model->gateway_id,
-            'gateway' => $gateway,
-            'amount' => $model->amount,
-            'currency' => $model->currency,
-            'type' => $model->type,
-            'status' => $model->status,
-            'ip' => $model->ip,
-            'validate_ipn' => $model->validate_ipn,
-            'error' => $model->error,
-            'error_code' => $model->error_code,
-            'note' => $model->note,
-            'created_at' => $model->created_at,
-            'updated_at' => $model->updated_at,
-        ];
-        if ($deep) {
-            $result['ipn'] = json_decode($model->ipn ?? '', true);
-        }
-
-        return $result;
+        return $billingService->toApiArray($model, $deep, $identity);
     }
 
     public function getSearchQuery(array $data)
     {
-        $sql = 'SELECT m.*
-                FROM transaction as m
-                LEFT JOIN invoice as i on m.invoice_id = i.id
-                WHERE 1 ';
+        $billingService = $this->di['mod_service']('Billing');
 
-        $id = $data['id'] ?? null;
-        $search = $data['search'] ?? null;
-        $invoice_hash = $data['invoice_hash'] ?? null;
-        $invoice_id = $data['invoice_id'] ?? null;
-        $gateway_id = $data['gateway_id'] ?? null;
-        $client_id = $data['client_id'] ?? null;
-        $status = $data['status'] ?? null;
-        $currency = $data['currency'] ?? null;
-        $type = $data['type'] ?? null;
-        $txn_id = $data['txn_id'] ?? null;
-
-        $date_from = $data['date_from'] ?? null;
-        $date_to = $data['date_to'] ?? null;
-
-        $params = [];
-        if ($id) {
-            $sql .= ' AND m.id = :id';
-            $params['id'] = $id;
-        }
-
-        if ($status) {
-            $sql .= ' AND m.status = :status';
-            $params['status'] = $status;
-        }
-
-        if ($invoice_hash) {
-            $sql .= ' AND i.hash = :hash';
-            $params['hash'] = $invoice_hash;
-        }
-
-        if ($invoice_id) {
-            $sql .= ' AND m.invoice_id = :invoice_id';
-            $params['invoice_id'] = $invoice_id;
-        }
-
-        if ($gateway_id) {
-            $sql .= ' AND m.gateway_id = :gateway_id';
-            $params['gateway_id'] = $gateway_id;
-        }
-
-        if ($client_id) {
-            $sql .= ' AND i.client_id = :client_id';
-            $params['client_id'] = $client_id;
-        }
-
-        if ($currency) {
-            $sql .= ' AND m.currency = :currency';
-            $params['currency'] = $currency;
-        }
-
-        if ($type) {
-            $sql .= ' AND m.type = :type';
-            $params['type'] = $type;
-        }
-
-        if ($txn_id) {
-            $sql .= ' AND m.txn_id = :txn_id';
-            $params['txn_id'] = $txn_id;
-        }
-
-        if ($date_from) {
-            $sql .= ' AND UNIX_TIMESTAMP(m.created_at) >= :date_from';
-            $params['date_from'] = strtotime($date_from);
-        }
-
-        if ($date_to) {
-            $sql .= ' AND UNIX_TIMESTAMP(m.created_at) <= :date_to';
-            $params['date_to'] = strtotime($date_to);
-        }
-
-        if ($search) {
-            $sql .= ' AND m.note LIKE :note OR m.invoice_id LIKE :search_invoice_id OR m.txn_id LIKE :search_txn_id OR m.ipn LIKE :ipn';
-            $params['note'] = "%$search%";
-            $params['search_invoice_id'] = "%$search%";
-            $params['search_txn_id'] = "%$search%";
-            $params['ipn'] = "%$search%";
-        }
-
-        $sql .= ' ORDER BY m.id DESC';
-
-        return [$sql, $params];
+        return $billingService->getSearchQuery($data);
     }
 
     public function counter()

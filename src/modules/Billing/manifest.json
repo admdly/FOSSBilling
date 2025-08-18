@@ -1,0 +1,8 @@
+{
+  "id": "billing",
+  "type": "mod",
+  "name": "Billing",
+  "description": "Centralized service for handling all system transactions.",
+  "icon_url": "icon.svg",
+  "version": "1.0.0"
+}

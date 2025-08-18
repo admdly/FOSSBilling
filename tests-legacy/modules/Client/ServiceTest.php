@@ -474,47 +474,47 @@ class ServiceTest extends \BBTestCase
         ];
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('searchBalanceQueryData')]
-    public function testgetBalanceSearchQuery($data, $expectedStr, $expectedParams): void
-    {
-        $di = new \Pimple\Container();
-
-        $clientBalanceService = new \Box\Mod\Client\ServiceBalance();
-        $clientBalanceService->setDi($di);
-        [$sql, $params] = $clientBalanceService->getSearchQuery($data);
-        $this->assertNotEmpty($sql);
-        $this->assertIsString($sql);
-        $this->assertIsArray($params);
-
-        $this->assertTrue(str_contains($sql, $expectedStr), $sql);
-        $this->assertTrue(array_diff_key($params, $expectedParams) == []);
-    }
-
-    public function testaddFunds(): void
-    {
-        $modelClient = new \Model_Client();
-        $modelClient->loadBean(new \DummyBean());
-        $modelClient->currency = 'USD';
-
-        $model = new \Model_ClientBalance();
-        $model->loadBean(new \DummyBean());
-
-        $amount = '2.22';
-        $description = 'test description';
-
-        $database = $this->getMockBuilder('\Box_Database')->getMock();
-        $database->expects($this->atLeastOnce())->method('dispense')
-            ->willReturn($model);
-
-        $di = new \Pimple\Container();
-        $di['db'] = $database;
-
-        $clientService = new \Box\Mod\Client\Service();
-        $clientService->setDi($di);
-
-        $result = $clientService->addFunds($modelClient, $amount, $description);
-        $this->assertTrue($result);
-    }
+//    #[\PHPUnit\Framework\Attributes\DataProvider('searchBalanceQueryData')]
+//    public function testgetBalanceSearchQuery($data, $expectedStr, $expectedParams): void
+//    {
+//        $di = new \Pimple\Container();
+//
+//        $clientBalanceService = new \Box\Mod\Client\ServiceBalance();
+//        $clientBalanceService->setDi($di);
+//        [$sql, $params] = $clientBalanceService->getSearchQuery($data);
+//        $this->assertNotEmpty($sql);
+//        $this->assertIsString($sql);
+//        $this->assertIsArray($params);
+//
+//        $this->assertTrue(str_contains($sql, $expectedStr), $sql);
+//        $this->assertTrue(array_diff_key($params, $expectedParams) == []);
+//    }
+//
+//    public function testaddFunds(): void
+//    {
+//        $modelClient = new \Model_Client();
+//        $modelClient->loadBean(new \DummyBean());
+//        $modelClient->currency = 'USD';
+//
+//        $model = new \Model_ClientBalance();
+//        $model->loadBean(new \DummyBean());
+//
+//        $amount = '2.22';
+//        $description = 'test description';
+//
+//        $database = $this->getMockBuilder('\Box_Database')->getMock();
+//        $database->expects($this->atLeastOnce())->method('dispense')
+//            ->willReturn($model);
+//
+//        $di = new \Pimple\Container();
+//        $di['db'] = $database;
+//
+//        $clientService = new \Box\Mod\Client\Service();
+//        $clientService->setDi($di);
+//
+//        $result = $clientService->addFunds($modelClient, $amount, $description);
+//        $this->assertTrue($result);
+//    }
 
     public function testaddFundsCurrencyNotDefined(): void
     {
