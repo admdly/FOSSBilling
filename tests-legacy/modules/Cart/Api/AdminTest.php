@@ -5,13 +5,16 @@ namespace Box\Tests\Mod\Cart\Api;
 class AdminTest extends \BBTestCase
 {
     /**
-     * @var \Box\Mod\Cart\Api\Admin
+     * @var \Box\Mod\Cart\Api
      */
     protected $adminApi;
 
     public function setup(): void
     {
-        $this->adminApi = new \Box\Mod\Cart\Api\Admin();
+        $this->adminApi = new \Box\Mod\Cart\Api();
+        // Set up admin identity for context
+        $adminIdentity = new \Model_Admin();
+        $this->adminApi->setIdentity($adminIdentity);
     }
 
     public function testGetList(): void

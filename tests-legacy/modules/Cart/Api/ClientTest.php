@@ -5,13 +5,16 @@ namespace Box\Tests\Mod\Cart\Api;
 class ClientTest extends \BBTestCase
 {
     /**
-     * @var \Box\Mod\Cart\Api\Client
+     * @var \Box\Mod\Cart\Api
      */
     protected $clientApi;
 
     public function setup(): void
     {
-        $this->clientApi = new \Box\Mod\Cart\Api\Client();
+        $this->clientApi = new \Box\Mod\Cart\Api();
+        // Set up client identity for context
+        $clientIdentity = new \Model_Client();
+        $this->clientApi->setIdentity($clientIdentity);
     }
 
     public function testCheckout(): void

@@ -41,7 +41,7 @@ class AdminTest extends \BBTestCase
         $api->setDi($di);
         $di['api_admin'] = $api;
 
-        $activity = new \Box\Mod\Activity\Api\Admin();
+        $activity = new \Box\Mod\Activity\Api();
         $activity->setDi($di);
         $activity->setService($service);
         $activity->log_get_list([]);
@@ -84,7 +84,7 @@ class AdminTest extends \BBTestCase
         $api->setDi($di);
         $di['api_admin'] = $api;
 
-        $activity = new \Box\Mod\Activity\Api\Admin();
+        $activity = new \Box\Mod\Activity\Api();
         $activity->setDi($di);
         $activity->setService($service);
         $activity->log_get_list([]);
@@ -94,7 +94,7 @@ class AdminTest extends \BBTestCase
     {
         $di = new \Pimple\Container();
 
-        $activity = new \Box\Mod\Activity\Api\Admin();
+        $activity = new \Box\Mod\Activity\Api();
         $activity->setDi($di);
         $result = $activity->log([]);
         $this->assertFalse($result, 'Empty array key m');
@@ -109,7 +109,7 @@ class AdminTest extends \BBTestCase
 
         $di = new \Pimple\Container();
 
-        $adminApi = new \Box\Mod\Activity\Api\Admin();
+        $adminApi = new \Box\Mod\Activity\Api();
         $adminApi->setService($service);
         $adminApi->setDi($di);
         $result = $adminApi->log_email(['subject' => 'Proper subject']);
@@ -119,7 +119,7 @@ class AdminTest extends \BBTestCase
 
     public function testlogEmailWithoutSubject(): void
     {
-        $activity = new \Box\Mod\Activity\Api\Admin();
+        $activity = new \Box\Mod\Activity\Api();
         $result = $activity->log_email([]);
         $this->assertFalse($result);
     }
@@ -150,7 +150,7 @@ class AdminTest extends \BBTestCase
 
         $di['mod_service'] = $di->protect(fn () => $serviceMock);
 
-        $activity = new \Box\Mod\Activity\Api\Admin();
+        $activity = new \Box\Mod\Activity\Api();
         $activity->setDi($di);
 
         $result = $activity->log_delete(['id' => 1]);
@@ -159,7 +159,7 @@ class AdminTest extends \BBTestCase
 
     public function testBatchDelete(): void
     {
-        $activityMock = $this->getMockBuilder('\\' . \Box\Mod\Activity\Api\Admin::class)->onlyMethods(['log_delete'])->getMock();
+        $activityMock = $this->getMockBuilder('\\' . \Box\Mod\Activity\Api::class)->onlyMethods(['log_delete'])->getMock();
         $activityMock->expects($this->atLeastOnce())->method('log_delete')->willReturn(true);
 
         $validatorMock = $this->getMockBuilder('\\' . \FOSSBilling\Validate::class)->disableOriginalConstructor()->getMock();

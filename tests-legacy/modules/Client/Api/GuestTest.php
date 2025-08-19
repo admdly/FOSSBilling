@@ -7,7 +7,7 @@ class GuestTest extends \BBTestCase
     public function testgetDi(): void
     {
         $di = new \Pimple\Container();
-        $client = new Guest();
+        $client = new \Box\Mod\Client\Api();
         $client->setDi($di);
         $getDi = $client->getDi();
         $this->assertEquals($di, $getDi);
@@ -54,7 +54,7 @@ class GuestTest extends \BBTestCase
         $di['validator'] = $validatorMock;
         $di['tools'] = $toolsMock;
 
-        $client = new Guest();
+        $client = new \Box\Mod\Client\Api();
         $client->setDi($di);
         $client->setService($serviceMock);
 
@@ -100,7 +100,7 @@ class GuestTest extends \BBTestCase
         $toolsMock->expects($this->atLeastOnce())->method('validateAndSanitizeEmail');
         $di['tools'] = $toolsMock;
 
-        $client = new Guest();
+        $client = new \Box\Mod\Client\Api();
         $client->setDi($di);
         $client->setService($serviceMock);
 
@@ -121,7 +121,7 @@ class GuestTest extends \BBTestCase
             'password_confirm' => 'testpaswword',
         ];
 
-        $client = new Guest();
+        $client = new \Box\Mod\Client\Api();
         $di = new \Pimple\Container();
         $di['mod_config'] = $di->protect(fn ($name) => $configArr);
         $client->setDi($di);
@@ -146,7 +146,7 @@ class GuestTest extends \BBTestCase
         $validatorMock = $this->getMockBuilder('\\' . \FOSSBilling\Validate::class)->getMock();
         $validatorMock->expects($this->atLeastOnce())->method('checkRequiredParamsForArray');
 
-        $client = new Guest();
+        $client = new \Box\Mod\Client\Api();
         $di = new \Pimple\Container();
         $di['mod_config'] = $di->protect(fn ($name) => $configArr);
         $di['validator'] = $validatorMock;
@@ -207,7 +207,7 @@ class GuestTest extends \BBTestCase
         $di['tools'] = $toolsMock;
         $di['mod_service'] = $di->protect(fn () => $cartServiceMock);
 
-        $client = new Guest();
+        $client = new \Box\Mod\Client\Api();
         $client->setDi($di);
         $client->setService($serviceMock);
 
@@ -260,7 +260,7 @@ class GuestTest extends \BBTestCase
         $di['tools'] = $toolsMock;
         $di['validator'] = $validatorMock;
 
-        $client = new Guest();
+        $client = new \Box\Mod\Client\Api();
         $client->setDi($di);
 
         $result = $client->reset_password($data);
@@ -291,7 +291,7 @@ class GuestTest extends \BBTestCase
         $toolsMock->expects($this->atLeastOnce())->method('validateAndSanitizeEmail');
         $di['tools'] = $toolsMock;
 
-        $client = new Guest();
+        $client = new \Box\Mod\Client\Api();
         $client->setDi($di);
 
         // expects true because we don't want to give away if the email exists or not
@@ -354,7 +354,7 @@ class GuestTest extends \BBTestCase
         $di['logger'] = new \Box_Log();
         $di['mod_service'] = $di->protect(fn ($name) => $emailServiceMock);
 
-        $client = new Guest();
+        $client = new \Box\Mod\Client\Api();
         $client->setDi($di);
 
         $result = $client->update_password($data);
@@ -391,7 +391,7 @@ class GuestTest extends \BBTestCase
         $di['events_manager'] = $eventMock;
         $di['validator'] = $validatorMock;
 
-        $client = new Guest();
+        $client = new \Box\Mod\Client\Api();
         $client->setDi($di);
 
         // Expect a Box_Exception to be thrown with a specific message
@@ -407,7 +407,7 @@ class GuestTest extends \BBTestCase
         $di = new \Pimple\Container();
         $di['mod_config'] = $di->protect(fn ($name) => $configArr);
 
-        $client = new Guest();
+        $client = new \Box\Mod\Client\Api();
         $client->setDi($di);
 
         $result = $client->required();

@@ -107,4 +107,31 @@ class Api_Abstract implements InjectionAwareInterface
     {
         return $this->ip;
     }
+
+    /**
+     * Get the user context based on identity.
+     */
+    protected function getContext(): string
+    {
+        $identity = $this->getIdentity();
+
+        if ($identity instanceof \Model_Admin) {
+            return 'admin';
+        } elseif ($identity instanceof \Model_Client) {
+            return 'client';
+        } else {
+            return 'guest';
+        }
+    }
+
+    /**
+     * Check if current context has permission for the method.
+     */
+    protected function requireContext(array $allowedContexts): void
+    {
+        $currentContext = $this->getContext();
+        if (!in_array($currentContext, $allowedContexts)) {
+            throw new \FOSSBilling\Exception('Method not available in :context context', [':context' => $currentContext]);
+        }
+    }
 }

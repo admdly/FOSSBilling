@@ -7,7 +7,7 @@ class ClientTest extends \BBTestCase
     public function testgetDi(): void
     {
         $di = new \Pimple\Container();
-        $client = new Client();
+        $client = new \Box\Mod\Client\Api();
         $client->setDi($di);
         $getDi = $client->getDi();
         $this->assertEquals($di, $getDi);
@@ -51,7 +51,7 @@ class ClientTest extends \BBTestCase
         $di['pager'] = $pagerMock;
         $di['db'] = $dbMock;
 
-        $client = new Client();
+        $client = new \Box\Mod\Client\Api();
         $client->setDi($di);
         $client->setService($serviceMock);
         $client->setIdentity($model);
@@ -75,7 +75,7 @@ class ClientTest extends \BBTestCase
         $di = new \Pimple\Container();
         $di['mod_service'] = $di->protect(fn ($name, $sub) => $serviceMock);
 
-        $api = new Client();
+        $api = new \Box\Mod\Client\Api();
         $api->setDi($di);
         $api->setIdentity($model);
 
@@ -97,7 +97,7 @@ class ClientTest extends \BBTestCase
         $client = new \Model_Client();
         $client->loadBean(new \DummyBean());
 
-        $api = new Client();
+        $api = new \Box\Mod\Client\Api();
         $api->setService($serviceMock);
         $api->setIdentity($client);
 
