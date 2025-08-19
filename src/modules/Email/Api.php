@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright 2022-2025 FOSSBilling
  * Copyright 2011-2021 BoxBilling, Inc.
@@ -9,21 +8,43 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
 
-/**
- *Email logs and templates management.
- */
+namespace Box\Mod\Email;
 
-namespace Box\Mod\Email\Api;
-
-class Admin extends \Api_Abstract
+class Api extends \Api_Abstract
 {
     /**
      * Get list of sent emails.
      *
      * @return array
      */
-    public function email_get_list($data)
+    public function get_list($data)
     {
+        $context = $this->getContext();
+        if ($context === 'admin') {
+            $per_page = $data['per_page'] ?? $this->di['pager']->getDefaultPerPage();
+            [$sql, $params] = $this->getService()->getSearchQuery($data);
+            $pager = $this->di['pager']->getPaginatedResultSet($sql, $params, $per_page);
+
+            foreach ($pager['list'] as $key => $item) {
+                $pager['list'][$key] = [
+                    'id' => $item['id'],
+                    'client_id' => $item['client_id'],
+                    'sender' => $item['sender'],
+                    'recipients' => $item['recipients'],
+                    'subject' => $item['subject'],
+                    'content_html' => $item['content_html'],
+                    'content_text' => $item['content_text'],
+                    'created_at' => $item['created_at'],
+                    'updated_at' => $item['updated_at'],
+                ];
+            }
+
+            return $pager;
+        }
+
+        $this->requireContext(['client']);
+        $client = $this->getIdentity();
+        $data['client_id'] = $client->id;
         $per_page = $data['per_page'] ?? $this->di['pager']->getDefaultPerPage();
         [$sql, $params] = $this->getService()->getSearchQuery($data);
         $pager = $this->di['pager']->getPaginatedResultSet($sql, $params, $per_page);
@@ -50,17 +71,29 @@ class Admin extends \Api_Abstract
      *
      * @return array
      */
-    public function email_get($data)
+    public function get($data)
     {
         $required = [
             'id' => 'Email ID is required',
         ];
         $this->di['validator']->checkRequiredParamsForArray($required, $data);
 
-        $service = $this->getService();
-        $model = $service->getEmailById($data['id']);
+        $context = $this->getContext();
+        if ($context === 'admin') {
+            $service = $this->getService();
+            $model = $service->getEmailById($data['id']);
 
-        return $service->toApiArray($model);
+            return $service->toApiArray($model);
+        }
+
+        $this->requireContext(['client']);
+        $model = $this->getService()->findOneForClientById($this->getIdentity(), $data['id']);
+
+        if (!$model instanceof \Model_ActivityClientEmail) {
+            throw new \FOSSBilling\Exception('Email not found');
+        }
+
+        return $this->getService()->toApiArray($model);
     }
 
     /**
@@ -102,14 +135,20 @@ class Admin extends \Api_Abstract
      *
      * @throws \FOSSBilling\Exception
      */
-    public function email_resend($data)
+    public function resend($data)
     {
         $required = [
             'id' => 'Email ID is required',
         ];
         $this->di['validator']->checkRequiredParamsForArray($required, $data);
 
-        $model = $this->di['db']->findOne('ActivityClientEmail', 'id = ?', [$data['id']]);
+        $context = $this->getContext();
+        if ($context === 'admin') {
+            $model = $this->di['db']->findOne('ActivityClientEmail', 'id = ?', [$data['id']]);
+        } else {
+            $this->requireContext(['client']);
+            $model = $this->getService()->findOneForClientById($this->getIdentity(), $data['id']);
+        }
 
         if (!$model instanceof \Model_ActivityClientEmail) {
             throw new \FOSSBilling\Exception('Email not found');
@@ -125,25 +164,32 @@ class Admin extends \Api_Abstract
      *
      * @throws \FOSSBilling\Exception
      */
-    public function email_delete($data)
+    public function delete($data)
     {
         $required = [
             'id' => 'Email ID is required',
         ];
         $this->di['validator']->checkRequiredParamsForArray($required, $data);
 
-        $model = $this->di['db']->findOne('ActivityClientEmail', 'id = ?', [$data['id']]);
+        $context = $this->getContext();
+        if ($context === 'admin') {
+            $model = $this->di['db']->findOne('ActivityClientEmail', 'id = ?', [$data['id']]);
+            if (!$model instanceof \Model_ActivityClientEmail) {
+                throw new \FOSSBilling\Exception('Email not found');
+            }
+            $id = $model->id;
+            $this->di['db']->trash($model);
+            $this->di['logger']->info('Deleted email #%s', $id);
+            return true;
+        }
 
+        $this->requireContext(['client']);
+        $model = $this->getService()->findOneForClientById($this->getIdentity(), $data['id']);
         if (!$model instanceof \Model_ActivityClientEmail) {
             throw new \FOSSBilling\Exception('Email not found');
         }
 
-        $id = $model->id;
-        $this->di['db']->trash($model);
-
-        $this->di['logger']->info('Deleted email #%s', $id);
-
-        return true;
+        return $this->getService()->rm($model);
     }
 
     /**
@@ -402,7 +448,7 @@ class Admin extends \Api_Abstract
         $this->di['validator']->checkRequiredParamsForArray($required, $data);
 
         foreach ($data['ids'] as $id) {
-            $this->email_delete(['id' => $id]);
+            $this->delete(['id' => $id]);
         }
 
         return true;

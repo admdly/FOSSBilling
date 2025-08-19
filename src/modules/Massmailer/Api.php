@@ -9,9 +9,9 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
 
-namespace Box\Mod\Massmailer\Api;
+namespace Box\Mod\Massmailer;
 
-class Admin extends \Api_Abstract
+class Api extends \Api_Abstract
 {
     /**
      * Get paginated list of active mail messages.

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright 2022-2025 FOSSBilling
  * Copyright 2011-2021 BoxBilling, Inc.
@@ -9,21 +8,37 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
 
-/**
- * Cron checker.
- */
-
-namespace Box\Mod\Cron\Api;
+namespace Box\Mod\Cron;
 
 use FOSSBilling\InformationException;
 
-class Guest extends \Api_Abstract
+class Api extends \Api_Abstract
 {
     /**
-     * Runs cron if the guest API cron endpoint is enabled via the module's settings.
+     * Returns cron job information. When it was last executed, where cron job
+     * file is located.
+     *
+     * @return array
      */
-    public function run(): bool
+    public function info($data)
     {
+        return $this->getService()->getCronInfo();
+    }
+
+    /**
+     * Run cron.
+     *
+     * @return bool
+     */
+    public function run($data = [])
+    {
+        $context = $this->getContext();
+        if ($context === 'admin') {
+            return $this->getService()->runCrons();
+        }
+
+        // Guest context.
+        $this->requireContext(['guest']);
         $config = $this->getMod()->getConfig();
         $allowGuest = $config['guest_cron'] ?? false;
         if (!$allowGuest) {
@@ -46,6 +61,8 @@ class Guest extends \Api_Abstract
      */
     public function settings(): array
     {
+        $this->requireContext(['guest']);
+
         return $this->getMod()->getConfig();
     }
 
@@ -54,6 +71,8 @@ class Guest extends \Api_Abstract
      */
     public function is_late(): bool
     {
+        $this->requireContext(['guest']);
+
         return $this->getService()->isLate();
     }
 }

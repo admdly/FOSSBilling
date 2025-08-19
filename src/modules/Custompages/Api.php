@@ -9,9 +9,9 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
 
-namespace Box\Mod\Custompages\Api;
+namespace Box\Mod\Custompages;
 
-class Admin extends \Api_Abstract
+class Api extends \Api_Abstract
 {
     /**
      * Get paginated list of custom pages.

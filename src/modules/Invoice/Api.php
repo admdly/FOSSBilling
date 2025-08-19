@@ -1,6 +1,4 @@
 <?php
-
-declare(strict_types=1);
 /**
  * Copyright 2022-2025 FOSSBilling
  * Copyright 2011-2021 BoxBilling, Inc.
@@ -10,15 +8,11 @@ declare(strict_types=1);
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
 
-/**
- * Invoice management API.
- */
-
-namespace Box\Mod\Invoice\Api;
+namespace Box\Mod\Invoice;
 
 use FOSSBilling\InformationException;
 
-class Admin extends \Api_Abstract
+class Api extends \Api_Abstract
 {
     /**
      * Returns paginated list of invoices.
@@ -27,13 +21,28 @@ class Admin extends \Api_Abstract
      */
     public function get_list($data)
     {
-        $service = $this->getService();
-        [$sql, $params] = $service->getSearchQuery($data);
+        $context = $this->getContext();
+        if ($context === 'admin') {
+            $service = $this->getService();
+            [$sql, $params] = $service->getSearchQuery($data);
+            $per_page = $data['per_page'] ?? $this->di['pager']->getDefaultPerPage();
+            $pager = $this->di['pager']->getPaginatedResultSet($sql, $params, $per_page);
+            foreach ($pager['list'] as $key => $item) {
+                $invoice = $this->di['db']->getExistingModelById('Invoice', $item['id'], 'Invoice not found');
+                $pager['list'][$key] = $this->getService()->toApiArray($invoice, true, $this->getIdentity());
+            }
+            return $pager;
+        }
+
+        $this->requireContext(['client']);
+        $data['client_id'] = $this->getIdentity()->id;
+        $data['approved'] = true;
+        [$sql, $params] = $this->getService()->getSearchQuery($data);
         $per_page = $data['per_page'] ?? $this->di['pager']->getDefaultPerPage();
         $pager = $this->di['pager']->getPaginatedResultSet($sql, $params, $per_page);
         foreach ($pager['list'] as $key => $item) {
             $invoice = $this->di['db']->getExistingModelById('Invoice', $item['id'], 'Invoice not found');
-            $pager['list'][$key] = $this->getService()->toApiArray($invoice, true, $this->getIdentity());
+            $pager['list'][$key] = $this->getService()->toApiArray($invoice);
         }
 
         return $pager;
@@ -46,7 +55,22 @@ class Admin extends \Api_Abstract
      */
     public function get($data)
     {
-        $model = $this->_getInvoice($data);
+        $context = $this->getContext();
+        if ($context === 'admin') {
+            $model = $this->_getInvoice($data);
+            return $this->getService()->toApiArray($model, true, $this->getIdentity());
+        }
+
+        $this->requireContext(['client', 'guest']);
+        $required = [
+            'hash' => 'Invoice hash not passed',
+        ];
+        $this->di['validator']->checkRequiredParamsForArray($required, $data);
+
+        $model = $this->di['db']->findOne('Invoice', 'hash = :hash', ['hash' => $data['hash']]);
+        if (!$model) {
+            throw new \FOSSBilling\Exception('Invoice was not found');
+        }
 
         return $this->getService()->toApiArray($model, true, $this->getIdentity());
     }
@@ -155,47 +179,33 @@ class Admin extends \Api_Abstract
 
     /**
      * Update invoice details.
-     *
-     * @optional string $paid_at - Invoice payment date (Y-m-d) or empty to remove
-     * @optional string $due_at - Invoice due date (Y-m-d)or empty to remove
-     * @optional string $created_at - Invoice issue date (Y-m-d) or empty to remove
-     * @optional string $serie - Invoice serie
-     * @optional string $nr - Invoice number
-     * @optional string $status - Invoice status: paid|unpaid
-     * @optional string $taxrate - Invoice tax rate
-     * @optional string $taxname - Invoice tax name
-     * @optional bool $approved - flag to set invoice as approved. Approved invoices are visible to clients
-     * @optional string $notes - notes
-     * @optional int $gateway_id - selected payment method - gateway id
-     * @optional array $new_item - [title] [price]
-     * @optional string $text_1 - Custom invoice text 1
-     * @optional string $text_2 - Custom invoice text 1
-     * @optional string $seller_company - Seller company name
-     * @optional string $seller_company_vat - Seller company VAT number
-     * @optional string $seller_company_number - Seller company number
-     * @optional string $seller_address - Seller address
-     * @optional string $seller_phone - Seller phone
-     * @optional string $seller_email - Seller email
-     * @optional string $buyer_first_name - Buyer first name
-     * @optional string $buyer_last_name - Buyer last name
-     * @optional string $buyer_company - Buyer company name
-     * @optional string $buyer_company_vat - Buyer company VAT number
-     * @optional string $buyer_company_number - Buyer company number
-     * @optional string $buyer_address - Buyer address
-     * @optional string $buyer_city - Buyer city
-     * @optional string $buyer_state - Buyer state
-     * @optional string $buyer_country - Buyer country
-     * @optional string $buyer_zip - Buyer zip
-     * @optional string $buyer_phone - Buyer phone
-     * @optional string $buyer_email - Buyer email
-     *
-     * @return bool
      */
     public function update($data)
     {
-        $model = $this->_getInvoice($data);
+        $context = $this->getContext();
+        if ($context === 'admin') {
+            $model = $this->_getInvoice($data);
+            return $this->getService()->updateInvoice($model, $data);
+        }
 
-        return $this->getService()->updateInvoice($model, $data);
+        $this->requireContext(['client', 'guest']);
+        $required = [
+            'hash' => 'Invoice hash not passed',
+        ];
+        $this->di['validator']->checkRequiredParamsForArray($required, $data);
+
+        $invoice = $this->di['db']->findOne('Invoice', 'hash = :hash', ['hash' => $data['hash']]);
+        if (!$invoice) {
+            throw new \FOSSBilling\Exception('Invoice was not found');
+        }
+        if ($invoice->status == 'paid') {
+            throw new \FOSSBilling\InformationException('Paid Invoice cannot be modified');
+        }
+
+        $updateParams = [];
+        $updateParams['gateway_id'] = $data['gateway_id'] ?? null;
+
+        return $this->getService()->updateInvoice($invoice, $updateParams);
     }
 
     /**
@@ -223,36 +233,64 @@ class Admin extends \Api_Abstract
      */
     public function delete($data)
     {
-        $model = $this->_getInvoice($data);
+        $context = $this->getContext();
+        if ($context === 'admin') {
+            $model = $this->_getInvoice($data);
+            return $this->getService()->deleteInvoiceByAdmin($model);
+        }
 
-        return $this->getService()->deleteInvoiceByAdmin($model);
+        $this->requireContext(['client']);
+        $required = [
+            'hash' => 'Invoice hash not passed',
+        ];
+        $this->di['validator']->checkRequiredParamsForArray($required, $data);
+
+        $model = $this->di['db']->findOne('Invoice', 'hash = :hash', ['hash' => $data['hash']]);
+        if (!$model) {
+            throw new \FOSSBilling\Exception('Invoice was not found');
+        }
+
+        return $this->getService()->deleteInvoiceByClient($model);
     }
 
     /**
-     * Generates new invoice for order. If unpaid invoice for selected order
-     * already exists, new invoice will not be generated, and existing invoice id
-     * is returned.
+     * Generates new invoice for order.
      *
-     * @optional int $due_days - Days number until invoice is due
-     *
-     * @return string - invoice id
-     *
-     * @throws \FOSSBilling\Exception
+     * @return string - invoice id or hash
      */
     public function renewal_invoice($data)
     {
-        $required = [
-            'id' => 'Order id required',
-        ];
-
-        $this->di['validator']->checkRequiredParamsForArray($required, $data);
-
-        $model = $this->di['db']->getExistingModelById('ClientOrder', $data['id'], 'Order not found');
-        if ($model->price <= 0) {
-            throw new InformationException('Order :id is free. No need to generate invoice.', [':id' => $model->id]);
+        $context = $this->getContext();
+        if ($context === 'admin') {
+            $required = [
+                'id' => 'Order id required',
+            ];
+            $this->di['validator']->checkRequiredParamsForArray($required, $data);
+            $model = $this->di['db']->getExistingModelById('ClientOrder', $data['id'], 'Order not found');
+            if ($model->price <= 0) {
+                throw new InformationException('Order :id is free. No need to generate invoice.', [':id' => $model->id]);
+            }
+            return $this->getService()->renewInvoice($model, $data);
         }
 
-        return $this->getService()->renewInvoice($model, $data);
+        $this->requireContext(['client']);
+        $required = [
+            'order_id' => 'Order id required',
+        ];
+        $this->di['validator']->checkRequiredParamsForArray($required, $data);
+        $model = $this->di['db']->findOne('ClientOrder', 'client_id = ? and id = ?', [$this->getIdentity()->id, $data['order_id']]);
+        if (!$model instanceof \Model_ClientOrder) {
+            throw new \FOSSBilling\Exception('Order not found');
+        }
+        if ($model->price <= 0) {
+            throw new \FOSSBilling\InformationException('Order :id is free. No need to generate invoice.', [':id' => $model->id]);
+        }
+        $service = $this->getService();
+        $invoice = $service->generateForOrder($model);
+        $service->approveInvoice($invoice, ['id' => $invoice->id, 'use_credits' => true]);
+        $this->di['logger']->info('Generated new renewal invoice #%s', $invoice->id);
+
+        return $invoice->hash;
     }
 
     /**
@@ -312,10 +350,6 @@ class Admin extends \Api_Abstract
 
     /**
      * Calls due events on unpaid and approved invoices.
-     * Attach custom event hooks events:.
-     *
-     * onEventBeforeInvoiceIsDue - event receives params: id and days_left
-     * onEventAfterInvoiceIsDue - event receives params: id and days_passed
      *
      * @optional bool $once_per_day - default true. Pass false if you want to execute this action more than once per day
      *
@@ -328,7 +362,6 @@ class Admin extends \Api_Abstract
 
     /**
      * Send payment reminder notification for client.
-     * Calls event hook, so you can attach your custom notification code.
      *
      * @return bool
      */
@@ -475,8 +508,25 @@ class Admin extends \Api_Abstract
      */
     public function transaction_get_list($data)
     {
+        $context = $this->getContext();
+        if ($context === 'admin') {
+            $transactionService = $this->di['mod_service']('Invoice', 'Transaction');
+            [$sql, $params] = $transactionService->getSearchQuery($data);
+            $per_page = $data['per_page'] ?? $this->di['pager']->getDefaultPerPage();
+            $pager = $this->di['pager']->getPaginatedResultSet($sql, $params, $per_page);
+            foreach ($pager['list'] as $key => $item) {
+                $transaction = $this->di['db']->getExistingModelById('Transaction', $item['id'], 'Transaction not found');
+                $pager['list'][$key] = $transactionService->toApiArray($transaction);
+            }
+            return $pager;
+        }
+
+        $this->requireContext(['client']);
+        $data['client_id'] = $this->getIdentity()->id;
+        $data['status'] = 'processed';
         $transactionService = $this->di['mod_service']('Invoice', 'Transaction');
         [$sql, $params] = $transactionService->getSearchQuery($data);
+
         $per_page = $data['per_page'] ?? $this->di['pager']->getDefaultPerPage();
         $pager = $this->di['pager']->getPaginatedResultSet($sql, $params, $per_page);
         foreach ($pager['list'] as $key => $item) {
@@ -1025,5 +1075,94 @@ class Admin extends \Api_Abstract
         $data['headers'] ??= [];
 
         return $this->getService()->exportCSV($data['headers']);
+    }
+
+    /**
+     * Deposit money in advance. Generates new invoice for depositing money.
+     * Clients currency must be defined.
+     *
+     * @return string - invoice hash
+     */
+    public function funds_invoice($data)
+    {
+        $required = [
+            'amount' => 'Amount is required',
+        ];
+
+        $this->di['validator']->checkRequiredParamsForArray($required, $data);
+
+        if (!is_numeric($data['amount'])) {
+            throw new \FOSSBilling\InformationException('You need to enter numeric value');
+        }
+
+        $service = $this->getService();
+        $invoice = $service->generateFundsInvoice($this->getIdentity(), $data['amount']);
+        $service->approveInvoice($invoice, ['id' => $invoice->id]);
+        $this->di['logger']->info('Generated add funds invoice #%s', $invoice->id);
+
+        return $invoice->hash;
+    }
+
+    public function get_tax_rate()
+    {
+        $service = $this->di['mod_service']('Invoice', 'Tax');
+
+        return $service->getTaxRateForClient($this->getIdentity());
+    }
+
+    /**
+     * Get list of available payment gateways to pay for invoices.
+     *
+     * @optional string $format - if format is "pairs" then id=>name values are returned
+     *
+     * @return array
+     */
+    public function gateways($data)
+    {
+        $gatewayService = $this->di['mod_service']('Invoice', 'PayGateway');
+
+        return $gatewayService->getActive($data);
+    }
+
+    /**
+     * Process invoice for selected gateway. Returned result can be processed
+     * to redirect or to show required information. Returned result depends
+     * on payment gateway.
+     *
+     * Tries to detect if invoice can be subscribed and if payment gateway supports subscriptions
+     * uses subscription payment.
+     *
+     * @optional bool $auto_redirect - should payment adapter automatically redirect client or just print pay now button
+     *
+     * @return array
+     *
+     * @throws \FOSSBilling\Exception
+     */
+    public function payment($data)
+    {
+        if (!isset($data['hash'])) {
+            throw new \FOSSBilling\Exception('Invoice hash not passed. Missing param hash', null, 810);
+        }
+
+        if (!isset($data['gateway_id'])) {
+            throw new \FOSSBilling\Exception('Payment method not found. Missing param gateway_id', null, 811);
+        }
+
+        return $this->getService()->processInvoice($data);
+    }
+
+    /**
+     * Generates PDF for given invoice.
+     *
+     * @throws \FOSSBilling\Exception
+     */
+    public function pdf($data)
+    {
+        $required = [
+            'hash' => 'Invoice hash is missing',
+        ];
+        $this->di['validator']->checkRequiredParamsForArray($required, $data);
+
+        return $this->getService()->generatePDF($data['hash'], $this->getIdentity());
     }
 }

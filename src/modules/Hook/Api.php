@@ -9,13 +9,9 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
 
-/**
- * Hooks management module.
- */
+namespace Box\Mod\Hook;
 
-namespace Box\Mod\Hook\Api;
-
-class Admin extends \Api_Abstract
+class Api extends \Api_Abstract
 {
     /**
      * Get paginated list of hooks.

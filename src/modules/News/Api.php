@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright 2022-2025 FOSSBilling
  * Copyright 2011-2021 BoxBilling, Inc.
@@ -9,35 +8,46 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
 
-/**
- * News management.
- */
+namespace Box\Mod\News;
 
-namespace Box\Mod\News\Api;
-
-class Admin extends \Api_Abstract
+class Api extends \Api_Abstract
 {
     /**
-     * Get paginated list of active news items.
+     * Get paginated list of news items.
      *
      * @return array
      */
     public function get_list($data)
     {
-        $service = $this->getService();
-        [$sql, $params] = $service->getSearchQuery($data);
+        $context = $this->getContext();
+        if ($context === 'admin') {
+            $service = $this->getService();
+            [$sql, $params] = $service->getSearchQuery($data);
+            $per_page = $data['per_page'] ?? $this->di['pager']->getDefaultPerPage();
+            $pager = $this->di['pager']->getPaginatedResultSet($sql, $params, $per_page);
+            foreach ($pager['list'] as $key => $item) {
+                $post = $this->di['db']->getExistingModelById('Post', $item['id'], 'Post not found');
+                $pager['list'][$key] = $this->getService()->toApiArray($post, 'admin');
+            }
+            return $pager;
+        }
+
+        $this->requireContext(['guest']);
+        $data['status'] = 'active';
+        [$sql, $params] = $this->getService()->getSearchQuery($data);
         $per_page = $data['per_page'] ?? $this->di['pager']->getDefaultPerPage();
-        $pager = $this->di['pager']->getPaginatedResultSet($sql, $params, $per_page);
+        $page = $data['page'] ?? null;
+        $pager = $this->di['pager']->getPaginatedResultSet($sql, $params, $per_page, $page);
         foreach ($pager['list'] as $key => $item) {
             $post = $this->di['db']->getExistingModelById('Post', $item['id'], 'Post not found');
-            $pager['list'][$key] = $this->getService()->toApiArray($post, 'admin');
+            $pager['list'][$key] = $this->getService()->toApiArray($post);
         }
 
         return $pager;
     }
 
     /**
-     * Get news item by ID.
+     * Get news item by ID or SLUG.
      *
      * @return array
      */
@@ -50,20 +60,31 @@ class Admin extends \Api_Abstract
         $id = $data['id'] ?? null;
         $slug = $data['slug'] ?? null;
 
+        $context = $this->getContext();
         $model = null;
-        if ($id) {
-            $model = $this->di['db']->load('Post', $id);
+
+        if ($context === 'admin') {
+            if ($id) {
+                $model = $this->di['db']->load('Post', $id);
+            } else {
+                if (!empty($slug)) {
+                    $model = $this->di['db']->findOne('Post', 'slug = :slug', ['slug' => $slug]);
+                }
+            }
         } else {
-            if (!empty($slug)) {
-                $model = $this->di['db']->findOne('Post', 'slug = :slug', ['slug' => $slug]);
+            $this->requireContext(['guest']);
+            if ($id) {
+                $model = $this->getService()->findOneActiveById($id);
+            } else {
+                $model = $this->getService()->findOneActiveBySlug($slug);
             }
         }
 
-        if (!$model instanceof \Model_Post) {
+        if (!$model || ($context === 'guest' && $model->status !== 'active')) {
             throw new \FOSSBilling\Exception('News item not found');
         }
 
-        return $this->getService()->toApiArray($model, 'admin');
+        return $this->getService()->toApiArray($model, $context);
     }
 
     /**

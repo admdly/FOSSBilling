@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright 2022-2025 FOSSBilling
  * Copyright 2011-2021 BoxBilling, Inc.
@@ -9,13 +8,9 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
 
-/**
- * Manage custom orders forms.
- */
+namespace Box\Mod\Formbuilder;
 
-namespace Box\Mod\Formbuilder\Api;
-
-class Admin extends \Api_Abstract
+class Api extends \Api_Abstract
 {
     /**
      * Create custom order form for product.
@@ -90,12 +85,12 @@ class Admin extends \Api_Abstract
      *
      * @throws \FOSSBilling\Exception
      */
-    public function get_form($data)
+    public function get($data)
     {
         $required = [
             'id' => 'Form id was not passed',
         ];
-        $this->di['validator']->checkRequiredParamsForArray($required, $data, null, 2391);
+        $this->di['validator']->checkRequiredParamsForArray($required, $data);
 
         $service = $this->getService();
 

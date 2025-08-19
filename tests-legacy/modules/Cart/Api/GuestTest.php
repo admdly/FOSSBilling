@@ -5,13 +5,16 @@ namespace Box\Tests\Mod\Cart\Api;
 class GuestTest extends \BBTestCase
 {
     /**
-     * @var \Box\Mod\Cart\Api\Guest
+     * @var \Box\Mod\Cart\Api
      */
     protected $guestApi;
 
     public function setup(): void
     {
-        $this->guestApi = new \Box\Mod\Cart\Api\Guest();
+        $this->guestApi = new \Box\Mod\Cart\Api();
+        // Set up guest identity for context
+        $guestIdentity = new \Model_Guest();
+        $this->guestApi->setIdentity($guestIdentity);
     }
 
     public function testGet(): void
@@ -454,10 +457,11 @@ class GuestTest extends \BBTestCase
         $serviceMock->expects($this->atLeastOnce())->method('addItem')
             ->willReturn(true);
 
-        $apiMock = $this->getMockBuilder('\\' . \Box\Mod\Cart\Api\Guest::class)
-            ->onlyMethods(['reset'])->getMock();
-        $apiMock->expects($this->atLeastOnce())->method('reset')
-            ->willReturn($cart);
+        $api = new \Box\Mod\Cart\Api();
+
+        // Set guest identity directly
+        $guestIdentity = new \Model_Guest();
+        $api->setIdentity($guestIdentity);
 
         $validatorMock = $this->getMockBuilder('\\' . \FOSSBilling\Validate::class)->disableOriginalConstructor()->getMock();
         $validatorMock->expects($this->atLeastOnce())
@@ -472,16 +476,16 @@ class GuestTest extends \BBTestCase
         $di = new \Pimple\Container();
         $di['validator'] = $validatorMock;
         $di['db'] = $dbMock;
-        $apiMock->setDi($di);
+        $api->setDi($di);
 
-        $apiMock->setService($serviceMock);
+        $api->setService($serviceMock);
 
         $data = [
             'id' => random_int(1, 100),
             'multiple' => false, // should reset cart before adding
         ];
 
-        $result = $apiMock->add_item($data);
+        $result = $api->add_item($data);
 
         $this->assertTrue($result);
     }

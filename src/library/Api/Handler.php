@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 /**
  * Copyright 2022-2025 FOSSBilling
  * Copyright 2011-2021 BoxBilling, Inc.
@@ -81,6 +82,16 @@ final class Api_Handler implements InjectionAwareInterface
         }
 
         $api_class = '\Box\Mod\\' . ucfirst($mod) . '\\Api\\' . ucfirst($this->type);
+
+        // Try the context-specific API class first
+        if (!class_exists($api_class)) {
+            // Fall back to unified API class if context-specific doesn't exist
+            $api_class = '\Box\Mod\\' . ucfirst($mod) . '\\Api';
+
+            if (!class_exists($api_class)) {
+                throw new FOSSBilling\Exception('API class not found for module :mod', [':mod' => $mod], 729);
+            }
+        }
 
         $api = new $api_class();
 
