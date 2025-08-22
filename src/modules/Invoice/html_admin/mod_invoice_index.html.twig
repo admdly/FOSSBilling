@@ -269,7 +269,7 @@
                         </tr>
                         {% else %}
                         <tr>
-                            <td class="text-muted" colspan="8">{{ 'The list is empty'|trans }}</td>
+                            <td class="text-muted" colspan="8">{{ 'The list is empty.'|trans }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -277,7 +277,9 @@
               </div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
                     <div>
-                        {{ include('partial_batch_delete.html.twig', { 'action': 'admin/invoice/batch_delete' }) }}
+                        {% with { action: 'invoice/batch_delete', container: '#tab-index' } only %}
+	                        {{ block("batch_delete", "common_blocks.html.twig") }}
+                        {% endwith %}
                         {{ include('partial_pagination.html.twig', { 'list': invoices, 'url': 'invoice' }) }}
                     </div>
                     <div>

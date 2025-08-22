@@ -136,7 +136,7 @@
             </tr>
             {% else %}
                 <tr>
-                    <td class="text-muted" colspan="5">{{ 'The list is empty'|trans }}</td>
+                    <td class="text-muted" colspan="5">{{ 'The list is empty.'|trans }}</td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -144,7 +144,9 @@
     </div>
 
     <div class="card-footer d-flex align-items-center justify-content-between">
-        {{ include('partial_batch_delete.html.twig', { 'action': 'admin/support/batch_delete_public' }) }}
+        {% with { action: 'support/batch_delete_public' } only %}
+	        {{ block("batch_delete", "common_blocks.html.twig") }}
+        {% endwith %}
         {{ include('partial_pagination.html.twig', { 'list': tickets, 'url': 'support/public-tickets' }) }}
     </div>
 {% endblock %}

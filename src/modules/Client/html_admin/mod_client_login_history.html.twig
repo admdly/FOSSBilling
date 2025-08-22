@@ -2,14 +2,14 @@
 
 {% import 'macro_functions.html.twig' as mf %}
 
-{% block meta_title %}{{ 'Clients login history'|trans }}{% endblock %}
+{% block meta_title %}{{ 'Client Login History'|trans }}{% endblock %}
 
 {% set active_menu = 'activity' %}
 
 {% block content %}
 <div class="card overflow-auto">
     <div class="card-body">
-        <h5>{{ 'Client login history'|trans }}</h5>
+        <h5>{{ 'Client Login History'|trans }}</h5>
     </div>
 
     {{ include('partial_search.html.twig') }}
@@ -66,7 +66,9 @@
     </table>
 
     <div class="card-footer d-flex align-items-center justify-content-between">
-        {{ include('partial_batch_delete.html.twig', { 'action': 'admin/client/batch_delete_log' }) }}
+        {% with { action: 'client/batch_delete_log' } only %}
+	        {{ block("batch_delete", "common_blocks.html.twig") }}
+        {% endwith %}
         {{ include('partial_pagination.html.twig', { 'list': history, 'url': 'client/logins' }) }}
     </div>
 </div>

@@ -2,14 +2,14 @@
 
 {% import 'macro_functions.html.twig' as mf %}
 
-{% block meta_title %}{{ 'System activity'|trans }}{% endblock %}
+{% block meta_title %}{{ 'System Activity'|trans }}{% endblock %}
 
 {% set active_menu = 'activity' %}
 
 {% block content %}
 <div class="card overflow-auto">
     <div class="card-header">
-        <h3 class="card-title">{{ 'System activity'|trans }}</h3>
+        <h3 class="card-title">{{ 'System Activity'|trans }}</h3>
         <div class="card-actions">
             {{ include('partial_search_action.html.twig') }}
         </div>
@@ -83,7 +83,9 @@
     </table>
 
     <div class="card-footer d-flex align-items-center justify-content-between">
-        {{ include('partial_batch_delete.html.twig', { 'action': 'admin/activity/batch_delete' }) }}
+        {% with { action: 'activity/batch_delete' } only %}
+	        {{ block("batch_delete", "common_blocks.html.twig") }}
+        {% endwith %}
         {{ include('partial_pagination.html.twig', { 'list': events, 'url': 'activity' }) }}
     </div>
 </div>

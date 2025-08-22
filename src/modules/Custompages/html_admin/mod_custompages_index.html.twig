@@ -24,7 +24,9 @@
             <div class="tab-pane fade show active" id="tab-index" role="tabpanel">
                 <div class="card-body border-bottom py-3">
                     <div class="d-flex">
-                        {{ include('partial_batch_delete.html.twig', { 'action' : 'admin/custompages/batch_delete' }) }}
+                        {% with { action: 'custompages/batch_delete', container: '#tab-index' } only %}
+	                        {{ block("batch_delete", "common_blocks.html.twig") }}
+                        {% endwith %}
                         <div class="ms-auto text-muted">
                             <form method="get">
                                 <input type="hidden" name="CSRFToken" value="{{ CSRFToken }}">
@@ -101,7 +103,6 @@
                         </tbody>
                     </table>
                 </div>
-
                 {{ include('partial_pagination.html.twig', { 'list': pages, 'url': 'custompages' }) }}
             </div>
 
