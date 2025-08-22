@@ -1,0 +1,100 @@
+{#
+    Batch Delete Block
+
+    This block provides a button to delete multiple selected items and the
+    necessary JavaScript to handle the selection and deletion process.
+
+    Templates using this block should include the following elements:
+    - A master checkbox with the class `batch-delete-master-checkbox` to
+      select/deselect all.
+    - Checkboxes with the class `batch-delete-checkbox` for each item.
+      - Required `data-item-id` attribute for each checkbox to identify the
+        item.
+
+    Variables that can be passed to this block:
+    - container: Optional CSS selector for the container element that holds the
+                 checkboxes and button. Defaults to document if not provided.
+    - action: Requiired path to send the delete request to. Should be a route
+              that accepts POST requests with an array of IDs to delete.
+#}
+{% block batch_delete %}
+    <a class="btn btn-danger d-none" id="batch-delete-selected-btn">
+        <svg class="icon">
+            <use xlink:href="#delete"/>
+        </svg>
+        {{ 'Delete Selected'|trans }}</a>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // If container variable set scope to container, otherwise default to document.
+            {% if container %}
+                const container = document.querySelector("{{ container }}");
+            {% else %}
+                const container = document;
+            {% endif %}
+
+            // Get delete button, master checkbox and all checkboxes.
+            const deleteBtn = container.querySelector('#batch-delete-selected-btn');
+            const masterCheckbox = container.querySelector('input.batch-delete-master-checkbox');
+            const checkboxes = container.querySelectorAll('input.batch-delete-checkbox');
+
+            // If master delete checkbox exists, add click and change event listeners.
+            if (masterCheckbox) {
+                masterCheckbox.addEventListener('change', toggleDeleteBtn);
+                masterCheckbox.addEventListener('click', function() {
+                    checkboxes.forEach(function(checkbox) {
+                        checkbox.checked = masterCheckbox.checked;
+                    });
+                });
+            }
+
+            // If checkboxes exist, add change event listener to each.
+            if (checkboxes.length > 0) {
+                checkboxes.forEach((cb) => {
+                    cb.addEventListener('change', toggleDeleteBtn)
+                });
+            }
+
+            // Toggle delete button visibility based on checkbox state.
+            function toggleDeleteBtn() {
+                const empty = Array.from(checkboxes).filter(function (cb) {
+                    return !cb.checked
+                });
+                if (empty.length !== checkboxes.length) {
+                    deleteBtn.classList.remove('d-none');
+                    deleteBtn.classList.add('d-inline-flex');
+                } else {
+                    deleteBtn.classList.remove('d-inline-flex');
+                    deleteBtn.classList.add('d-none');
+                }
+            }
+
+            // Add click event listener to delete button.
+            deleteBtn.addEventListener('click', function() {
+                const checkedBoxes = container.querySelectorAll('input.batch-delete-checkbox:checked');
+                if (checkedBoxes.length) {
+                    Modals.create({
+                        type: 'danger',
+                        title: "{{ 'Are you sure?'|trans }}",
+                        content: "{{ 'Are you sure you want to delete the selected items?'|trans }}",
+                        confirmCallback: () => {
+                            const ids = Array.from(checkedBoxes).map(function(checkbox) {
+                                return checkbox.getAttribute("data-item-id");
+                            });
+                            API.admin.post('{{ action }}', { ids: ids },
+                                (result) => {
+                                    window.location.reload();
+                            });
+                        }
+                    });
+                } else {
+                    Modals.create({
+                        type: 'small',
+                        title: "{{ 'No items selected'|trans }}",
+                        content: "{{ 'You need to select at least one item to delete.'|trans }}",
+                    });
+                }
+            });
+        });
+    </script>
+{% endblock batch_delete %}

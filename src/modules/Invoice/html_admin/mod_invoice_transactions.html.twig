@@ -10,7 +10,7 @@
 {% if request.show_filter %}
 <section class="card mb-3">
     <div class="card-body">
-        <h5>{{ 'Filter transactions'|trans }}</h5>
+        <h5>{{ 'Filter Transactions'|trans }}</h5>
         <form method="get">
             <input type="hidden" name="CSRFToken" value="{{ CSRFToken }}"/>
             <div class="mb-3 row">
@@ -224,7 +224,9 @@
     </table>
 
     <div class="card-footer d-flex align-items-center justify-content-between">
-        {{ include('partial_batch_delete.html.twig', { 'action': 'admin/invoice/batch_delete_transaction' }) }}
+        {% with { action: 'invoice/batch_delete_transaction' } only %}
+	        {{ block("batch_delete", "common_blocks.html.twig") }}
+        {% endwith %}
         {{ include('partial_pagination.html.twig', { 'list': transactions, 'url': 'invoice/transactions' }) }}
     </div>
 </div>

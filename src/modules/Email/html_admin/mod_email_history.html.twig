@@ -2,7 +2,7 @@
 
 {% import 'macro_functions.html.twig' as mf %}
 
-{% block meta_title %}{{ 'Email history'|trans }}{% endblock %}
+{% block meta_title %}{{ 'Email History'|trans }}{% endblock %}
 
 {% set active_menu = 'activity' %}
 
@@ -18,7 +18,7 @@
 
 <div class="card">
     <div class="card-body">
-        <h3>{{ 'Email history'|trans }}</h3>
+        <h3>{{ 'Email History'|trans }}</h3>
     </div>
 
     {{ include('partial_search.html.twig') }}
@@ -66,14 +66,16 @@
         </tr>
         {% else %}
             <tr>
-                <td class="text-muted" colspan="7">{{ 'The list is empty'|trans }}</td>
+                <td class="text-muted" colspan="7">{{ 'The list is empty.'|trans }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
     <div class="card-footer d-flex align-items-center justify-content-between">
-        {{ include('partial_batch_delete.html.twig', { 'action': 'admin/email/batch_delete' }) }}
+        {% with { action: 'email/batch_delete' } only %}
+	        {{ block("batch_delete", "common_blocks.html.twig") }}
+        {% endwith %}
         {{ include('partial_pagination.html.twig', { 'list': emails, 'url': 'email/history' }) }}
     </div>
 </div>

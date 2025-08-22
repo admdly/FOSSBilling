@@ -480,7 +480,7 @@ class Service implements InjectionAwareInterface
             ->setClient($server_client)
             ->setPackage($package)
             ->setUsername($model->username)
-            ->setReseller($model->reseller)
+            ->setReseller((bool) $model->reseller)
             ->setDomain($model->sld . $model->tld)
             ->setPassword($model->pass)
             ->setNs1($server->ns1)
