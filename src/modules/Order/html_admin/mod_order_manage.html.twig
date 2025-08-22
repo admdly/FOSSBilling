@@ -270,7 +270,7 @@
                     </a>
                     {% endif %}
 
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                    <button type="button" class="btn btn-danger btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">
                         <svg class="icon" width="24" height="24">
                             <use xlink:href="#delete" />
                         </svg>
@@ -622,7 +622,7 @@
                         </td>
                         <td class="text-wrap">{{ sh.notes }}</td>
                         <td>
-                            <a class="btn btn-icon api-link" data-api-confirm="{{ 'Are you sure?'|trans }}" data-api-redirect="{{ 'support'|alink }}" href="{{ 'api/admin/order/status_history_delete'|link({ 'id': sh.id, 'CSRFToken': CSRFToken }) }}">
+                            <a class="btn btn-danger btn-icon api-link" data-api-confirm="{{ 'Are you sure?'|trans }}" data-api-redirect="{{ 'support'|alink }}" href="{{ 'api/admin/order/status_history_delete'|link({ 'id': sh.id, 'CSRFToken': CSRFToken }) }}">
                                 <svg class="icon">
                                     <use xlink:href="#delete" />
                                 </svg>

@@ -95,7 +95,7 @@
                     <span class="d-block text-secondary">{{ 'Close'|trans }}</span>
                 </a>
                 {% endif %}
-                <a class="btn btn-primary api-link"
+                <a class="btn btn-danger btn-primary api-link"
                     href="{{ 'api/admin/support/public_ticket_delete'|link({ 'id' : ticket.id, 'CSRFToken': CSRFToken }) }}"
                     data-api-confirm="{{ 'Are you sure?'|trans }}"
                     data-api-redirect="{{ 'support/public-tickets'|alink }}">

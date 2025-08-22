@@ -86,7 +86,7 @@
                                     <use xlink:href="#edit" />
                                 </svg>
                             </a>
-                            <a class="btn btn-icon api-link" data-api-confirm="{{ 'Are you sure?'|trans }}" data-api-reload="1" href="{{ 'api/admin/servicedomain/tld_delete'|link({ 'tld': tld.tld, 'CSRFToken': CSRFToken }) }}">
+                            <a class="btn btn-danger btn-icon api-link" data-api-confirm="{{ 'Are you sure?'|trans }}" data-api-reload="1" href="{{ 'api/admin/servicedomain/tld_delete'|link({ 'tld': tld.tld, 'CSRFToken': CSRFToken }) }}">
                                 <svg class="icon">
                                     <use xlink:href="#delete" />
                                 </svg>
@@ -220,7 +220,7 @@
                                     <use xlink:href="#edit" />
                                 </svg>
                             </a>
-                            <a class="btn btn-icon api-link" href="{{ 'api/admin/servicedomain/registrar_delete'|link({ 'id': registrar.id }) }}" data-api-confirm="{{ 'Are you sure?'|trans }}" data-api-reload="1">
+                            <a class="btn btn-danger btn-icon api-link" href="{{ 'api/admin/servicedomain/registrar_delete'|link({ 'id': registrar.id }) }}" data-api-confirm="{{ 'Are you sure?'|trans }}" data-api-reload="1">
                                 <svg class="icon">
                                     <use xlink:href="#delete" />
                                 </svg>

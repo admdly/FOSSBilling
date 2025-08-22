@@ -43,7 +43,7 @@
                             <td>{{ admin.system_string_render({ "_tpl": event.meta_value, "_try": true })|raw }}</td>
                             <td>{{ event.created_at|date('Y-m-d H:i') }}</td>
                             <td>
-                                <a class="btn btn-icon api-link" data-api-confirm="{{ 'Are you sure?'|trans }}" data-api-redirect="{{ 'notification'|alink }}" href="{{ 'api/admin/notification/delete'|link({ 'id': event.id, 'CSRFToken': CSRFToken }) }}">
+                                <a class="btn btn-danger btn-icon api-link" data-api-confirm="{{ 'Are you sure?'|trans }}" data-api-redirect="{{ 'notification'|alink }}" href="{{ 'api/admin/notification/delete'|link({ 'id': event.id, 'CSRFToken': CSRFToken }) }}">
                                     <svg class="icon">
                                         <use xlink:href="#delete" />
                                     </svg>

@@ -51,7 +51,7 @@
                                 {% endfor %}
                             </select>
                             {% if presets|length > 1 and current_preset != 'Default' %}
-                                <a href="{{ 'api/admin/theme/preset_delete'|link({ 'code': theme_code, 'preset': current_preset, 'CSRFToken': CSRFToken}) }}" class="btn btn-icon api-link" data-api-confirm="{{ 'Are you sure?'|trans }}"
+                                <a class="btn btn-danger btn-icon api-link" href="{{ 'api/admin/theme/preset_delete'|link({ 'code': theme_code, 'preset': current_preset, 'CSRFToken': CSRFToken}) }}"  data-api-confirm="{{ 'Are you sure?'|trans }}"
                                    data-api-confirm-btn="{{ 'Delete'|trans }}"
                                    data-api-type="danger"
                                    data-api-reload="1">

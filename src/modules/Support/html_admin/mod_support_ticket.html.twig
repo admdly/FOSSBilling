@@ -111,7 +111,7 @@
                     <span>{{ 'Close'|trans }}</span>
                 </a>
                 {% endif %}
-                <a class="btn btn-primary api-link"
+                <a class="btn btn-danger btn-primary api-link"
                     href="{{ 'api/admin/support/ticket_delete'|link({ 'id': ticket.id, 'CSRFToken': CSRFToken }) }}"
                     data-api-confirm="{{ 'Are you sure?'|trans }}"
                     data-api-redirect="{{ 'support'|alink }}">
@@ -174,7 +174,7 @@
                     </td>
                     <td>{{ note.note }}</td>
                     <td class="w-1">
-                        <a class="btn btn-icon api-link"
+                        <a class="btn btn-danger btn-icon api-link"
                             href="{{ 'api/admin/support/note_delete'|link({ 'id': note.id, 'CSRFToken': CSRFToken }) }}"
                             data-api-confirm="{{ 'Are you sure?'|trans }}"
                             data-api-reload="1">

@@ -54,7 +54,7 @@
             </svg>
             <span class="d-block text-secondary">{{ 'Resend'|trans }}</span>
         </a>
-        <a class="btn btn btn-primary api-link"
+        <a class="btn btn-danger btn-primary api-link"
             href="{{'api/admin/email/email_delete'|link({ 'id': email.id }) }}"
             data-api-confirm="{{ 'Are you sure?'|trans }}"
             data-api-redirect="{{ 'email/history'|alink }}">

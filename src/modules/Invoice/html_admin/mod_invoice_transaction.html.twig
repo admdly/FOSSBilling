@@ -117,7 +117,7 @@
                     </svg>
                     <span>{{ 'Process'|trans }}</span>
                 </a>
-                <a class="btn btn-primary api-link" href="{{ 'api/admin/invoice/transaction_delete'|link({ 'id': transaction.id, 'CSRFToken': CSRFToken }) }}" data-api-confirm="{{ 'Are you sure?'|trans }}" data-api-redirect="{{ 'invoice/transactions'|alink }}">
+                <a class="btn btn-danger btn-primary api-link" href="{{ 'api/admin/invoice/transaction_delete'|link({ 'id': transaction.id, 'CSRFToken': CSRFToken }) }}" data-api-confirm="{{ 'Are you sure?'|trans }}" data-api-redirect="{{ 'invoice/transactions'|alink }}">
                     <svg class="icon" width="24" height="24">
                         <use xlink:href="#delete" />
                     </svg>

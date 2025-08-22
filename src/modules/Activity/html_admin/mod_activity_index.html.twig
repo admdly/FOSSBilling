@@ -64,7 +64,7 @@
             <td>{{ event.ip|ipcountryname|default('Unknown'|trans) }}</td>
             <td>{{ event.created_at|format_datetime }}</td>
             <td>
-                <a class="btn btn-icon api-link"
+                <a class="btn btn-danger btn-icon api-link"
                     href="{{ 'api/admin/activity/log_delete'|link({ 'id': event.id, 'CSRFToken': CSRFToken }) }}"
                     data-api-confirm="{{ 'Are you sure?'|trans }}"
                     data-api-redirect="{{ 'activity'|alink }}">
@@ -76,7 +76,7 @@
         </tr>
         {% else %}
         <tr>
-            <td colspan="6">{{ 'The list is empty'|trans }}</td>
+            <td colspan="6">{{ 'The list is empty.'|trans }}</td>
         </tr>
         {% endfor %}
         </tbody>

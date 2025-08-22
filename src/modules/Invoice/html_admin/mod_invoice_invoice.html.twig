@@ -128,7 +128,7 @@
                     </svg>
                     <span>{{ 'View as client'|trans }}</span>
                 </a>
-                <a href="{{ 'api/admin/invoice/delete'|link({ 'id': invoice.id, 'CSRFToken': CSRFToken }) }}" class="btn btn-primary api-link" data-api-confirm="{{ 'Are you sure?'|trans }}" data-api-redirect="{{ 'invoice'|alink }}">
+                <a class="btn btn-danger btn-primary api-link" href="{{ 'api/admin/invoice/delete'|link({ 'id': invoice.id, 'CSRFToken': CSRFToken }) }}" data-api-confirm="{{ 'Are you sure?'|trans }}" data-api-redirect="{{ 'invoice'|alink }}">
                     <svg class="icon" width="24" height="24">
                         <use xlink:href="#delete" />
                     </svg>
@@ -547,7 +547,7 @@
                         <input class="form-check-input m-0 align-middle" type="checkbox" name="items[{{ item.id }}][taxed]" value="1"{% if item.taxed %} checked{% endif %}>
                     </td>
                     <td>
-                        <a class="btn btn-icon api-link"
+                        <a class="btn btn-danger btn-icon api-link"
                             href="{{ 'api/admin/invoice/item_delete'|link({ 'id': item.id, 'CSRFToken': CSRFToken }) }}"
                             data-api-confirm="{{ 'Are you sure?'|trans }}"
                             data-api-reload="1">
