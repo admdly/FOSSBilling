@@ -1486,7 +1486,7 @@ class ServiceTest extends \BBTestCase
 
     public function testtoActivityAdminHistoryApiArray(): void
     {
-        $adminHistoryModel = new \Model_ActivityAdminHistory();
+        $adminHistoryModel = new \Box\Mod\Activity\Model\Model_ActivityAdminHistory();
         $adminHistoryModel->loadBean(new \DummyBean());
         $adminHistoryModel->admin_id = 2;
 
@@ -1524,7 +1524,7 @@ class ServiceTest extends \BBTestCase
 
     public function testdeleteLoginHistory(): void
     {
-        $adminHistoryModel = new \Model_ActivityAdminHistory();
+        $adminHistoryModel = new \Box\Mod\Activity\Model\Model_ActivityAdminHistory();
         $adminHistoryModel->loadBean(new \DummyBean());
 
         $dbMock = $this->getMockBuilder('\Box_Database')->getMock();

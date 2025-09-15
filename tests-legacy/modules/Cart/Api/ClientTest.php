@@ -16,7 +16,7 @@ class ClientTest extends \BBTestCase
 
     public function testCheckout(): void
     {
-        $cart = new \Model_Cart();
+        $cart = new \Box\Mod\Cart\Model\Model_Cart();
         $cart->loadBean(new \DummyBean());
 
         $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Cart\Service::class)

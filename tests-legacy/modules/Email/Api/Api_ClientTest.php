@@ -47,7 +47,7 @@ class Api_ClientTest extends \BBTestCase
     {
         $clientApi = new \Box\Mod\Email\Api\Client();
 
-        $model = new \Model_ActivityClientEmail();
+        $model = new \Box\Mod\Activity\Model\Model_ActivityClientEmail();
         $model->loadBean(new \DummyBean());
         $service = $this->getMockBuilder(\Box\Mod\Email\Service::class)->onlyMethods(['findOneForClientById', 'toApiArray'])->getMock();
         $service->expects($this->atLeastOnce())
@@ -110,7 +110,7 @@ class Api_ClientTest extends \BBTestCase
     {
         $clientApi = new \Box\Mod\Email\Api\Client();
 
-        $model = new \Model_ActivityClientEmail();
+        $model = new \Box\Mod\Activity\Model\Model_ActivityClientEmail();
         $model->loadBean(new \DummyBean());
 
         $service = $this->getMockBuilder(\Box\Mod\Email\Service::class)->onlyMethods(['findOneForClientById', 'resend'])->getMock();
@@ -178,7 +178,7 @@ class Api_ClientTest extends \BBTestCase
 
         $di = new \Pimple\Container();
 
-        $model = new \Model_ActivityClientEmail();
+        $model = new \Box\Mod\Activity\Model\Model_ActivityClientEmail();
         $model->loadBean(new \DummyBean());
         $service = $this->getMockBuilder(\Box\Mod\Email\Service::class)->onlyMethods(['findOneForClientById', 'rm'])->getMock();
         $service->expects($this->atLeastOnce())

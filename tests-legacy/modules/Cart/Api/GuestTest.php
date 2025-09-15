@@ -19,7 +19,7 @@ class GuestTest extends \BBTestCase
         $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Cart\Service::class)
             ->onlyMethods(['getSessionCart', 'toApiArray'])->getMock();
         $serviceMock->expects($this->atLeastOnce())->method('getSessionCart')
-            ->willReturn(new \Model_Cart());
+            ->willReturn(new \Box\Mod\Cart\Model\Model_Cart());
         $serviceMock->expects($this->atLeastOnce())->method('toApiArray')
             ->willReturn([]);
 
@@ -35,7 +35,7 @@ class GuestTest extends \BBTestCase
         $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Cart\Service::class)
             ->onlyMethods(['getSessionCart', 'resetCart'])->getMock();
         $serviceMock->expects($this->atLeastOnce())->method('getSessionCart')
-            ->willReturn(new \Model_Cart());
+            ->willReturn(new \Box\Mod\Cart\Model\Model_Cart());
         $serviceMock->expects($this->atLeastOnce())->method('resetCart')
             ->willReturn(true);
 
@@ -51,7 +51,7 @@ class GuestTest extends \BBTestCase
         $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Cart\Service::class)
             ->onlyMethods(['getSessionCart', 'changeCartCurrency'])->getMock();
         $serviceMock->expects($this->atLeastOnce())->method('getSessionCart')
-            ->willReturn(new \Model_Cart());
+            ->willReturn(new \Box\Mod\Cart\Model\Model_Cart());
         $serviceMock->expects($this->atLeastOnce())->method('changeCartCurrency')
             ->willReturn(true);
 
@@ -85,7 +85,7 @@ class GuestTest extends \BBTestCase
         $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Cart\Service::class)
             ->onlyMethods(['getSessionCart', 'changeCartCurrency'])->getMock();
         $serviceMock->expects($this->never())->method('getSessionCart')
-            ->willReturn(new \Model_Cart());
+            ->willReturn(new \Box\Mod\Cart\Model\Model_Cart());
         $serviceMock->expects($this->never())->method('changeCartCurrency')
             ->willReturn(true);
 
@@ -118,7 +118,7 @@ class GuestTest extends \BBTestCase
 
     public function testGetCurrency(): void
     {
-        $cart = new \Model_Cart();
+        $cart = new \Box\Mod\Cart\Model\Model_Cart();
         $cart->loadBean(new \DummyBean());
         $cart->currency_id = random_int(1, 100);
 
@@ -156,7 +156,7 @@ class GuestTest extends \BBTestCase
 
     public function testGetCurrencyNotFound(): void
     {
-        $cart = new \Model_Cart();
+        $cart = new \Box\Mod\Cart\Model\Model_Cart();
         $cart->loadBean(new \DummyBean());
         $cart->currency_id = random_int(1, 100);
 
@@ -194,7 +194,7 @@ class GuestTest extends \BBTestCase
 
     public function testApplyPromo(): void
     {
-        $cart = new \Model_Cart();
+        $cart = new \Box\Mod\Cart\Model\Model_Cart();
         $cart->loadBean(new \DummyBean());
         $cart->currency_id = random_int(1, 100);
 
@@ -232,7 +232,7 @@ class GuestTest extends \BBTestCase
 
     public function testApplyPromoNotFoundException(): void
     {
-        $cart = new \Model_Cart();
+        $cart = new \Box\Mod\Cart\Model\Model_Cart();
         $cart->loadBean(new \DummyBean());
         $cart->currency_id = random_int(1, 100);
 
@@ -271,7 +271,7 @@ class GuestTest extends \BBTestCase
 
     public function testApplyPromoCanNotBeApplied(): void
     {
-        $cart = new \Model_Cart();
+        $cart = new \Box\Mod\Cart\Model\Model_Cart();
         $cart->loadBean(new \DummyBean());
         $cart->currency_id = random_int(1, 100);
 
@@ -311,7 +311,7 @@ class GuestTest extends \BBTestCase
 
     public function testApplyPromoCanNotBeAppliedForUser(): void
     {
-        $cart = new \Model_Cart();
+        $cart = new \Box\Mod\Cart\Model\Model_Cart();
         $cart->loadBean(new \DummyBean());
         $cart->currency_id = random_int(1, 100);
 
@@ -349,7 +349,7 @@ class GuestTest extends \BBTestCase
 
     public function testRemovePromo(): void
     {
-        $cart = new \Model_Cart();
+        $cart = new \Box\Mod\Cart\Model\Model_Cart();
         $cart->loadBean(new \DummyBean());
         $cart->currency_id = random_int(1, 100);
 
@@ -369,7 +369,7 @@ class GuestTest extends \BBTestCase
 
     public function testRemoveItem(): void
     {
-        $cart = new \Model_Cart();
+        $cart = new \Box\Mod\Cart\Model\Model_Cart();
         $cart->loadBean(new \DummyBean());
         $cart->currency_id = random_int(1, 100);
 
@@ -402,7 +402,7 @@ class GuestTest extends \BBTestCase
 
     public function testAddItem(): void
     {
-        $cart = new \Model_Cart();
+        $cart = new \Box\Mod\Cart\Model\Model_Cart();
         $cart->loadBean(new \DummyBean());
         $cart->currency_id = random_int(1, 100);
 
@@ -443,7 +443,7 @@ class GuestTest extends \BBTestCase
 
     public function testAddItemSingle(): void
     {
-        $cart = new \Model_Cart();
+        $cart = new \Box\Mod\Cart\Model\Model_Cart();
         $cart->loadBean(new \DummyBean());
         $cart->currency_id = random_int(1, 100);
 

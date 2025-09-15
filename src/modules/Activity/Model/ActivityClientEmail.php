@@ -8,6 +8,10 @@
  * @copyright FOSSBilling (https://www.fossbilling.org)
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
-class Model_ActivitySystem extends RedBeanPHP\SimpleModel
+declare(strict_types=1);
+
+namespace Box\Mod\Activity\Model;
+
+class Model_ActivityClientEmail extends \RedBeanPHP\SimpleModel
 {
 }

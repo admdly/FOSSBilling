@@ -56,7 +56,7 @@ class Api_AdminTest extends \BBTestCase
         $created = date('Y-m-d H:i:s', time() - 86400);
         $updated = date('Y-m-d H:i:s');
 
-        $model = new \Model_ActivityClientEmail();
+        $model = new \Box\Mod\Activity\Model\Model_ActivityClientEmail();
         $model->loadBean(new \DummyBean());
         $model->id = $id;
         $model->client_id = $client_id;
@@ -117,7 +117,7 @@ class Api_AdminTest extends \BBTestCase
             'content' => 'Content',
         ];
 
-        $model = new \Model_ActivityClientEmail();
+        $model = new \Box\Mod\Activity\Model\Model_ActivityClientEmail();
         $model->loadBean(new \DummyBean());
         $model->id = 1;
 
@@ -148,7 +148,7 @@ class Api_AdminTest extends \BBTestCase
             'id' => 1,
         ];
 
-        $model = new \Model_ActivityClientEmail();
+        $model = new \Box\Mod\Activity\Model\Model_ActivityClientEmail();
         $model->loadBean(new \DummyBean());
         $model->id = 1;
 
@@ -242,7 +242,7 @@ class Api_AdminTest extends \BBTestCase
             'id' => 1,
         ];
 
-        $model = new \Model_ActivityClientEmail();
+        $model = new \Box\Mod\Activity\Model\Model_ActivityClientEmail();
         $model->loadBean(new \DummyBean());
         $model->id = 1;
 

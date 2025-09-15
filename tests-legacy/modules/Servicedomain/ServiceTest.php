@@ -51,7 +51,7 @@ class ServiceTest extends \BBTestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('getCartProductTitleProvider')]
     public function testGetCartProductTitle($data, $expected): void
     {
-        $product = new \Model_CartProduct();
+        $product = new \Box\Mod\Cart\Model\Model_CartProduct();
         $product->loadBean(new \DummyBean());
         $product->title = 'Example.com Registration';
 

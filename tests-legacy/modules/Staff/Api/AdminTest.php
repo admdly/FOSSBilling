@@ -483,7 +483,7 @@ class AdminTest extends \BBTestCase
             ->method('getPaginatedResultSet')
             ->willReturn($resultSet);
 
-        $model = new \Model_ActivityAdminHistory();
+        $model = new \Box\Mod\Activity\Model\Model_ActivityAdminHistory();
         $model->loadBean(new \DummyBean());
         $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
@@ -516,7 +516,7 @@ class AdminTest extends \BBTestCase
         $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getExistingModelById')
-            ->willReturn(new \Model_ActivityAdminHistory());
+            ->willReturn(new \Box\Mod\Activity\Model\Model_ActivityAdminHistory());
 
         $di = new \Pimple\Container();
         $di['validator'] = $validatorMock;
@@ -545,7 +545,7 @@ class AdminTest extends \BBTestCase
         $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getExistingModelById')
-            ->willReturn(new \Model_ActivityAdminHistory());
+            ->willReturn(new \Box\Mod\Activity\Model\Model_ActivityAdminHistory());
 
         $di = new \Pimple\Container();
         $di['validator'] = $validatorMock;

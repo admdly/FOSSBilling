@@ -745,7 +745,7 @@ class Service implements InjectionAwareInterface
         return [$sql, $params];
     }
 
-    public function toActivityAdminHistoryApiArray(\Model_ActivityAdminHistory $model, $deep = false): array
+    public function toActivityAdminHistoryApiArray(\Box\Mod\Activity\Model\Model_ActivityAdminHistory $model, $deep = false): array
     {
         $result = [
             'id' => $model->id,
@@ -764,7 +764,7 @@ class Service implements InjectionAwareInterface
         return $result;
     }
 
-    public function deleteLoginHistory(\Model_ActivityAdminHistory $model)
+    public function deleteLoginHistory(\Box\Mod\Activity\Model\Model_ActivityAdminHistory $model)
     {
         $this->di['db']->trash($model);
 

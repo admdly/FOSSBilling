@@ -30,7 +30,7 @@ class AdminTest extends \BBTestCase
             ->method('getPaginatedResultSet')
             ->willReturn($simpleResultArr);
 
-        $model = new \Model_ActivitySystem();
+        $model = new \Box\Mod\Activity\Model\Model_ActivitySystem();
         $model->loadBean(new \DummyBean());
 
         $di = new \Pimple\Container();
@@ -73,7 +73,7 @@ class AdminTest extends \BBTestCase
             ->method('getPaginatedResultSet')
             ->willReturn($simpleResultArr);
 
-        $model = new \Model_ActivitySystem();
+        $model = new \Box\Mod\Activity\Model\Model_ActivitySystem();
         $model->loadBean(new \DummyBean());
 
         $di = new \Pimple\Container();
@@ -131,7 +131,7 @@ class AdminTest extends \BBTestCase
         $databaseMock = $this->getMockBuilder('Box_Database')->getMock();
         $databaseMock->expects($this->atLeastOnce())->
             method('getExistingModelById')->
-            willReturn(new \Model_ActivitySystem());
+            willReturn(new \Box\Mod\Activity\Model\Model_ActivitySystem());
 
         $databaseMock->expects($this->atLeastOnce())->
             method('trash');

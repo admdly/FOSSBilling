@@ -101,7 +101,7 @@ class Service implements \FOSSBilling\InjectionAwareInterface
         return true;
     }
 
-    public function rm(\Model_ActivityClientEmail $email)
+    public function rm(\Box\Mod\Activity\Model\Model_ActivityClientEmail $email)
     {
         $db = $this->di['db'];
         $db->trash($email);
@@ -109,7 +109,7 @@ class Service implements \FOSSBilling\InjectionAwareInterface
         return true;
     }
 
-    public function toApiArray(\Model_ActivityClientEmail $model, $deep = true)
+    public function toApiArray(\Box\Mod\Activity\Model\Model_ActivityClientEmail $model, $deep = true)
     {
         return [
             'id' => $model->id,
@@ -332,7 +332,7 @@ class Service implements \FOSSBilling\InjectionAwareInterface
         return [$ps, $pc];
     }
 
-    public function resend(\Model_ActivityClientEmail $email)
+    public function resend(\Box\Mod\Activity\Model\Model_ActivityClientEmail $email)
     {
         $di = $this->getDi();
         $extensionService = $di['mod_service']('extension');
@@ -499,7 +499,7 @@ class Service implements \FOSSBilling\InjectionAwareInterface
     public function getEmailById($id)
     {
         $model = $this->di['db']->findOne('ActivityClientEmail', 'id = ?', [$id]);
-        if (!$model instanceof \Model_ActivityClientEmail) {
+        if (!$model instanceof \Box\Mod\Activity\Model\Model_ActivityClientEmail) {
             throw new \FOSSBilling\Exception('Email not found');
         }
 

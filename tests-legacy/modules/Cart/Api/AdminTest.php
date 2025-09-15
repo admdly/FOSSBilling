@@ -38,7 +38,7 @@ class AdminTest extends \BBTestCase
             ->method('toApiArray')
             ->willReturn([]);
 
-        $model = new \Model_Cart();
+        $model = new \Box\Mod\Cart\Model\Model_Cart();
         $model->loadBean(new \DummyBean());
         $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
@@ -69,7 +69,7 @@ class AdminTest extends \BBTestCase
         $dbMock = $this->getMockBuilder('\Box_Database')->disableOriginalConstructor()->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getExistingModelById')
-            ->willReturn(new \Model_Cart());
+            ->willReturn(new \Box\Mod\Cart\Model\Model_Cart());
 
         $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Cart\Service::class)
             ->onlyMethods(['toApiArray'])->getMock();

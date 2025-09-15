@@ -830,7 +830,7 @@ class AdminTest extends \BBTestCase
         $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getExistingModelById')
-            ->willReturn(new \Model_ActivityClientHistory());
+            ->willReturn(new \Box\Mod\Activity\Model\Model_ActivityClientHistory());
         $dbMock->expects($this->atLeastOnce())
             ->method('trash');
 

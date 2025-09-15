@@ -89,7 +89,7 @@ class ServiceTest extends \BBTestCase
         $id = 5;
         $client_id = 1;
 
-        $activityEmail = new \Model_ActivityClientEmail();
+        $activityEmail = new \Box\Mod\Activity\Model\Model_ActivityClientEmail();
         $activityEmail->loadBean(new \DummyBean());
         $activityEmail->client_id = $client_id;
         $activityEmail->id = $id;
@@ -108,7 +108,7 @@ class ServiceTest extends \BBTestCase
 
         $result = $service->findOneForClientById($client, $id);
 
-        $this->assertInstanceOf('Model_ActivityClientEmail', $result);
+        $this->assertInstanceOf(\Box\Mod\Activity\Model\Model_ActivityClientEmail::class, $result);
         $this->assertNotNull($result->id);
         $this->assertEquals($result->id, $activityEmail->id);
         $this->assertEquals($result->client_id, $activityEmail->client_id);
@@ -119,7 +119,7 @@ class ServiceTest extends \BBTestCase
         $service = new \Box\Mod\Email\Service();
         $di = new \Pimple\Container();
 
-        $model = new \Model_ActivityClientEmail();
+        $model = new \Box\Mod\Activity\Model\Model_ActivityClientEmail();
         $model->loadBean(new \DummyBean());
 
         $db = $this->getMockBuilder('Box_Database')->getMock();
@@ -155,7 +155,7 @@ class ServiceTest extends \BBTestCase
         $di['db'] = $db;
         $service->setDi($di);
 
-        $email = new \Model_ActivityClientEmail();
+        $email = new \Box\Mod\Activity\Model\Model_ActivityClientEmail();
         $email->loadBean(new \DummyBean());
         $email->id = 1;
 
@@ -177,7 +177,7 @@ class ServiceTest extends \BBTestCase
         $created = date('Y-m-d H:i:s', time() - 86400);
         $updated = date('Y-m-d H:i:s');
 
-        $model = new \Model_ActivityClientEmail();
+        $model = new \Box\Mod\Activity\Model\Model_ActivityClientEmail();
         $model->loadBean(new \DummyBean());
         $model->id = $id;
         $model->client_id = $client_id;
@@ -539,7 +539,7 @@ class ServiceTest extends \BBTestCase
 
         $service->setDi($di);
 
-        $model = new \Model_ActivityClientEmail();
+        $model = new \Box\Mod\Activity\Model\Model_ActivityClientEmail();
         $model->loadBean(new \DummyBean());
         $model->client_id = 1;
         $model->sender = 'sender@exemple.com';
@@ -772,7 +772,7 @@ class ServiceTest extends \BBTestCase
         $service = new \Box\Mod\Email\Service();
 
         $id = random_int(1, 100);
-        $model = new \Model_ActivityClientEmail();
+        $model = new \Box\Mod\Activity\Model\Model_ActivityClientEmail();
         $model->loadBean(new \DummyBean());
         $model->id = $id;
 
@@ -812,7 +812,7 @@ class ServiceTest extends \BBTestCase
         $service = new \Box\Mod\Email\Service();
 
         $id = random_int(1, 100);
-        $model = new \Model_ActivityClientEmail();
+        $model = new \Box\Mod\Activity\Model\Model_ActivityClientEmail();
         $model->loadBean(new \DummyBean());
         $model->id = $id;
 

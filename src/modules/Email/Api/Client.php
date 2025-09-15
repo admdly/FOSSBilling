@@ -63,7 +63,7 @@ class Client extends \Api_Abstract
 
         $model = $this->getService()->findOneForClientById($this->getIdentity(), $data['id']);
 
-        if (!$model instanceof \Model_ActivityClientEmail) {
+        if (!$model instanceof \Box\Mod\Activity\Model\Model_ActivityClientEmail) {
             throw new \FOSSBilling\Exception('Email not found');
         }
 
@@ -85,7 +85,7 @@ class Client extends \Api_Abstract
         $this->di['validator']->checkRequiredParamsForArray($required, $data);
 
         $model = $this->getService()->findOneForClientById($this->getIdentity(), $data['id']);
-        if (!$model instanceof \Model_ActivityClientEmail) {
+        if (!$model instanceof \Box\Mod\Activity\Model\Model_ActivityClientEmail) {
             throw new \FOSSBilling\Exception('Email not found');
         }
 
@@ -107,7 +107,7 @@ class Client extends \Api_Abstract
         $this->di['validator']->checkRequiredParamsForArray($required, $data);
 
         $model = $this->getService()->findOneForClientById($this->getIdentity(), $data['id']);
-        if (!$model instanceof \Model_ActivityClientEmail) {
+        if (!$model instanceof \Box\Mod\Activity\Model\Model_ActivityClientEmail) {
             throw new \FOSSBilling\Exception('Email not found');
         }
 

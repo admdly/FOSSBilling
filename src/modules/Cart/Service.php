@@ -55,7 +55,7 @@ class Service implements InjectionAwareInterface
     }
 
     /**
-     * @return \Model_Cart
+     * @return \Box\Mod\Cart\Model\Model_Cart
      */
     public function getSessionCart(?string $sessionID = null)
     {
@@ -63,7 +63,7 @@ class Service implements InjectionAwareInterface
         $sqlBindings = [':session_id' => $sessionID];
         $cart = $this->di['db']->findOne('Cart', 'session_id = :session_id', $sqlBindings);
 
-        if ($cart instanceof \Model_Cart) {
+        if ($cart instanceof \Box\Mod\Cart\Model\Model_Cart) {
             return $cart;
         }
 
@@ -86,7 +86,7 @@ class Service implements InjectionAwareInterface
         return $cart;
     }
 
-    public function addItem(\Model_Cart $cart, \Model_Product $product, array $data)
+    public function addItem(\Box\Mod\Cart\Model\Model_Cart $cart, \Model_Product $product, array $data)
     {
         $event_params = [...$data, 'cart_id' => $cart->id, 'product_id' => $product->id];
         $this->di['events_manager']->fire(['event' => 'onBeforeProductAddedToCart', 'params' => $event_params]);
@@ -214,7 +214,7 @@ class Service implements InjectionAwareInterface
         return true;
     }
 
-    protected function addProduct(\Model_Cart $cart, \Model_Product $product, array $data)
+    protected function addProduct(\Box\Mod\Cart\Model\Model_Cart $cart, \Model_Product $product, array $data)
     {
         $item = $this->di['db']->dispense('CartProduct');
         $item->cart_id = $cart->id;
@@ -225,7 +225,7 @@ class Service implements InjectionAwareInterface
         return true;
     }
 
-    public function removeProduct(\Model_Cart $cart, $id, $removeAddons = true)
+    public function removeProduct(\Box\Mod\Cart\Model\Model_Cart $cart, $id, $removeAddons = true)
     {
         $bindings = [
             ':cart_id' => $cart->id,
@@ -233,7 +233,7 @@ class Service implements InjectionAwareInterface
         ];
 
         $cartProduct = $this->di['db']->findOne('CartProduct', 'id = :id AND cart_id = :cart_id', $bindings);
-        if (!$cartProduct instanceof \Model_CartProduct) {
+        if (!$cartProduct instanceof \Box\Mod\Cart\Model\Model_CartProduct) {
             throw new \FOSSBilling\Exception('Product not found');
         }
 
@@ -261,7 +261,7 @@ class Service implements InjectionAwareInterface
         return true;
     }
 
-    public function changeCartCurrency(\Model_Cart $cart, \Model_Currency $currency)
+    public function changeCartCurrency(\Box\Mod\Cart\Model\Model_Cart $cart, \Model_Currency $currency)
     {
         $cart->currency_id = $currency->id;
         $this->di['db']->store($cart);
@@ -271,7 +271,7 @@ class Service implements InjectionAwareInterface
         return true;
     }
 
-    public function resetCart(\Model_Cart $cart)
+    public function resetCart(\Box\Mod\Cart\Model\Model_Cart $cart)
     {
         $cartProducts = $this->di['db']->find('CartProduct', 'cart_id = :cart_id', [':cart_id' => $cart->id]);
         foreach ($cartProducts as $cartProduct) {
@@ -284,7 +284,7 @@ class Service implements InjectionAwareInterface
         return true;
     }
 
-    public function removePromo(\Model_Cart $cart)
+    public function removePromo(\Box\Mod\Cart\Model\Model_Cart $cart)
     {
         $cart->promo_id = null;
         $cart->updated_at = date('Y-m-d H:i:s');
@@ -295,7 +295,7 @@ class Service implements InjectionAwareInterface
         return true;
     }
 
-    public function applyPromo(\Model_Cart $cart, \Model_Promo $promo)
+    public function applyPromo(\Box\Mod\Cart\Model\Model_Cart $cart, \Model_Promo $promo)
     {
         if ($cart->promo_id == $promo->id) {
             return true;
@@ -313,14 +313,14 @@ class Service implements InjectionAwareInterface
         return true;
     }
 
-    protected function isEmptyCart(\Model_Cart $cart)
+    protected function isEmptyCart(\Box\Mod\Cart\Model\Model_Cart $cart)
     {
         $cartProducts = $this->di['db']->find('CartProduct', 'cart_id = :cart_id', [':cart_id' => $cart->id]);
 
         return (is_countable($cartProducts) ? count($cartProducts) : 0) == 0;
     }
 
-    public function rm(\Model_Cart $cart)
+    public function rm(\Box\Mod\Cart\Model\Model_Cart $cart)
     {
         $cartProducts = $this->di['db']->find('CartProduct', 'cart_id = :cart_id', [':cart_id' => $cart->id]);
 
@@ -333,7 +333,7 @@ class Service implements InjectionAwareInterface
         return true;
     }
 
-    public function toApiArray(\Model_Cart $model, $deep = false, $identity = null)
+    public function toApiArray(\Box\Mod\Cart\Model\Model_Cart $model, $deep = false, $identity = null)
     {
         $products = $this->getCartProducts($model);
 
@@ -436,12 +436,12 @@ class Service implements InjectionAwareInterface
         return $promoId !== null;
     }
 
-    public function getCartProducts(\Model_Cart $model)
+    public function getCartProducts(\Box\Mod\Cart\Model\Model_Cart $model)
     {
         return $this->di['db']->find('CartProduct', 'cart_id = :cart_id ORDER BY id ASC', [':cart_id' => $model->id]);
     }
 
-    public function checkoutCart(\Model_Cart $cart, \Model_Client $client, $gateway_id = null): array
+    public function checkoutCart(\Box\Mod\Cart\Model\Model_Cart $cart, \Model_Client $client, $gateway_id = null): array
     {
         if ($cart->promo_id) {
             $promo = $this->di['db']->getExistingModelById('Promo', $cart->promo_id, 'Promo not found');
@@ -702,7 +702,7 @@ class Service implements InjectionAwareInterface
         return $this->di['db']->findOne('Promo', 'code = :code AND active = 1 ORDER BY id ASC', [':code' => $code]);
     }
 
-    private function getItemPrice(\Model_CartProduct $model)
+    private function getItemPrice(\Box\Mod\Cart\Model\Model_CartProduct $model)
     {
         $product = $this->di['db']->load('Product', $model->product_id);
         $config = $this->getItemConfig($model);
@@ -711,7 +711,7 @@ class Service implements InjectionAwareInterface
         return $repo->getProductPrice($product, $config);
     }
 
-    private function getItemSetupPrice(\Model_CartProduct $model)
+    private function getItemSetupPrice(\Box\Mod\Cart\Model\Model_CartProduct $model)
     {
         $product = $this->di['db']->load('Product', $model->product_id);
         $config = $this->getItemConfig($model);
@@ -726,7 +726,7 @@ class Service implements InjectionAwareInterface
      *
      * @return number
      */
-    protected function getRelatedItemsDiscount(\Model_Cart $cart, \Model_CartProduct $model)
+    protected function getRelatedItemsDiscount(\Box\Mod\Cart\Model\Model_Cart $cart, \Box\Mod\Cart\Model\Model_CartProduct $model)
     {
         $product = $this->di['db']->load('Product', $model->product_id);
         $repo = $product->getTable();
@@ -747,7 +747,7 @@ class Service implements InjectionAwareInterface
         return $discount;
     }
 
-    private function getItemTitle(\Model_CartProduct $model)
+    private function getItemTitle(\Box\Mod\Cart\Model\Model_CartProduct $model)
     {
         $product = $this->di['db']->load('Product', $model->product_id);
         $config = $this->getItemConfig($model);
@@ -759,7 +759,7 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    protected function getItemPromoDiscount(\Model_CartProduct $model, \Model_Promo $promo)
+    protected function getItemPromoDiscount(\Box\Mod\Cart\Model\Model_CartProduct $model, \Model_Promo $promo)
     {
         $product = $this->di['db']->load('Product', $model->product_id);
         $repo = $this->di['mod_service']('product');
@@ -768,12 +768,12 @@ class Service implements InjectionAwareInterface
         return $repo->getProductDiscount($product, $promo, $config);
     }
 
-    public function getItemConfig(\Model_CartProduct $model)
+    public function getItemConfig(\Box\Mod\Cart\Model\Model_CartProduct $model)
     {
         return json_decode($model->config ?? '', true) ?? [];
     }
 
-    public function cartProductToApiArray(\Model_CartProduct $model)
+    public function cartProductToApiArray(\Box\Mod\Cart\Model\Model_CartProduct $model)
     {
         $product = $this->di['db']->load('Product', $model->product_id);
         $repo = $product->getTable();
@@ -809,7 +809,7 @@ class Service implements InjectionAwareInterface
         ]);
     }
 
-    public function getProductDiscount(\Model_CartProduct $cartProduct, $setup)
+    public function getProductDiscount(\Box\Mod\Cart\Model\Model_CartProduct $cartProduct, $setup)
     {
         $cart = $this->di['db']->load('Cart', $cartProduct->cart_id);
         $discount_price = $this->getRelatedItemsDiscount($cart, $cartProduct);

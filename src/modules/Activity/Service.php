@@ -209,7 +209,7 @@ class Service implements InjectionAwareInterface
         return true;
     }
 
-    public function toApiArray(\Model_ActivityClientHistory $model)
+    public function toApiArray(\Box\Mod\Activity\Model\Model_ActivityClientHistory $model)
     {
         $client = $this->di['db']->getExistingModelById('Client', $model->client_id, 'Client not found');
 

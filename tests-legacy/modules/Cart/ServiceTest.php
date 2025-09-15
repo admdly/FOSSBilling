@@ -44,7 +44,7 @@ class ServiceTest extends \BBTestCase
 
         $session_id = 'rrcpqo7tkjh14d2vmf0car64k7';
 
-        $model = new \Model_Cart();
+        $model = new \Box\Mod\Cart\Model\Model_Cart();
         $model->loadBean(new \DummyBean());
         $model->session_id = $session_id;
 
@@ -67,7 +67,7 @@ class ServiceTest extends \BBTestCase
 
         $result = $service->getSessionCart();
 
-        $this->assertInstanceOf('Model_Cart', $result);
+        $this->assertInstanceOf(\Box\Mod\Cart\Model\Model_Cart::class, $result);
         $this->assertEquals($result->session_id, $session_id);
     }
 
@@ -104,7 +104,7 @@ class ServiceTest extends \BBTestCase
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
             ->willReturn($model);
-        $modelCart = new \Model_Cart();
+        $modelCart = new \Box\Mod\Cart\Model\Model_Cart();
         $modelCart->loadBean(new \DummyBean());
         $dbMock->expects($this->atLeastOnce())
             ->method('dispense')
@@ -139,7 +139,7 @@ class ServiceTest extends \BBTestCase
 
         $result = $service->getSessionCart();
 
-        $this->assertInstanceOf('Model_Cart', $result);
+        $this->assertInstanceOf(\Box\Mod\Cart\Model\Model_Cart::class, $result);
         $this->assertEquals($result->session_id, $session_id);
         $this->assertEquals($result->currency_id, $curencyModel->id);
     }
@@ -239,7 +239,7 @@ class ServiceTest extends \BBTestCase
 
     public function testRemoveProduct(): void
     {
-        $cartProduct = new \Model_CartProduct();
+        $cartProduct = new \Box\Mod\Cart\Model\Model_CartProduct();
         $cartProduct->loadBean(new \DummyBean());
 
         $dbMock = $this->getMockBuilder('\Box_Database')->disableOriginalConstructor()->getMock();
@@ -258,7 +258,7 @@ class ServiceTest extends \BBTestCase
         $di['logger'] = $this->getMockBuilder('Box_Log')->getMock();
         $this->service->setDi($di);
 
-        $cart = new \Model_Cart();
+        $cart = new \Box\Mod\Cart\Model\Model_Cart();
         $cart->loadBean(new \DummyBean());
         $result = $this->service->removeProduct($cart, random_int(1, 100));
         $this->assertTrue($result);
@@ -279,7 +279,7 @@ class ServiceTest extends \BBTestCase
         $di['logger'] = $this->getMockBuilder('Box_Log')->getMock();
         $this->service->setDi($di);
 
-        $cart = new \Model_Cart();
+        $cart = new \Box\Mod\Cart\Model\Model_Cart();
         $cart->loadBean(new \DummyBean());
         $this->expectException(\FOSSBilling\Exception::class);
         $result = $this->service->removeProduct($cart, random_int(1, 100));
@@ -293,7 +293,7 @@ class ServiceTest extends \BBTestCase
             ->method('store')
             ->willReturn(random_int(1, 100));
 
-        $cart = new \Model_Cart();
+        $cart = new \Box\Mod\Cart\Model\Model_Cart();
         $cart->loadBean(new \DummyBean());
 
         $currency = new \Model_Currency();
@@ -321,7 +321,7 @@ class ServiceTest extends \BBTestCase
             ->method('store')
             ->willReturn(random_int(1, 100));
 
-        $cart = new \Model_Cart();
+        $cart = new \Box\Mod\Cart\Model\Model_Cart();
         $cart->loadBean(new \DummyBean());
 
         $di = new \Pimple\Container();
@@ -340,7 +340,7 @@ class ServiceTest extends \BBTestCase
             ->method('store')
             ->willReturn(random_int(1, 100));
 
-        $cart = new \Model_Cart();
+        $cart = new \Box\Mod\Cart\Model\Model_Cart();
         $cart->loadBean(new \DummyBean());
 
         $di = new \Pimple\Container();
@@ -360,13 +360,13 @@ class ServiceTest extends \BBTestCase
             ->willReturn(random_int(1, 100));
         $dbMock->expects($this->atLeastOnce())
             ->method('find')
-            ->willReturn([new \Model_CartProduct(), new \Model_CartProduct()]);
+            ->willReturn([new \Box\Mod\Cart\Model\Model_CartProduct(), new \Box\Mod\Cart\Model\Model_CartProduct()]);
 
         $promo = new \Model_Promo();
         $promo->loadBean(new \DummyBean());
         $promo->id = 2;
 
-        $cart = new \Model_Cart();
+        $cart = new \Box\Mod\Cart\Model\Model_Cart();
         $cart->loadBean(new \DummyBean());
         $cart->promo_id = 1;
 
@@ -395,7 +395,7 @@ class ServiceTest extends \BBTestCase
         $promo->loadBean(new \DummyBean());
         $promo->id = 5;
 
-        $cart = new \Model_Cart();
+        $cart = new \Box\Mod\Cart\Model\Model_Cart();
         $cart->loadBean(new \DummyBean());
         $cart->promo_id = 5;
 
@@ -424,7 +424,7 @@ class ServiceTest extends \BBTestCase
         $promo->loadBean(new \DummyBean());
         $promo->id = 2;
 
-        $cart = new \Model_Cart();
+        $cart = new \Box\Mod\Cart\Model\Model_Cart();
         $cart->loadBean(new \DummyBean());
         $cart->promo_id = 1;
 
@@ -443,12 +443,12 @@ class ServiceTest extends \BBTestCase
         $dbMock = $this->getMockBuilder('\Box_Database')->disableOriginalConstructor()->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('find')
-            ->willReturn([new \Model_CartProduct()]);
+            ->willReturn([new \Box\Mod\Cart\Model\Model_CartProduct()]);
         $dbMock->expects($this->atLeastOnce())
             ->method('trash')
             ->willReturn(null);
 
-        $cart = new \Model_Cart();
+        $cart = new \Box\Mod\Cart\Model\Model_Cart();
         $cart->loadBean(new \DummyBean());
 
         $di = new \Pimple\Container();
@@ -624,23 +624,23 @@ class ServiceTest extends \BBTestCase
         $dbMock = $this->getMockBuilder('\Box_Database')->disableOriginalConstructor()->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('find')
-            ->willReturn([new \Model_CartProduct()]);
+            ->willReturn([new \Box\Mod\Cart\Model\Model_CartProduct()]);
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
         $this->service->setDi($di);
 
-        $cart = new \Model_Cart();
+        $cart = new \Box\Mod\Cart\Model\Model_Cart();
         $cart->loadBean(new \DummyBean());
 
         $result = $this->service->getCartProducts($cart);
         $this->assertIsArray($result);
-        $this->assertInstanceOf('Model_CartProduct', $result[0]);
+        $this->assertInstanceOf(\Box\Mod\Cart\Model\Model_CartProduct::class, $result[0]);
     }
 
     public function testCheckoutCart(): void
     {
-        $cart = new \Model_Cart();
+        $cart = new \Box\Mod\Cart\Model\Model_Cart();
         $cart->loadBean(new \DummyBean());
         $cart->promo_id = random_int(1, 100);
 
@@ -697,7 +697,7 @@ class ServiceTest extends \BBTestCase
      */
     public function testCheckoutCartClientIsNotAbleToUsePromoException(): void
     {
-        $cart = new \Model_Cart();
+        $cart = new \Box\Mod\Cart\Model\Model_Cart();
         $cart->loadBean(new \DummyBean());
         $cart->promo_id = random_int(1, 100);
 
@@ -773,7 +773,7 @@ class ServiceTest extends \BBTestCase
 
     public function testaddItemmRecurringPaymentPeriodParamMissing(): void
     {
-        $cartModel = new \Model_Cart();
+        $cartModel = new \Box\Mod\Cart\Model\Model_Cart();
         $cartModel->loadBean(new \DummyBean());
 
         $productModel = new \Model_Product();
@@ -812,7 +812,7 @@ class ServiceTest extends \BBTestCase
 
     public function testaddItemmRecurringPaymentPeriodIsNotEnabled(): void
     {
-        $cartModel = new \Model_Cart();
+        $cartModel = new \Box\Mod\Cart\Model\Model_Cart();
         $cartModel->loadBean(new \DummyBean());
 
         $productModel = new \Model_Product();
@@ -855,7 +855,7 @@ class ServiceTest extends \BBTestCase
 
     public function testaddItemmOutOfStock(): void
     {
-        $cartModel = new \Model_Cart();
+        $cartModel = new \Box\Mod\Cart\Model\Model_Cart();
         $cartModel->loadBean(new \DummyBean());
 
         $productModel = new \Model_Product();
@@ -894,7 +894,7 @@ class ServiceTest extends \BBTestCase
 
     public function testaddItemmTypeHosting(): void
     {
-        $cartModel = new \Model_Cart();
+        $cartModel = new \Box\Mod\Cart\Model\Model_Cart();
         $cartModel->loadBean(new \DummyBean());
 
         $productModel = new \Model_Product();
@@ -946,7 +946,7 @@ class ServiceTest extends \BBTestCase
 
     public function testaddItemmTypeLicense(): void
     {
-        $cartModel = new \Model_Cart();
+        $cartModel = new \Box\Mod\Cart\Model\Model_Cart();
         $cartModel->loadBean(new \DummyBean());
 
         $productModel = new \Model_Product();
@@ -999,7 +999,7 @@ class ServiceTest extends \BBTestCase
 
     public function testaddItemmTypeCustom(): void
     {
-        $cartModel = new \Model_Cart();
+        $cartModel = new \Box\Mod\Cart\Model\Model_Cart();
         $cartModel->loadBean(new \DummyBean());
 
         $productModel = new \Model_Product();
@@ -1031,7 +1031,7 @@ class ServiceTest extends \BBTestCase
         $dbMock->expects($this->atLeastOnce())
             ->method('toArray')
             ->willReturn([]);
-        $cartProduct = new \Model_CartProduct();
+        $cartProduct = new \Box\Mod\Cart\Model\Model_CartProduct();
         $cartProduct->loadBean(new \DummyBean());
         $dbMock->expects($this->atLeastOnce())
             ->method('dispense')
@@ -1054,10 +1054,10 @@ class ServiceTest extends \BBTestCase
 
     public function testtoApiArray(): void
     {
-        $cartModel = new \Model_Cart();
+        $cartModel = new \Box\Mod\Cart\Model\Model_Cart();
         $cartModel->loadBean(new \DummyBean());
 
-        $cartProductModel = new \Model_CartProduct();
+        $cartProductModel = new \Box\Mod\Cart\Model\Model_CartProduct();
         $cartProductModel->loadBean(new \DummyBean());
 
         $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Cart\Service::class)
@@ -1109,10 +1109,10 @@ class ServiceTest extends \BBTestCase
 
     public function testgetProductDiscount(): void
     {
-        $cartProductModel = new \Model_CartProduct();
+        $cartProductModel = new \Box\Mod\Cart\Model\Model_CartProduct();
         $cartProductModel->loadBean(new \DummyBean());
 
-        $modelCart = new \Model_Cart();
+        $modelCart = new \Box\Mod\Cart\Model\Model_Cart();
         $modelCart->loadBean(new \DummyBean());
         $modelCart->promo_id = 1;
 
@@ -1156,10 +1156,10 @@ class ServiceTest extends \BBTestCase
 
     public function testgetProductDiscountNoPromo(): void
     {
-        $cartProductModel = new \Model_CartProduct();
+        $cartProductModel = new \Box\Mod\Cart\Model\Model_CartProduct();
         $cartProductModel->loadBean(new \DummyBean());
 
-        $modelCart = new \Model_Cart();
+        $modelCart = new \Box\Mod\Cart\Model\Model_Cart();
         $modelCart->loadBean(new \DummyBean());
 
         $promoModel = new \Model_Promo();
@@ -1192,10 +1192,10 @@ class ServiceTest extends \BBTestCase
 
     public function testgetProductDiscountProductQtyIsSetAndFreeSetup(): void
     {
-        $cartProductModel = new \Model_CartProduct();
+        $cartProductModel = new \Box\Mod\Cart\Model\Model_CartProduct();
         $cartProductModel->loadBean(new \DummyBean());
 
-        $modelCart = new \Model_Cart();
+        $modelCart = new \Box\Mod\Cart\Model\Model_Cart();
         $modelCart->loadBean(new \DummyBean());
         $modelCart->promo_id = 1;
 

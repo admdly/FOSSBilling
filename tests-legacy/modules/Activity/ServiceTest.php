@@ -54,7 +54,7 @@ class ServiceTest extends \BBTestCase
             'content_text' => 'text',
         ];
 
-        $model = new \Model_ActivityClientEmail();
+        $model = new \Box\Mod\Activity\Model\Model_ActivityClientEmail();
         $model->loadBean(new \DummyBean());
 
         $di = new \Pimple\Container();
@@ -75,7 +75,7 @@ class ServiceTest extends \BBTestCase
 
     public function testtoApiArray(): void
     {
-        $clientHistoryModel = new \Model_ActivityClientHistory();
+        $clientHistoryModel = new \Box\Mod\Activity\Model\Model_ActivityClientHistory();
         $clientHistoryModel->loadBean(new \DummyBean());
         $clientHistoryModel->client_id = 1;
 
@@ -114,7 +114,7 @@ class ServiceTest extends \BBTestCase
         $clientModel->loadBean(new \DummyBean());
         $clientModel->id = 1;
 
-        $activitySystemModel = new \Model_ActivitySystem();
+        $activitySystemModel = new \Box\Mod\Activity\Model\Model_ActivitySystem();
         $activitySystemModel->loadBean(new \DummyBean());
 
         $dbMock = $this->getMockBuilder('\Box_Database')->getMock();

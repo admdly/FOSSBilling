@@ -111,7 +111,7 @@ class Admin extends \Api_Abstract
 
         $model = $this->di['db']->findOne('ActivityClientEmail', 'id = ?', [$data['id']]);
 
-        if (!$model instanceof \Model_ActivityClientEmail) {
+        if (!$model instanceof \Box\Mod\Activity\Model\Model_ActivityClientEmail) {
             throw new \FOSSBilling\Exception('Email not found');
         }
 
@@ -134,7 +134,7 @@ class Admin extends \Api_Abstract
 
         $model = $this->di['db']->findOne('ActivityClientEmail', 'id = ?', [$data['id']]);
 
-        if (!$model instanceof \Model_ActivityClientEmail) {
+        if (!$model instanceof \Box\Mod\Activity\Model\Model_ActivityClientEmail) {
             throw new \FOSSBilling\Exception('Email not found');
         }
 

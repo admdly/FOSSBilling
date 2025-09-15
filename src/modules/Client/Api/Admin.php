@@ -480,7 +480,7 @@ class Admin extends \Api_Abstract
         $this->di['validator']->checkRequiredParamsForArray($required, $data);
         $model = $this->di['db']->getExistingModelById('ActivityClientHistory', $data['id']);
 
-        if (!$model instanceof \Model_ActivityClientHistory) {
+        if (!$model instanceof \Box\Mod\Activity\Model\Model_ActivityClientHistory) {
             throw new \FOSSBilling\Exception('Event not found');
         }
         $this->di['db']->trash($model);

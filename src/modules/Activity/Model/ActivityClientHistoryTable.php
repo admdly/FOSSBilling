@@ -8,16 +8,22 @@
  * @copyright FOSSBilling (https://www.fossbilling.org)
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
-class Model_ActivityClientHistoryTable implements FOSSBilling\InjectionAwareInterface
-{
-    protected ?Pimple\Container $di = null;
+declare(strict_types=1);
 
-    public function setDi(Pimple\Container $di): void
+namespace Box\Mod\Activity\Model;
+
+use Pimple\Container;
+
+class ActivityClientHistoryTable implements \FOSSBilling\InjectionAwareInterface
+{
+    protected ?Container $di = null;
+
+    public function setDi(Container $di): void
     {
         $this->di = $di;
     }
 
-    public function getDi(): ?Pimple\Container
+    public function getDi(): ?Container
     {
         return $this->di;
     }
@@ -46,7 +52,7 @@ class Model_ActivityClientHistoryTable implements FOSSBilling\InjectionAwareInte
         $this->di['db']->store($entry);
     }
 
-    public function rmByClient(Model_Client $client)
+    public function rmByClient(\Model_Client $client)
     {
         $models = $this->di['db']->find('ActivityClientHistory', 'client_id = ?', [$client->id]);
         foreach ($models as $model) {
