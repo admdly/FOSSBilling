@@ -1,6 +1,5 @@
 <?php
 
-declare(strict_types=1);
 /**
  * Copyright 2022-2025 FOSSBilling
  * Copyright 2011-2021 BoxBilling, Inc.
@@ -13,6 +12,7 @@ declare(strict_types=1);
 namespace Box\Mod\Invoice;
 
 use Dompdf\Dompdf;
+use FOSSBilling\Environment;
 use FOSSBilling\InformationException;
 use FOSSBilling\InjectionAwareInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -94,12 +94,12 @@ class Service implements InjectionAwareInterface
             $params['currency'] = $currency;
         }
 
-        if ($client_id !== null) {
+        if ($client_id) {
             $sql .= ' AND p.client_id = :client_id';
             $params['client_id'] = $client_id;
         }
 
-        if ($client !== null) {
+        if ($client) {
             $sql .= ' AND (cl.first_name LIKE :client_search OR cl.last_name LIKE :client_search OR cl.id = :client OR cl.email = :client)';
             $params['client_search'] = $client . '%';
             $params['client'] = $client;
@@ -139,8 +139,6 @@ class Service implements InjectionAwareInterface
 
     public function toApiArray(\Model_Invoice $invoice, $deep = true, $identity = null): array
     {
-        $this->checkInvoiceAuth($invoice->client_id);
-
         $row = $this->di['db']->toArray($invoice);
 
         $items = $this->di['db']->find('InvoiceItem', 'invoice_id = :iid', ['iid' => $row['id']]);
@@ -1238,9 +1236,12 @@ class Service implements InjectionAwareInterface
         $document_format = $systemService->getParamValue('invoice_document_format', 'Letter');
 
         $invoice = $this->di['db']->findOne('Invoice', 'hash = :hash', [':hash' => $hash]);
+
         if (!$invoice instanceof \Model_Invoice) {
             throw new \FOSSBilling\Exception('Invoice not found');
         }
+
+        $this->checkInvoiceAuth($invoice->client_id);
 
         if (isset($invoice->currency)) {
             $currencyCode = $invoice->currency;
@@ -1498,7 +1499,7 @@ class Service implements InjectionAwareInterface
         return $this->di['table_export_csv']('invoice', 'invoices.csv', $headers);
     }
 
-    private function checkInvoiceAuth(?int $invoiceClientId)
+    public function checkInvoiceAuth(?int $invoiceClientId)
     {
         if ($invoiceClientId === null) {
             return;
@@ -1508,7 +1509,7 @@ class Service implements InjectionAwareInterface
         $hash_access = $systemService->getParamValue('invoice_accessible_from_hash', '0');
 
         // If hash_access is not 0 or if a client is logged in, get the logged-in client
-        if (!$this->di['auth']->isAdminLoggedIn() && $hash_access === '0') {
+        if (!$this->di['auth']->isAdminLoggedIn() && $hash_access === '0' && !Environment::isCLI()) {
             $client = $this->di['loggedin_client'];
             if ($invoiceClientId != $client->id) {
                 // Then either give an appropriate API response or redirect to the login page.

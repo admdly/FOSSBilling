@@ -1,6 +1,5 @@
 <?php
 
-declare(strict_types=1);
 /**
  * Copyright 2022-2025 FOSSBilling
  * Copyright 2011-2021 BoxBilling, Inc.
@@ -222,13 +221,12 @@ class Service implements InjectionAwareInterface
         }
 
         foreach ($result as $key => $value) {
-            $defaultIconUrl = 'assets/icons/cog.svg';
-            $iconPath = Path::normalize($defaultIconUrl);
+            $iconPath = 'assets/icons/cog.svg';
             $icon_url = $value['icon_url'] ?? null;
             if ($icon_url) {
                 $iconPath = SYSTEM_URL . $icon_url;
             }
-            $result[$key]['icon_url'] = $defaultIconUrl;
+            $result[$key]['icon_url'] = $iconPath;
         }
 
         foreach ($result as $key => $value) {
