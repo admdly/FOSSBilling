@@ -17,6 +17,14 @@
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#username">{{ 'Username'|trans }}</a>
             </li>
+            {% if service.server.manager == 'Hestia' %}
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#hestia">{{ 'Hestia Management'|trans }}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#cron">{{ 'Cron Jobs'|trans }}</a>
+            </li>
+            {% endif %}
         </ul>
         <div class="tab-content">
             {# Hosting details #}
@@ -150,6 +158,14 @@
                     </fieldset>
                 </form>
             </div>
+            {% if service.server.manager == 'Hestia' %}
+            <div class="tab-pane fade" role="tabpanel" id="hestia">
+                {% include "mod_servicehestia_manage.html.twig" with {'order': order} %}
+            </div>
+            <div class="tab-pane fade" role="tabpanel" id="cron">
+                {% include "mod_servicehestia_cron.html.twig" with {'order': order} %}
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>

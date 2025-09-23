@@ -64,6 +64,138 @@ class Server_Manager_Hestia extends Server_Manager
         return 'https://' . $this->_config['host'] . ':' . $this->getPort() . '/';
     }
 
+    public function listWebDomains(Server_Account $account)
+    {
+        $result = $this->request([
+            'cmd'  => 'v-list-web-domains',
+            'arg1' => $account->getUsername(),
+            'arg2' => 'json',
+        ]);
+        return json_decode($result, true);
+    }
+
+    public function addWebDomain(Server_Account $account, string $domain)
+    {
+        return $this->request([
+            'cmd'  => 'v-add-web-domain',
+            'arg1' => $account->getUsername(),
+            'arg2' => $domain,
+        ]);
+    }
+
+    public function deleteWebDomain(Server_Account $account, string $domain)
+    {
+        return $this->request([
+            'cmd'  => 'v-delete-web-domain',
+            'arg1' => $account->getUsername(),
+            'arg2' => $domain,
+        ]);
+    }
+
+    public function addWebDomainAlias(Server_Account $account, string $domain, string $alias)
+    {
+        return $this->request([
+            'cmd'  => 'v-add-web-domain-alias',
+            'arg1' => $account->getUsername(),
+            'arg2' => $domain,
+            'arg3' => $alias,
+        ]);
+    }
+
+    public function deleteWebDomainAlias(Server_Account $account, string $domain, string $alias)
+    {
+        return $this->request([
+            'cmd'  => 'v-delete-web-domain-alias',
+            'arg1' => $account->getUsername(),
+            'arg2' => $domain,
+            'arg3' => $alias,
+        ]);
+    }
+
+    public function addLetsEncryptDomain(Server_Account $account, string $domain)
+    {
+        return $this->request([
+            'cmd'  => 'v-add-letsencrypt-domain',
+            'arg1' => $account->getUsername(),
+            'arg2' => $domain,
+        ]);
+    }
+
+    public function deleteLetsEncryptDomain(Server_Account $account, string $domain)
+    {
+        return $this->request([
+            'cmd'  => 'v-delete-letsencrypt-domain',
+            'arg1' => $account->getUsername(),
+            'arg2' => $domain,
+        ]);
+    }
+
+    public function changeWebDomainBackendTpl(Server_Account $account, string $domain, string $template)
+    {
+        return $this->request([
+            'cmd'  => 'v-change-web-domain-backendtpl',
+            'arg1' => $account->getUsername(),
+            'arg2' => $domain,
+            'arg3' => $template,
+        ]);
+    }
+
+    public function listCronJobs(Server_Account $account)
+    {
+        $result = $this->request([
+            'cmd'  => 'v-list-cron-jobs',
+            'arg1' => $account->getUsername(),
+            'arg2' => 'json',
+        ]);
+        return json_decode($result, true);
+    }
+
+    public function addCronJob(Server_Account $account, string $command, string $schedule)
+    {
+        // schedule is in format: min hour day month wday
+        [$min, $hour, $day, $month, $wday] = explode(' ', $schedule);
+        return $this->request([
+            'cmd'  => 'v-add-cron-job',
+            'arg1' => $account->getUsername(),
+            'arg2' => $min,
+            'arg3' => $hour,
+            'arg4' => $day,
+            'arg5' => $month,
+            'arg6' => $wday,
+            'arg7' => $command,
+        ]);
+    }
+
+    public function deleteCronJob(Server_Account $account, string $jobId)
+    {
+        return $this->request([
+            'cmd'  => 'v-delete-cron-job',
+            'arg1' => $account->getUsername(),
+            'arg2' => $jobId,
+        ]);
+    }
+
+    public function changeCronJob(Server_Account $account, string $jobId, string $min, string $hour, string $day, string $month, string $wday, string $command)
+    {
+        return $this->request([
+            'cmd'  => 'v-change-cron-job',
+            'arg1' => $account->getUsername(),
+            'arg2' => $jobId,
+            'arg3' => $min,
+            'arg4' => $hour,
+            'arg5' => $day,
+            'arg6' => $month,
+            'arg7' => $wday,
+            'arg8' => $command,
+        ]);
+    }
+
+    public function listWebBackendTemplates()
+    {
+        $result = $this->request(['cmd' => 'v-list-web-backend-templates', 'arg1' => 'json']);
+        return json_decode($result, true);
+    }
+
     public function getPort(): int|string
     {
         $port = $this->_config['port'];

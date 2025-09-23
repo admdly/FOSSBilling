@@ -1,0 +1,292 @@
+<div class="card-body">
+    <h5 class="py-4">{% trans 'Web Domains' %}</h5>
+    <table class="table card-table table-vcenter table-striped text-nowrap">
+        <thead>
+            <tr>
+                <th>{% trans 'Domain' %}</th>
+                <th>{% trans 'Aliases' %}</th>
+                <th>{% trans 'SSL' %}</th>
+                <th>{% trans 'PHP Version' %}</th>
+                <th class="w-1"></th>
+            </tr>
+        </thead>
+        <tbody id="hestia-domains-list">
+            <tr>
+                <td colspan="3">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h5 class="py-4">{% trans 'Add New Web Domain' %}</h5>
+    <form id="hestia-add-domain-form" method="post" action="">
+        <div class="form-group mb-3 row">
+            <label class="form-label col-3 col-form-label">{% trans 'Domain Name' %}</label>
+            <div class="col">
+                <input type="text" class="form-control" name="domain" placeholder="example.com">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">{% trans 'Add Domain' %}</button>
+    </form>
+</div>
+
+<div class="modal modal-blur fade" id="mod_servicehestia_aliases" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Manage Aliases for' %} <span id="alias-domain-name"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table card-table table-vcenter table-striped text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>{% trans 'Alias' %}</th>
+                            <th class="w-1"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="hestia-aliases-list">
+                    </tbody>
+                </table>
+                <h5 class="py-4">{% trans 'Add New Alias' %}</h5>
+                <form id="hestia-add-alias-form" method="post" action="">
+                    <input type="hidden" name="domain" id="alias-domain-input">
+                    <div class="form-group mb-3 row">
+                        <label class="form-label col-3 col-form-label">{% trans 'Alias Name' %}</label>
+                        <div class="col">
+                            <input type="text" class="form-control" name="alias" placeholder="alias.com">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">{% trans 'Add Alias' %}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal modal-blur fade" id="mod_servicehestia_php" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Change PHP Version for' %} <span id="php-domain-name"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="hestia-change-php-form" method="post" action="">
+                    <input type="hidden" name="domain" id="php-domain-input">
+                    <div class="form-group mb-3 row">
+                        <label class="form-label col-3 col-form-label">{% trans 'PHP Version' %}</label>
+                        <div class="col">
+                            <select name="template" class="form-select" id="php-template-select">
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">{% trans 'Change Version' %}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(function() {
+    const orderId = {{ order.id }};
+
+    function loadDomains() {
+        bb.post(
+            'client/servicehestia/list_web_domains',
+            { order_id: orderId },
+            function(result) {
+                let html = '';
+                if (Object.keys(result).length > 0) {
+                    for (const domainName in result) {
+                        const domain = result[domainName];
+                        let aliases = domain.ALIAS ? domain.ALIAS.split(',') : [];
+                        let aliasHtml = aliases.join('<br>');
+
+                        let sslHtml = '';
+                        if (domain.SSL) {
+                            sslHtml = '<span class="badge bg-success me-1"></span> {% trans "Enabled" %}';
+                        } else {
+                            sslHtml = '<span class="badge bg-danger me-1"></span> {% trans "Disabled" %}';
+                        }
+
+                        html += '<tr>';
+                        html += '<td>' + domainName + '</td>';
+                        html += '<td>' + aliasHtml + '</td>';
+                        html += '<td>' + sslHtml + '</td>';
+                        html += '<td>' + domain.TEMPLATE + '</td>';
+                        html += '<td>';
+                        html += '<a href="#" class="btn btn-primary manage-aliases" data-domain="' + domainName + '" data-aliases=\'' + JSON.stringify(aliases) + '\'>{% trans "Aliases" %}</a> ';
+                        if (domain.SSL) {
+                            html += '<a href="#" class="btn btn-danger delete-ssl" data-domain="' + domainName + '">{% trans "Delete SSL" %}</a> ';
+                        } else {
+                            html += '<a href="#" class="btn btn-success add-ssl" data-domain="' + domainName + '">{% trans "Add SSL" %}</a> ';
+                        }
+                        html += '<a href="#" class="btn btn-secondary change-php" data-domain="' + domainName + '">{% trans "Change PHP" %}</a> ';
+                        html += '<a href="#" class="btn btn-danger delete-domain" data-domain="' + domainName + '">{% trans "Delete" %}</a>';
+                        html += '</td>';
+                        html += '</tr>';
+                    }
+                } else {
+                    html = '<tr><td colspan="5">{% trans "No domains found" %}</td></tr>';
+                }
+                $('#hestia-domains-list').html(html);
+            }
+        );
+    }
+
+    $('#hestia-add-domain-form').on('submit', function(e) {
+        e.preventDefault();
+        const domain = $(this).find('input[name="domain"]').val();
+        bb.post(
+            'client/servicehestia/add_web_domain',
+            { order_id: orderId, domain: domain },
+            function(result) {
+                bb.msg('{% trans "Domain added successfully" %}');
+                loadDomains();
+                $('#hestia-add-domain-form').find('input[name="domain"]').val('');
+            }
+        );
+    });
+
+    $('#hestia-domains-list').on('click', '.delete-domain', function(e) {
+        e.preventDefault();
+        const domain = $(this).data('domain');
+        if (confirm('{% trans "Are you sure you want to delete this domain?" %}')) {
+            bb.post(
+                'client/servicehestia/delete_web_domain',
+                { order_id: orderId, domain: domain },
+                function(result) {
+                    bb.msg('{% trans "Domain deleted successfully" %}');
+                    loadDomains();
+                }
+            );
+        }
+    });
+
+    $('#hestia-domains-list').on('click', '.manage-aliases', function(e) {
+        e.preventDefault();
+        const domain = $(this).data('domain');
+        const aliases = $(this).data('aliases');
+
+        $('#alias-domain-name').text(domain);
+        $('#alias-domain-input').val(domain);
+
+        let aliasHtml = '';
+        if (aliases.length > 0) {
+            aliases.forEach(function(alias) {
+                aliasHtml += '<tr><td>' + alias + '</td><td><a href="#" class="btn btn-danger delete-alias" data-domain="' + domain + '" data-alias="' + alias + '">{% trans "Delete" %}</a></td></tr>';
+            });
+        } else {
+            aliasHtml = '<tr><td colspan="2">{% trans "No aliases found" %}</td></tr>';
+        }
+        $('#hestia-aliases-list').html(aliasHtml);
+
+        $('#mod_servicehestia_aliases').modal('show');
+    });
+
+    $('#hestia-add-alias-form').on('submit', function(e) {
+        e.preventDefault();
+        const domain = $(this).find('input[name="domain"]').val();
+        const alias = $(this).find('input[name="alias"]').val();
+        bb.post(
+            'client/servicehestia/add_web_domain_alias',
+            { order_id: orderId, domain: domain, alias: alias },
+            function(result) {
+                bb.msg('{% trans "Alias added successfully" %}');
+                loadDomains();
+                $('#mod_servicehestia_aliases').modal('hide');
+            }
+        );
+    });
+
+    $('#hestia-aliases-list').on('click', '.delete-alias', function(e) {
+        e.preventDefault();
+        const domain = $(this).data('domain');
+        const alias = $(this).data('alias');
+        if (confirm('{% trans "Are you sure you want to delete this alias?" %}')) {
+            bb.post(
+                'client/servicehestia/delete_web_domain_alias',
+                { order_id: orderId, domain: domain, alias: alias },
+                function(result) {
+                    bb.msg('{% trans "Alias deleted successfully" %}');
+                    loadDomains();
+                    $('#mod_servicehestia_aliases').modal('hide');
+                }
+            );
+        }
+    });
+
+    $('#hestia-domains-list').on('click', '.add-ssl', function(e) {
+        e.preventDefault();
+        const domain = $(this).data('domain');
+        if (confirm('{% trans "Are you sure you want to add a Let\'s Encrypt certificate to this domain?" %}')) {
+            bb.post(
+                'client/servicehestia/add_lets_encrypt',
+                { order_id: orderId, domain: domain },
+                function(result) {
+                    bb.msg('{% trans "Let\'s Encrypt certificate added successfully" %}');
+                    loadDomains();
+                }
+            );
+        }
+    });
+
+    $('#hestia-domains-list').on('click', '.delete-ssl', function(e) {
+        e.preventDefault();
+        const domain = $(this).data('domain');
+        if (confirm('{% trans "Are you sure you want to delete the SSL certificate for this domain?" %}')) {
+            bb.post(
+                'client/servicehestia/delete_lets_encrypt',
+                { order_id: orderId, domain: domain },
+                function(result) {
+                    bb.msg('{% trans "SSL certificate deleted successfully" %}');
+                    loadDomains();
+                }
+            );
+        }
+    });
+
+    $('#hestia-domains-list').on('click', '.change-php', function(e) {
+        e.preventDefault();
+        const domain = $(this).data('domain');
+        $('#php-domain-name').text(domain);
+        $('#php-domain-input').val(domain);
+
+        bb.post('client/servicehestia/list_web_backend_templates', { order_id: orderId }, function(result) {
+            let select = $('#php-template-select');
+            select.empty();
+            for (const template in result) {
+                select.append($('<option>', {
+                    value: template,
+                    text : template
+                }));
+            }
+            $('#mod_servicehestia_php').modal('show');
+        });
+    });
+
+    $('#hestia-change-php-form').on('submit', function(e) {
+        e.preventDefault();
+        const domain = $(this).find('input[name="domain"]').val();
+        const template = $(this).find('select[name="template"]').val();
+        bb.post(
+            'client/servicehestia/change_backend_tpl',
+            { order_id: orderId, domain: domain, template: template },
+            function(result) {
+                bb.msg('{% trans "PHP version changed successfully" %}');
+                loadDomains();
+                $('#mod_servicehestia_php').modal('hide');
+            }
+        );
+    });
+
+    loadDomains();
+});
+</script>

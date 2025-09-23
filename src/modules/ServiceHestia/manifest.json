@@ -1,0 +1,7 @@
+{
+  "id": "servicehestia",
+  "type": "mod",
+  "name": "Hestia CP",
+  "description": "Hestia CP management module",
+  "version": "1.0.0"
+}
