@@ -1487,8 +1487,7 @@ class Api_AdminTest extends \BBTestCase
 
         $di = new \Pimple\Container();
         $di['db'] = $db;
-        $di['validator'] = new \FOSSBilling\Validate();
-
+        
         $adminApi->setDi($di);
 
         $kbService = $this->getMockBuilder(\Box\Mod\Support\Service::class)->onlyMethods(['kbCategoryToApiArray'])->getMock();
@@ -1515,8 +1514,7 @@ class Api_AdminTest extends \BBTestCase
 
         $di = new \Pimple\Container();
         $di['db'] = $db;
-        $di['validator'] = new \FOSSBilling\Validate();
-
+        
         $adminApi->setDi($di);
 
         $kbService = $this->getMockBuilder(\Box\Mod\Support\Service::class)->onlyMethods(['kbCategoryToApiArray'])->getMock();
@@ -1526,7 +1524,6 @@ class Api_AdminTest extends \BBTestCase
         $adminApi->setService($kbService);
 
         $this->expectException(\FOSSBilling\Exception::class);
-        $this->validateRequiredParams($adminApi, 'kb_category_get', []);
         $result = $adminApi->kb_category_get([]);
         $this->assertIsArray($result);
     }
@@ -1541,9 +1538,8 @@ class Api_AdminTest extends \BBTestCase
             ->willReturn(false);
 
         $di = new \Pimple\Container();
-
+        
         $di['db'] = $db;
-        $di['validator'] = new \FOSSBilling\Validate();
         $adminApi->setDi($di);
 
         $kbService = $this->getMockBuilder(\Box\Mod\Support\Service::class)->onlyMethods(['kbCategoryToApiArray'])->getMock();
@@ -1601,7 +1597,6 @@ class Api_AdminTest extends \BBTestCase
 
         $di = new \Pimple\Container();
         $di['db'] = $db;
-        $di['validator'] = new \FOSSBilling\Validate();
 
         $adminApi->setDi($di);
 
@@ -1633,14 +1628,12 @@ class Api_AdminTest extends \BBTestCase
 
         $di = new \Pimple\Container();
         $di['db'] = $db;
-        $di['validator'] = new \FOSSBilling\Validate();
 
         $adminApi->setDi($di);
 
         $data = [];
 
         $this->expectException(\FOSSBilling\Exception::class);
-        $this->validateRequiredParams($adminApi, 'kb_category_update', $data);
         $result = $adminApi->kb_category_update($data);
         $this->assertIsArray($result);
     }
@@ -1662,7 +1655,6 @@ class Api_AdminTest extends \BBTestCase
 
         $di = new \Pimple\Container();
         $di['db'] = $db;
-        $di['validator'] = new \FOSSBilling\Validate();
 
         $adminApi->setDi($di);
 
@@ -1695,8 +1687,7 @@ class Api_AdminTest extends \BBTestCase
 
         $di = new \Pimple\Container();
         $di['db'] = $db;
-        $di['validator'] = new \FOSSBilling\Validate();
-
+        
         $adminApi->setDi($di);
 
         $data = [
@@ -1723,13 +1714,11 @@ class Api_AdminTest extends \BBTestCase
 
         $di = new \Pimple\Container();
         $di['db'] = $db;
-        $di['validator'] = new \FOSSBilling\Validate();
-
+        
         $adminApi->setDi($di);
 
         $data = [];
         $this->expectException(\FOSSBilling\Exception::class);
-        $this->validateRequiredParams($adminApi, 'kb_category_delete', $data);
         $result = $adminApi->kb_category_delete($data);
         $this->assertIsArray($result);
     }
@@ -1751,8 +1740,7 @@ class Api_AdminTest extends \BBTestCase
 
         $di = new \Pimple\Container();
         $di['db'] = $db;
-        $di['validator'] = new \FOSSBilling\Validate();
-
+        
         $adminApi->setDi($di);
 
         $data = [

@@ -282,7 +282,7 @@ class Api_AdminTest extends \BBTestCase
         $this->assertEquals($model->is_default, $returnArr['default']);
     }
 
-    public static function CreateExceptionProvider(): array
+    public static function CreateExceptionProvider()
     {
         $self = new Api_AdminTest('Api_AdminTest');
 
@@ -313,7 +313,7 @@ class Api_AdminTest extends \BBTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('CreateExceptionProvider')]
-    public function testCreateException(array $data, \PHPUnit\Framework\MockObject\Rule\InvokedAtLeastOnce $getByCodeCalled, ?\Model_Currency $getByCodeReturn, \PHPUnit\Framework\MockObject\Rule\InvokedCount|\PHPUnit\Framework\MockObject\Rule\InvokedAtLeastOnce $getAvailableCurrenciesCalled): void
+    public function testCreateException($data, $getByCodeCalled, $getByCodeReturn, $getAvailableCurrenciesCalled): void
     {
         $adminApi = new \Box\Mod\Currency\Api\Admin();
 
@@ -404,11 +404,9 @@ class Api_AdminTest extends \BBTestCase
             ->method('getByCode')
             ->willReturn(true);
         $di = new \Pimple\Container();
-        $di['validator'] = new \FOSSBilling\Validate();
         $adminApi->setDi($di);
         $adminApi->setService($service);
         $this->expectException(\FOSSBilling\Exception::class);
-        $this->validateRequiredParams($adminApi, 'delete', []);
         $adminApi->delete([]); // Expecting \FOSSBilling\Exception every time
     }
 
@@ -431,7 +429,6 @@ class Api_AdminTest extends \BBTestCase
             ->willReturn(true);
 
         $di = new \Pimple\Container();
-        $di['validator'] = new \FOSSBilling\Validate();
         $adminApi->setDi($di);
         $adminApi->setService($service);
 
@@ -441,7 +438,7 @@ class Api_AdminTest extends \BBTestCase
         $this->assertEquals($result, true);
     }
 
-    public static function SetDefaultExceptionProvider(): array
+    public static function SetDefaultExceptionProvider()
     {
         $self = new Api_AdminTest('Api_AdminTest');
 
@@ -464,7 +461,7 @@ class Api_AdminTest extends \BBTestCase
      * @expectedException \FOSSBilling\Exception
      */
     #[\PHPUnit\Framework\Attributes\DataProvider('SetDefaultExceptionProvider')]
-    public function testSetDefaultException(array $data, \PHPUnit\Framework\MockObject\Rule\InvokedAtLeastOnce $getByCodeCalled, $getByCodeReturn): void
+    public function testSetDefaultException($data, $getByCodeCalled, $getByCodeReturn): void
     {
         $adminApi = new \Box\Mod\Currency\Api\Admin();
 

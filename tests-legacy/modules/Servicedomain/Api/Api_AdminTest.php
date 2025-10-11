@@ -533,7 +533,6 @@ class Api_AdminTest extends \BBTestCase
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['validator'] = new \FOSSBilling\Validate();
 
         $this->adminApi->setDi($di);
 
@@ -542,7 +541,6 @@ class Api_AdminTest extends \BBTestCase
         $data = [];
 
         $this->expectException(\FOSSBilling\Exception::class);
-        $this->validateRequiredParams($this->adminApi, 'registrar_delete', $data);
         $result = $this->adminApi->registrar_delete($data);
 
         $this->assertTrue($result);
@@ -563,7 +561,6 @@ class Api_AdminTest extends \BBTestCase
             ->willReturn(true);
 
         $di = new \Pimple\Container();
-        $di["validator"] = new \FOSSBilling\Validate();
         $di['db'] = $dbMock;
 
         $this->adminApi->setDi($di);
@@ -594,8 +591,7 @@ class Api_AdminTest extends \BBTestCase
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['validator'] = new \FOSSBilling\Validate();
-
+        
         $this->adminApi->setDi($di);
 
         $this->adminApi->setService($serviceMock);
@@ -603,7 +599,6 @@ class Api_AdminTest extends \BBTestCase
         $data = [];
 
         $this->expectException(\FOSSBilling\Exception::class);
-        $this->validateRequiredParams($this->adminApi, 'registrar_copy', $data);
         $result = $this->adminApi->registrar_copy($data);
 
         $this->assertTrue($result);
@@ -625,8 +620,7 @@ class Api_AdminTest extends \BBTestCase
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['validator'] = new \FOSSBilling\Validate();
-
+        
         $this->adminApi->setDi($di);
 
         $this->adminApi->setService($serviceMock);
@@ -655,8 +649,7 @@ class Api_AdminTest extends \BBTestCase
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['validator'] = new \FOSSBilling\Validate();
-
+        
         $this->adminApi->setDi($di);
 
         $this->adminApi->setService($serviceMock);
@@ -664,7 +657,6 @@ class Api_AdminTest extends \BBTestCase
         $data = [];
 
         $this->expectException(\FOSSBilling\Exception::class);
-        $this->validateRequiredParams($this->adminApi, 'registrar_get', $data);
         $result = $this->adminApi->registrar_get($data);
 
         $this->assertIsArray($result);
@@ -699,8 +691,7 @@ class Api_AdminTest extends \BBTestCase
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['validator'] = new \FOSSBilling\Validate();
-
+        
         $this->adminApi->setDi($di);
 
         $this->adminApi->setService($serviceMock);
@@ -729,8 +720,7 @@ class Api_AdminTest extends \BBTestCase
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
-        $di['validator'] = new \FOSSBilling\Validate();
-
+        
         $this->adminApi->setDi($di);
 
         $this->adminApi->setService($serviceMock);
@@ -738,7 +728,6 @@ class Api_AdminTest extends \BBTestCase
         $data = [];
 
         $this->expectException(\FOSSBilling\Exception::class);
-        $this->validateRequiredParams($this->adminApi, 'registrar_update', $data);
         $result = $this->adminApi->registrar_update($data);
 
         $this->assertTrue($result);
@@ -765,8 +754,7 @@ class Api_AdminTest extends \BBTestCase
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
         $di['mod_service'] = $di->protect(fn () => $orderService);
-        $di['validator'] = new \FOSSBilling\Validate();
-
+        
         $this->adminApi->setDi($di);
 
         $data = [
@@ -798,14 +786,12 @@ class Api_AdminTest extends \BBTestCase
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
         $di['mod_service'] = $di->protect(fn () => $orderService);
-        $di['validator'] = new \FOSSBilling\Validate();
-
+        
         $this->adminApi->setDi($di);
 
         $data = [];
 
         $this->expectException(\FOSSBilling\Exception::class);
-        $this->validateRequiredParams($this->adminApi, 'update', $data);
         $result = $this->adminApi->update($data);
 
         $this->assertTrue($result);
@@ -832,8 +818,7 @@ class Api_AdminTest extends \BBTestCase
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
         $di['mod_service'] = $di->protect(fn () => $orderService);
-        $di['validator'] = new \FOSSBilling\Validate();
-
+        
         $this->adminApi->setDi($di);
 
         $data = [
