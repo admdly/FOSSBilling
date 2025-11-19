@@ -1084,9 +1084,6 @@ class ServiceTest extends \BBTestCase
         $currencyModel = $this->getMockBuilder('\\' . \Box\Mod\Currency\Entity\Currency::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $currencyModel->expects($this->atLeastOnce())
-            ->method('toApiArray')
-            ->willReturn([]);
 
         $dbMock->expects($this->atLeastOnce())
             ->method('getExistingModelById')
@@ -1095,7 +1092,7 @@ class ServiceTest extends \BBTestCase
         $currencyService = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)
             ->addMethods(['toApiArray'])
             ->getMock();
-        $currencyService->expects($this->never())
+        $currencyService->expects($this->atLeastOnce())
             ->method('toApiArray')
             ->willReturn([]);
 

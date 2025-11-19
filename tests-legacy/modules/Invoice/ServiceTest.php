@@ -455,7 +455,9 @@ class ServiceTest extends \BBTestCase
         $systemService->expects($this->atLeastOnce())
             ->method('getParamValue');
 
-        $currencyService = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)->getMock();
+        $currencyService = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)
+            ->addMethods(['getRateByCode'])
+            ->getMock();
         $currencyService->expects($this->atLeastOnce())
             ->method('getRateByCode');
 
@@ -500,9 +502,14 @@ class ServiceTest extends \BBTestCase
 
         $invoiceModel = new \Model_Invoice();
         $invoiceModel->loadBean(new \DummyBean());
-        $currencyService = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)->getMock();
+        $invoiceModel->currency = 'USD';
+        $invoiceModel->refund = 0;
+        $currencyService = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)
+            ->onlyMethods(['toBaseCurrency'])
+            ->getMock();
         $currencyService->expects($this->atLeastOnce())
-            ->method('toBaseCurrency');
+            ->method('toBaseCurrency')
+            ->willReturn(0.0);
 
         $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
         $dbMock->expects($this->atLeastOnce())

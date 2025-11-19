@@ -1316,7 +1316,9 @@ class ServiceTest extends \BBTestCase
 
         $currencyModel = $this->getMockBuilder("\\Box\\Mod\\Currency\\Entity\\Currency")->disableOriginalConstructor()->getMock();
 
-        $currencyServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)->getMock();
+        $currencyServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)
+            ->addMethods(['getByCode'])
+            ->getMock();
         $currencyServiceMock->expects($this->atLeastOnce())
             ->method('getByCode')
             ->willReturn($currencyModel);
@@ -1363,7 +1365,9 @@ class ServiceTest extends \BBTestCase
 
         $currencyModel = $this->getMockBuilder("\\Box\\Mod\\Currency\\Entity\\Currency")->disableOriginalConstructor()->getMock();
 
-        $currencyServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)->getMock();
+        $currencyServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)
+            ->addMethods(['getByCode'])
+            ->getMock();
         $currencyServiceMock->expects($this->atLeastOnce())
             ->method('getByCode')
             ->willReturn($currencyModel);
@@ -1409,7 +1413,9 @@ class ServiceTest extends \BBTestCase
 
         $currencyModel = $this->getMockBuilder("\\Box\\Mod\\Currency\\Entity\\Currency")->disableOriginalConstructor()->getMock();
 
-        $currencyServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)->getMock();
+        $currencyServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)
+            ->addMethods(['getByCode'])
+            ->getMock();
         $currencyServiceMock->expects($this->atLeastOnce())
             ->method('getByCode')
             ->willReturn($currencyModel);
@@ -1461,7 +1467,9 @@ class ServiceTest extends \BBTestCase
         $modelProduct->type = 'custom';
 
         $currencyModel = $this->getMockBuilder("\\Box\\Mod\\Currency\\Entity\\Currency")->disableOriginalConstructor()->getMock();
-        $currencyServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)->getMock();
+        $currencyServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)
+            ->addMethods(['getByCode'])
+            ->getMock();
         $currencyServiceMock->expects($this->atLeastOnce())
             ->method('getByCode')
             ->willReturn($currencyModel);
