@@ -543,10 +543,13 @@ class ServiceTest extends \BBTestCase
         $invoiceModel = new \Model_Invoice();
         $invoiceModel->loadBean(new \DummyBean());
 
-        $currencyModel = new \Model_Currency();
-        $currencyModel->loadBean(new \DummyBean());
+        $currencyModel = $this->getMockBuilder('\\' . \Box\Mod\Currency\Entity\Currency::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $currencyService = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)->getMock();
+        $currencyService = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)
+            ->addMethods(['getDefault'])
+            ->getMock();
         $currencyService->expects($this->atLeastOnce())
             ->method('getDefault')
             ->willReturn($currencyModel);

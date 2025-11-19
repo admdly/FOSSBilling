@@ -1284,7 +1284,9 @@ class ServiceTest extends \BBTestCase
         $modelProduct = new \Model_Product();
         $modelProduct->loadBean(new \DummyBean());
 
-        $currencyServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)->getMock();
+        $currencyServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)
+            ->addMethods(['getDefault'])
+            ->getMock();
         $currencyServiceMock->expects($this->atLeastOnce())
             ->method('getDefault')
             ->willReturn(null);
@@ -1312,8 +1314,7 @@ class ServiceTest extends \BBTestCase
         $modelProduct->loadBean(new \DummyBean());
         $modelProduct->id = 1;
 
-        $currencyModel = new \Model_Currency();
-        $currencyModel->loadBean(new \DummyBean());
+        $currencyModel = $this->getMockBuilder("\\Box\\Mod\\Currency\\Entity\\Currency")->disableOriginalConstructor()->getMock();
 
         $currencyServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)->getMock();
         $currencyServiceMock->expects($this->atLeastOnce())
@@ -1360,8 +1361,7 @@ class ServiceTest extends \BBTestCase
         $modelProduct->id = 1;
         $modelProduct->is_addon = 1;
 
-        $currencyModel = new \Model_Currency();
-        $currencyModel->loadBean(new \DummyBean());
+        $currencyModel = $this->getMockBuilder("\\Box\\Mod\\Currency\\Entity\\Currency")->disableOriginalConstructor()->getMock();
 
         $currencyServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)->getMock();
         $currencyServiceMock->expects($this->atLeastOnce())
@@ -1407,8 +1407,7 @@ class ServiceTest extends \BBTestCase
         $modelProduct->loadBean(new \DummyBean());
         $modelProduct->id = 1;
 
-        $currencyModel = new \Model_Currency();
-        $currencyModel->loadBean(new \DummyBean());
+        $currencyModel = $this->getMockBuilder("\\Box\\Mod\\Currency\\Entity\\Currency")->disableOriginalConstructor()->getMock();
 
         $currencyServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)->getMock();
         $currencyServiceMock->expects($this->atLeastOnce())
@@ -1461,8 +1460,7 @@ class ServiceTest extends \BBTestCase
         $modelProduct->id = 1;
         $modelProduct->type = 'custom';
 
-        $currencyModel = new \Model_Currency();
-        $currencyModel->loadBean(new \DummyBean());
+        $currencyModel = $this->getMockBuilder("\\Box\\Mod\\Currency\\Entity\\Currency")->disableOriginalConstructor()->getMock();
         $currencyServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)->getMock();
         $currencyServiceMock->expects($this->atLeastOnce())
             ->method('getByCode')
