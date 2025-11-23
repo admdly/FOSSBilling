@@ -230,7 +230,10 @@ class ServiceTest extends \BBTestCase
             ->method('hasPermission')
             ->willReturn(true);
 
-        $dbalMock = $this->getMockBuilder('stdClass')->addMethods(['createQueryBuilder'])->getMock();
+        $dbalMock = $this->getMockBuilder(\Doctrine\DBAL\Connection::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['createQueryBuilder'])
+            ->getMock();
         $dbalMock->expects($this->any())
             ->method('createQueryBuilder')
             ->willReturn(new class {
@@ -490,7 +493,10 @@ class ServiceTest extends \BBTestCase
 
     public function testgetInstalledMods(): void
     {
-        $dbalMock = $this->getMockBuilder('stdClass')->addMethods(['createQueryBuilder'])->getMock();
+        $dbalMock = $this->getMockBuilder(\Doctrine\DBAL\Connection::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['createQueryBuilder'])
+            ->getMock();
         $dbalMock->expects($this->any())
             ->method('createQueryBuilder')
             ->willReturn(new class {

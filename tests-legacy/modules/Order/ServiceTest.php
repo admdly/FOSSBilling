@@ -1816,13 +1816,19 @@ class ServiceTest extends \BBTestCase
         $clientModel = new \Model_Client();
         $clientModel->loadBean(new \DummyBean());
 
-        $queryBuilderMock = $this->getMockBuilder('stdClass')->addMethods(['delete', 'where', 'setParameter', 'executeStatement'])->getMock();
+        $queryBuilderMock = $this->getMockBuilder(\Doctrine\DBAL\Query\QueryBuilder::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['delete', 'where', 'setParameter', 'executeStatement'])
+            ->getMock();
         $queryBuilderMock->expects($this->once())->method('delete')->with('client_order')->willReturnSelf();
         $queryBuilderMock->expects($this->once())->method('where')->with('client_id = :id')->willReturnSelf();
         $queryBuilderMock->expects($this->once())->method('setParameter')->with('id', $clientModel->id)->willReturnSelf();
         $queryBuilderMock->expects($this->once())->method('executeStatement')->willReturn(1);
 
-        $dbalMock = $this->getMockBuilder('stdClass')->addMethods(['createQueryBuilder'])->getMock();
+        $dbalMock = $this->getMockBuilder(\Doctrine\DBAL\Connection::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['createQueryBuilder'])
+            ->getMock();
         $dbalMock->expects($this->once())->method('createQueryBuilder')->willReturn($queryBuilderMock);
 
         $di = new \Pimple\Container();

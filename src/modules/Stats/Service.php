@@ -31,7 +31,7 @@ class Service implements InjectionAwareInterface
     {
         $stats = [];
 
-        $pdo = $this->di['pdo'];
+        $dbal = $this->di['dbal']([]);
 
         $total_query = 'SELECT COUNT(1) FROM :table';
         $yeste_query = "SELECT COUNT(1) FROM :table WHERE DATE_FORMAT(`created_at`, '%Y-%m-%d') = DATE_SUB(CURDATE(), INTERVAL 1 DAY)";
@@ -41,91 +41,35 @@ class Service implements InjectionAwareInterface
 
         // client stats
         $table = 'client';
-        $stmt = $pdo->prepare(str_replace(':table', $table, $total_query));
-        $stmt->execute();
-        $stats['clients_total'] = $stmt->fetchColumn();
-
-        $stmt = $pdo->prepare(str_replace(':table', $table, $today_query));
-        $stmt->execute();
-        $stats['clients_today'] = $stmt->fetchColumn();
-
-        $stmt = $pdo->prepare(str_replace(':table', $table, $yeste_query));
-        $stmt->execute();
-        $stats['clients_yesterday'] = $stmt->fetchColumn();
-
-        $stmt = $pdo->prepare(str_replace(':table', $table, $month_query));
-        $stmt->execute();
-        $stats['clients_this_month'] = $stmt->fetchColumn();
-
-        $stmt = $pdo->prepare(str_replace(':table', $table, $last_month_query));
-        $stmt->execute();
-        $stats['clients_last_month'] = $stmt->fetchColumn();
+        $stats['clients_total'] = $dbal->executeQuery(str_replace(':table', $table, $total_query))->fetchOne();
+        $stats['clients_today'] = $dbal->executeQuery(str_replace(':table', $table, $today_query))->fetchOne();
+        $stats['clients_yesterday'] = $dbal->executeQuery(str_replace(':table', $table, $yeste_query))->fetchOne();
+        $stats['clients_this_month'] = $dbal->executeQuery(str_replace(':table', $table, $month_query))->fetchOne();
+        $stats['clients_last_month'] = $dbal->executeQuery(str_replace(':table', $table, $last_month_query))->fetchOne();
 
         // orders stats
         $table = 'client_order';
-        $stmt = $pdo->prepare(str_replace(':table', $table, $total_query));
-        $stmt->execute();
-        $stats['orders_total'] = $stmt->fetchColumn();
-
-        $stmt = $pdo->prepare(str_replace(':table', $table, $today_query));
-        $stmt->execute();
-        $stats['orders_today'] = $stmt->fetchColumn();
-
-        $stmt = $pdo->prepare(str_replace(':table', $table, $yeste_query));
-        $stmt->execute();
-        $stats['orders_yesterday'] = $stmt->fetchColumn();
-
-        $stmt = $pdo->prepare(str_replace(':table', $table, $month_query));
-        $stmt->execute();
-        $stats['orders_this_month'] = $stmt->fetchColumn();
-
-        $stmt = $pdo->prepare(str_replace(':table', $table, $last_month_query));
-        $stmt->execute();
-        $stats['orders_last_month'] = $stmt->fetchColumn();
+        $stats['orders_total'] = $dbal->executeQuery(str_replace(':table', $table, $total_query))->fetchOne();
+        $stats['orders_today'] = $dbal->executeQuery(str_replace(':table', $table, $today_query))->fetchOne();
+        $stats['orders_yesterday'] = $dbal->executeQuery(str_replace(':table', $table, $yeste_query))->fetchOne();
+        $stats['orders_this_month'] = $dbal->executeQuery(str_replace(':table', $table, $month_query))->fetchOne();
+        $stats['orders_last_month'] = $dbal->executeQuery(str_replace(':table', $table, $last_month_query))->fetchOne();
 
         // invoice stats
         $table = 'invoice';
-        $stmt = $pdo->prepare(str_replace(':table', $table, $total_query));
-        $stmt->execute();
-        $stats['invoices_total'] = $stmt->fetchColumn();
-
-        $stmt = $pdo->prepare(str_replace(':table', $table, $today_query));
-        $stmt->execute();
-        $stats['invoices_today'] = $stmt->fetchColumn();
-
-        $stmt = $pdo->prepare(str_replace(':table', $table, $yeste_query));
-        $stmt->execute();
-        $stats['invoices_yesterday'] = $stmt->fetchColumn();
-
-        $stmt = $pdo->prepare(str_replace(':table', $table, $month_query));
-        $stmt->execute();
-        $stats['invoices_this_month'] = $stmt->fetchColumn();
-
-        $stmt = $pdo->prepare(str_replace(':table', $table, $last_month_query));
-        $stmt->execute();
-        $stats['invoices_last_month'] = $stmt->fetchColumn();
+        $stats['invoices_total'] = $dbal->executeQuery(str_replace(':table', $table, $total_query))->fetchOne();
+        $stats['invoices_today'] = $dbal->executeQuery(str_replace(':table', $table, $today_query))->fetchOne();
+        $stats['invoices_yesterday'] = $dbal->executeQuery(str_replace(':table', $table, $yeste_query))->fetchOne();
+        $stats['invoices_this_month'] = $dbal->executeQuery(str_replace(':table', $table, $month_query))->fetchOne();
+        $stats['invoices_last_month'] = $dbal->executeQuery(str_replace(':table', $table, $last_month_query))->fetchOne();
 
         // ticket stats
         $table = 'support_ticket';
-        $stmt = $pdo->prepare(str_replace(':table', $table, $total_query));
-        $stmt->execute();
-        $stats['tickets_total'] = $stmt->fetchColumn();
-
-        $stmt = $pdo->prepare(str_replace(':table', $table, $today_query));
-        $stmt->execute();
-        $stats['tickets_today'] = $stmt->fetchColumn();
-
-        $stmt = $pdo->prepare(str_replace(':table', $table, $yeste_query));
-        $stmt->execute();
-        $stats['tickets_yesterday'] = $stmt->fetchColumn();
-
-        $stmt = $pdo->prepare(str_replace(':table', $table, $month_query));
-        $stmt->execute();
-        $stats['tickets_this_month'] = $stmt->fetchColumn();
-
-        $stmt = $pdo->prepare(str_replace(':table', $table, $last_month_query));
-        $stmt->execute();
-        $stats['tickets_last_month'] = $stmt->fetchColumn();
+        $stats['tickets_total'] = $dbal->executeQuery(str_replace(':table', $table, $total_query))->fetchOne();
+        $stats['tickets_today'] = $dbal->executeQuery(str_replace(':table', $table, $today_query))->fetchOne();
+        $stats['tickets_yesterday'] = $dbal->executeQuery(str_replace(':table', $table, $yeste_query))->fetchOne();
+        $stats['tickets_this_month'] = $dbal->executeQuery(str_replace(':table', $table, $month_query))->fetchOne();
+        $stats['tickets_last_month'] = $dbal->executeQuery(str_replace(':table', $table, $last_month_query))->fetchOne();
 
         return $stats;
     }
@@ -134,7 +78,7 @@ class Service implements InjectionAwareInterface
     {
         $stats = [];
 
-        $pdo = $this->di['pdo'];
+        $dbal = $this->di['dbal']([]);
 
         $total_query = "SELECT (COALESCE(SUM(base_income), 0) - COALESCE(SUM(base_refund), 0)) AS income FROM invoice WHERE approved = 1 AND (status = 'paid' OR status = 'refunded')";
         $yeste_query = "SELECT (COALESCE(SUM(base_income), 0) - COALESCE(SUM(base_refund), 0)) AS income FROM invoice WHERE approved = 1 AND (status = 'paid' OR status = 'refunded') AND DATE_FORMAT(`paid_at`, '%Y-%m-%d') = DATE_SUB(CURDATE(), INTERVAL 1 DAY)";
@@ -142,25 +86,11 @@ class Service implements InjectionAwareInterface
         $month_query = "SELECT (COALESCE(SUM(base_income), 0) - COALESCE(SUM(base_refund), 0)) AS income FROM invoice WHERE approved = 1 AND (status = 'paid' OR status = 'refunded') AND DATE_FORMAT(`paid_at`, '%Y-%m') = DATE_FORMAT(NOW(), '%Y-%m')";
         $last_month_query = "SELECT (COALESCE(SUM(base_income), 0) - COALESCE(SUM(base_refund), 0)) AS income FROM invoice WHERE approved = 1 AND (status = 'paid' OR status = 'refunded') AND paid_at BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 MONTH, '%Y-%m-01') AND DATE_FORMAT(NOW() ,'%Y-%m-01')";
 
-        $stmt = $pdo->prepare($total_query);
-        $stmt->execute();
-        $stats['total'] = $stmt->fetchColumn();
-
-        $stmt = $pdo->prepare($today_query);
-        $stmt->execute();
-        $stats['today'] = $stmt->fetchColumn();
-
-        $stmt = $pdo->prepare($yeste_query);
-        $stmt->execute();
-        $stats['yesterday'] = $stmt->fetchColumn();
-
-        $stmt = $pdo->prepare($month_query);
-        $stmt->execute();
-        $stats['this_month'] = $stmt->fetchColumn();
-
-        $stmt = $pdo->prepare($last_month_query);
-        $stmt->execute();
-        $stats['last_month'] = $stmt->fetchColumn();
+        $stats['total'] = $dbal->executeQuery($total_query)->fetchOne();
+        $stats['today'] = $dbal->executeQuery($today_query)->fetchOne();
+        $stats['yesterday'] = $dbal->executeQuery($yeste_query)->fetchOne();
+        $stats['this_month'] = $dbal->executeQuery($month_query)->fetchOne();
+        $stats['last_month'] = $dbal->executeQuery($last_month_query)->fetchOne();
 
         return $stats;
     }
@@ -184,14 +114,16 @@ class Service implements InjectionAwareInterface
                 ORDER BY orders DESC
                 ";
 
-        return $this->di['db']->getAll($query);
+        $dbal = $this->di['dbal']([]);
+
+        return $dbal->executeQuery($query)->fetchAllAssociative();
     }
 
     public function getProductSales($data)
     {
         [$time_from, $time_to] = $this->_getDateInterval($data);
 
-        $pdo = $this->di['pdo'];
+        $dbal = $this->di['dbal']([]);
 
         $query = 'SELECT title, COUNT(product_id) as sales
                 FROM `client_order`
@@ -200,21 +132,19 @@ class Service implements InjectionAwareInterface
                 GROUP BY product_id
                 ';
 
-        $stmt = $pdo->prepare($query);
-        $stmt->execute(
+        return $dbal->executeQuery(
+            $query,
             [
                 'status' => 'active',
                 'date_from' => date('Y-m-d', $time_from),
                 'date_to' => date('Y-m-d', $time_to),
             ]
-        );
-
-        return $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
+        )->fetchAllKeyValue();
     }
 
     public function incomeAndRefundStats($data)
     {
-        $pdo = $this->di['pdo'];
+        $dbal = $this->di['dbal']([]);
 
         $query = 'SELECT COALESCE(SUM(base_refund), 0) AS `refund`, COALESCE(SUM(base_income), 0) AS `income`
                 FROM `invoice`
@@ -222,13 +152,13 @@ class Service implements InjectionAwareInterface
                 AND (status = :status1 OR status = :status2)
                 ';
 
-        $stmt = $pdo->prepare($query);
-        $stmt->execute([
-            'status1' => \Model_Invoice::STATUS_PAID,
-            'status2' => \Model_Invoice::STATUS_REFUNDED,
-        ]);
-
-        $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $results = $dbal->executeQuery(
+            $query,
+            [
+                'status1' => \Model_Invoice::STATUS_PAID,
+                'status2' => \Model_Invoice::STATUS_REFUNDED,
+            ]
+        )->fetchAllAssociative();
 
         return $results[0];
     }
@@ -246,7 +176,7 @@ class Service implements InjectionAwareInterface
             $time_to = strtotime((string) $data['date_to']);
         }
 
-        $pdo = $this->di['pdo'];
+        $dbal = $this->di['dbal']([]);
 
         $query = "SELECT DATE_FORMAT(`created_at`, '%Y-%m-%d') AS `date`, COALESCE(SUM(base_refund), 0) AS `refund`
                 FROM `invoice`
@@ -255,16 +185,14 @@ class Service implements InjectionAwareInterface
                 AND status = :status
                 GROUP BY `date`";
 
-        $stmt = $pdo->prepare($query);
-        $stmt->execute(
+        $results = $dbal->executeQuery(
+            $query,
             [
                 'status' => \Model_Invoice::STATUS_REFUNDED,
                 'date_from' => date('Y-m-d', $time_from),
                 'date_to' => date('Y-m-d', $time_to),
             ]
-        );
-
-        $results = $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
+        )->fetchAllKeyValue();
 
         return $this->_genFlotArray($results, $time_from, $time_to);
     }
@@ -282,7 +210,7 @@ class Service implements InjectionAwareInterface
             $time_to = strtotime((string) $data['date_to']);
         }
 
-        $pdo = $this->di['pdo'];
+        $dbal = $this->di['dbal']([]);
 
         $query = "SELECT DATE_FORMAT(`paid_at`, '%Y-%m-%d') AS `date`, (COALESCE(SUM(base_income), 0) - COALESCE(SUM(base_refund), 0)) AS `income`
                 FROM `invoice`
@@ -291,16 +219,14 @@ class Service implements InjectionAwareInterface
                 AND status = :status
                 GROUP BY `date`";
 
-        $stmt = $pdo->prepare($query);
-        $stmt->execute(
+        $results = $dbal->executeQuery(
+            $query,
             [
                 'status' => \Model_Invoice::STATUS_PAID,
                 'date_from' => date('Y-m-d', $time_from),
                 'date_to' => date('Y-m-d', $time_to),
             ]
-        );
-
-        $results = $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
+        )->fetchAllKeyValue();
 
         return $this->_genFlotArray($results, $time_from, $time_to);
     }
@@ -315,11 +241,9 @@ class Service implements InjectionAwareInterface
             ORDER BY clients DESC
             LIMIT $limit
         ";
-        $pdo = $this->di['pdo'];
-        $stmt = $pdo->prepare($q);
-        $stmt->execute();
+        $dbal = $this->di['dbal']([]);
 
-        return $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
+        return $dbal->executeQuery($q)->fetchAllKeyValue();
     }
 
     public function getSalesByCountry($data)
@@ -333,11 +257,9 @@ class Service implements InjectionAwareInterface
             ORDER BY sales DESC
             LIMIT $limit
         ";
-        $pdo = $this->di['pdo'];
-        $stmt = $pdo->prepare($q);
-        $stmt->execute();
+        $dbal = $this->di['dbal']([]);
 
-        return $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
+        return $dbal->executeQuery($q)->fetchAllKeyValue();
     }
 
     private function _getDateInterval($data): array
@@ -369,22 +291,20 @@ class Service implements InjectionAwareInterface
             $time_to = strtotime((string) $data['date_to']);
         }
 
-        $pdo = $this->di['pdo'];
+        $dbal = $this->di['dbal']([]);
 
         $query = "SELECT DATE_FORMAT(`created_at`, '%Y-%m-%d') AS `date`, COUNT(1) AS `count`
                 FROM `$table`
                 WHERE `created_at` BETWEEN :date_from AND :date_to
                 GROUP BY `date`";
 
-        $stmt = $pdo->prepare($query);
-        $stmt->execute(
+        $results = $dbal->executeQuery(
+            $query,
             [
                 'date_from' => date('Y-m-d', $time_from),
                 'date_to' => date('Y-m-d', $time_to),
             ]
-        );
-
-        $results = $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
+        )->fetchAllKeyValue();
 
         return $this->_genFlotArray($results, $time_from, $time_to);
     }

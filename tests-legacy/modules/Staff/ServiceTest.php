@@ -1530,9 +1530,13 @@ class ServiceTest extends \BBTestCase
         $serviceMock->expects($this->atLeastOnce())
             ->method('hasPermission')->willReturn(true);
 
-        $dbalMock = $this->getMockBuilder(\stdClass::class)->addMethods(['createQueryBuilder'])->getMock();
-        $queryBuilderMock = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['update', 'set', 'where', 'setParameter', 'executeStatement'])
+        $dbalMock = $this->getMockBuilder(\Doctrine\DBAL\Connection::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['createQueryBuilder'])
+            ->getMock();
+        $queryBuilderMock = $this->getMockBuilder(\Doctrine\DBAL\Query\QueryBuilder::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['update', 'set', 'where', 'setParameter', 'executeStatement'])
             ->getMock();
         $queryBuilderMock->expects($this->atLeastOnce())
             ->method('update')->willReturnSelf();
@@ -1559,8 +1563,9 @@ class ServiceTest extends \BBTestCase
 
     public function testgetPermissionsPermAreEmpty(): void
     {
-        $statementWithFetchOne = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['fetchOne'])
+        $statementWithFetchOne = $this->getMockBuilder(\Doctrine\DBAL\Result::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['fetchOne'])
             ->getMock();
         $statementWithFetchOne->expects($this->any())
             ->method('fetchOne')
@@ -1568,16 +1573,14 @@ class ServiceTest extends \BBTestCase
 
         $service = new Service();
 
-        $dbalMock = $this->getMockBuilder(\stdClass::class)->addMethods(['createQueryBuilder'])->getMock();
-        $statementWithFetchOne = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['fetchOne'])
+        $dbalMock = $this->getMockBuilder(\Doctrine\DBAL\Connection::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['createQueryBuilder'])
             ->getMock();
-        $statementWithFetchOne->expects($this->any())
-            ->method('fetchOne')
-            ->willReturn('{}');
 
-        $queryBuilderMock = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['update', 'set', 'where', 'setParameter', 'executeStatement', 'select', 'from', 'executeQuery', 'fetchOne'])
+        $queryBuilderMock = $this->getMockBuilder(\Doctrine\DBAL\Query\QueryBuilder::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['update', 'set', 'where', 'setParameter', 'executeStatement', 'select', 'from', 'executeQuery', 'fetchOne'])
             ->getMock();
         $queryBuilderMock->expects($this->any())
             ->method('executeQuery')->willReturn($statementWithFetchOne);
@@ -1614,24 +1617,23 @@ class ServiceTest extends \BBTestCase
     public function testgetPermissions(): void
     {
         $queryResult = '{"id" : "1"}';
-        $statementWithFetchOne = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['fetchOne'])
+        $statementWithFetchOne = $this->getMockBuilder(\Doctrine\DBAL\Result::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['fetchOne'])
             ->getMock();
         $statementWithFetchOne->expects($this->any())
             ->method('fetchOne')
             ->willReturn($queryResult);
         $service = new Service();
 
-        $dbalMock = $this->getMockBuilder(\stdClass::class)->addMethods(['createQueryBuilder'])->getMock();
-        $statementWithFetchOne = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['fetchOne'])
+        $dbalMock = $this->getMockBuilder(\Doctrine\DBAL\Connection::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['createQueryBuilder'])
             ->getMock();
-        $statementWithFetchOne->expects($this->any())
-            ->method('fetchOne')
-            ->willReturn($queryResult);
 
-        $queryBuilderMock = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['update', 'set', 'where', 'setParameter', 'executeStatement', 'select', 'from', 'executeQuery', 'fetchOne'])
+        $queryBuilderMock = $this->getMockBuilder(\Doctrine\DBAL\Query\QueryBuilder::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['update', 'set', 'where', 'setParameter', 'executeStatement', 'select', 'from', 'executeQuery', 'fetchOne'])
             ->getMock();
         $queryBuilderMock->expects($this->any())
             ->method('executeQuery')->willReturn($statementWithFetchOne);

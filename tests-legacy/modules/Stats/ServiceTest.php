@@ -55,13 +55,22 @@ class ServiceTest extends \BBTestCase
     {
         $data = [];
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
-        $dbMock->expects($this->atLeastOnce())
-            ->method('getAll')
+        $resultMock = $this->getMockBuilder(\Doctrine\DBAL\Result::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $resultMock->expects($this->atLeastOnce())
+            ->method('fetchAllAssociative')
             ->willReturn([]);
 
+        $dbalMock = $this->getMockBuilder(\Doctrine\DBAL\Connection::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $dbalMock->expects($this->atLeastOnce())
+            ->method('executeQuery')
+            ->willReturn($resultMock);
+
         $di = new \Pimple\Container();
-        $di['db'] = $dbMock;
+        $di['dbal'] = fn ($options) => $dbalMock;
 
         $this->service->setDi($di);
         $result = $this->service->getProductSummary($data);
@@ -70,11 +79,6 @@ class ServiceTest extends \BBTestCase
 
     public function testgetSummary(): void
     {
-        $pdoStatmentMock = $this->getMockBuilder('\\' . PdoStatmentsMock::class)
-            ->getMock();
-        $pdoStatmentMock->expects($this->atLeastOnce())
-            ->method('execute');
-
         $expected = [
             'clients_total' => null,
             'clients_today' => null,
@@ -100,16 +104,23 @@ class ServiceTest extends \BBTestCase
             'tickets_this_month' => null,
             'tickets_last_month' => null,
         ];
-        $pdoStatmentMock->expects($this->atLeastOnce())
-            ->method('fetchColumn');
 
-        $pdoMock = $this->getMockBuilder('\\' . PdoMock::class)->getMock();
-        $pdoMock->expects($this->atLeastOnce())
-            ->method('prepare')
-            ->willReturn($pdoStatmentMock);
+        $resultMock = $this->getMockBuilder(\Doctrine\DBAL\Result::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $resultMock->expects($this->atLeastOnce())
+            ->method('fetchOne')
+            ->willReturn(null);
+
+        $dbalMock = $this->getMockBuilder(\Doctrine\DBAL\Connection::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $dbalMock->expects($this->atLeastOnce())
+            ->method('executeQuery')
+            ->willReturn($resultMock);
 
         $di = new \Pimple\Container();
-        $di['pdo'] = $pdoMock;
+        $di['dbal'] = fn ($options) => $dbalMock;
         $this->service->setDi($di);
 
         $result = $this->service->getSummary();
