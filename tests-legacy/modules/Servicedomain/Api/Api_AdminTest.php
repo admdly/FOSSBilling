@@ -382,7 +382,7 @@ class Api_AdminTest extends \BBTestCase
         ];
         $result = $this->adminApi->tld_update($data);
 
-        $this->assertIsArray($result);
+        $this->assertIsBool($result);
     }
 
     public function testTldUpdateTldNotFoundException(): void

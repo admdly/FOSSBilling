@@ -55,7 +55,7 @@ class GuestTest extends \BBTestCase
         $model->loadBean(new \DummyBean());
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
-            ->willReturn(true);
+            ->willReturn(null);
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
@@ -103,7 +103,7 @@ class GuestTest extends \BBTestCase
         $model->loadBean(new \DummyBean());
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
-            ->willReturn(true);
+            ->willReturn(null);
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;

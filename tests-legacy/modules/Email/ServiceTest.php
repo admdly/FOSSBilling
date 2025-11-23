@@ -546,7 +546,7 @@ class ServiceTest extends \BBTestCase
         $extension = $this->getMockBuilder(\Box\Mod\Extension\Service::class)->getMock();
         $extension->expects($this->atLeastOnce())
             ->method('isExtensionActive')
-            ->willReturn($isExtensionActiveReturn);
+            ->willReturn(false);
 
         $config = [];
         $di['mod_config'] = $di->protect(fn ($modName) => $config);
@@ -889,7 +889,7 @@ class ServiceTest extends \BBTestCase
         $extension = $this->getMockBuilder(\Box\Mod\Extension\Service::class)->getMock();
         $extension->expects($this->atLeastOnce())
             ->method('isExtensionActive')
-            ->willReturn($isExtensionActiveReturn);
+            ->willReturn(false);
 
         $di = new \Pimple\Container();
         $di['db'] = $db;
@@ -974,7 +974,7 @@ class ServiceTest extends \BBTestCase
         $extension = $this->getMockBuilder(\Box\Mod\Extension\Service::class)->getMock();
         $extension->expects($this->atLeastOnce())
             ->method('isExtensionActive')
-            ->willReturn($isExtensionActiveReturn);
+            ->willReturn(false);
 
         $di = new \Pimple\Container();
         $di['db'] = $db;

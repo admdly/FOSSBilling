@@ -1085,7 +1085,7 @@ class Api_AdminTest extends \BBTestCase
         ];
         $result = $this->adminApi->canned_category_update($data);
 
-        $this->assertIsArray($result);
+        $this->assertIsBool($result);
     }
 
     public function testCannedCategoryDelete(): void
@@ -1116,7 +1116,7 @@ class Api_AdminTest extends \BBTestCase
         ];
         $result = $this->adminApi->canned_category_delete($data);
 
-        $this->assertIsArray($result);
+        $this->assertIsBool($result);
     }
 
     public function testCannedCategoryCreate(): void

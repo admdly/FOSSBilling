@@ -521,7 +521,7 @@ class Api_AdminTest extends \BBTestCase
         $extension = $this->getMockBuilder(\Box\Mod\Extension\Service::class)->getMock();
         $extension->expects($this->atLeastOnce())
             ->method('isExtensionActive')
-            ->willReturn($isExtensionActiveReturn);
+            ->willReturn(false);
 
         $di = new \Pimple\Container();
         $di['mod_service'] = $di->protect(fn () => $extension);

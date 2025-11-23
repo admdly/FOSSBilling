@@ -751,8 +751,7 @@ class ServiceTest extends \BBTestCase
             ->method('store')
             ->willReturn(random_int(1, 100));
         $validatorMock = $this->getMockBuilder('\\' . \FOSSBilling\Validate::class)->getMock();
-        $validatorMock->expects($this->atLeastOnce())->method('checkRequiredParamsForArray')
-            ->willReturn(true);
+        $validatorMock->expects($this->atLeastOnce())->method('checkRequiredParamsForArray');
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
