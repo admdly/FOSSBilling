@@ -93,7 +93,7 @@ class AdminTest extends \BBTestCase
             ->willReturn([random_int(1, 100), date('Y-m-d H:i:s')]);
         $dbMock->expects($this->atLeastOnce())
             ->method('exec')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;

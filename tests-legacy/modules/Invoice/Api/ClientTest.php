@@ -55,7 +55,7 @@ class ClientTest extends \BBTestCase
         $model->loadBean(new \DummyBean());
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
@@ -103,7 +103,7 @@ class ClientTest extends \BBTestCase
         $model->loadBean(new \DummyBean());
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
@@ -216,7 +216,7 @@ class ClientTest extends \BBTestCase
 
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;

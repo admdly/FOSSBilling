@@ -217,8 +217,7 @@ class AdminTest extends \BBTestCase
             ->onlyMethods(['remove'])
             ->getMock();
         $serviceMock->expects($this->atLeastOnce())
-            ->method('remove')
-            ->willReturn(true);
+            ->method('remove');
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;

@@ -1496,7 +1496,7 @@ class ServiceTest extends \BBTestCase
         $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
@@ -1525,7 +1525,7 @@ class ServiceTest extends \BBTestCase
             ->willReturn($invoiceModel);
         $dbMock->expects($this->atLeastOnce())
             ->method('load')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;

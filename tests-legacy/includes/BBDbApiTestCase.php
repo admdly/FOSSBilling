@@ -20,7 +20,7 @@ abstract class BBDbApiTestCase extends BBDatabaseTestCase
             ->willReturn('10.20.30');
         $updatedMock->expects($this->any())
             ->method('performUpdate')
-            ->willReturn(null);
+            ->willReturn(true);
         $this->di['updater'] = $updatedMock;
     }
 

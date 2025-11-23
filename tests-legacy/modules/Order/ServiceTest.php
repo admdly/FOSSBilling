@@ -1060,7 +1060,7 @@ class ServiceTest extends \BBTestCase
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
             ->with('ClientOrder')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
@@ -1287,7 +1287,7 @@ class ServiceTest extends \BBTestCase
         $currencyServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)->getMock();
         $currencyServiceMock->expects($this->atLeastOnce())
             ->method('getDefault')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $di = new \Pimple\Container();
         $di['mod_service'] = $di->protect(function ($serviceName) use ($currencyServiceMock) {
@@ -1442,7 +1442,7 @@ class ServiceTest extends \BBTestCase
             ->getMock();
         $serviceMock->expects($this->atLeastOnce())
             ->method('getMasterOrderForClient')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $serviceMock->setDi($di);
         $this->expectException(\FOSSBilling\Exception::class);
@@ -1917,7 +1917,7 @@ class ServiceTest extends \BBTestCase
         $dBMock->expects($this->atLeastOnce())
             ->method('findOne')
             ->with('ClientOrderMeta')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $clientOrderMetaModel = new \Model_ClientOrderMeta();
         $clientOrderMetaModel->loadBean(new \DummyBean());

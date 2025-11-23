@@ -96,7 +96,7 @@ class Api_GuestTest extends \BBTestCase
         $serviceMock->expects($this->atLeastOnce())->method('publicFindOneByHash')
             ->willReturn(new \Model_SupportPTicket());
         $serviceMock->expects($this->atLeastOnce())->method('publicCloseTicket')
-            ->willReturn([]);
+            ->willReturn(true);
 
 
         $di = new \Pimple\Container();
@@ -109,7 +109,8 @@ class Api_GuestTest extends \BBTestCase
         ];
         $result = $this->guestApi->ticket_close($data);
 
-        $this->assertIsArray($result);
+        $this->assertIsBool($result);
+        $this->assertTrue($result);
     }
 
     public function testTicketReply(): void
@@ -295,7 +296,7 @@ class Api_GuestTest extends \BBTestCase
             ->willReturn(new \Model_SupportKbArticle());
         $kbService->expects($this->atLeastOnce())
             ->method('kbFindActiveArticleBySlug')
-            ->willReturn(null);
+            ->willReturn(true);
         $kbService->expects($this->never())
             ->method('kbHitView');
         $kbService->expects($this->never())
@@ -486,7 +487,7 @@ class Api_GuestTest extends \BBTestCase
             ->willReturn(new \Model_SupportKbArticleCategory());
         $kbService->expects($this->atLeastOnce())
             ->method('kbFindCategoryBySlug')
-            ->willReturn(null);
+            ->willReturn(true);
         $kbService->expects($this->never())
             ->method('kbCategoryToApiArray')
             ->willReturn([]);

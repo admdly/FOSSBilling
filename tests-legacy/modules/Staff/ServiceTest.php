@@ -93,13 +93,13 @@ class ServiceTest extends \BBTestCase
             ->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $authMock = $this->getMockBuilder('\Box_Authorization')->disableOriginalConstructor()->getMock();
         $authMock->expects($this->atLeastOnce())
             ->method('authorizeUser')
             ->with(null, $password)
-            ->willReturn(null);
+            ->willReturn(true);
 
         $di = new \Pimple\Container();
         $di['events_manager'] = $emMock;
@@ -715,7 +715,7 @@ class ServiceTest extends \BBTestCase
         $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('load')
-            ->willReturn(null);
+            ->willReturn(true);
         $di['db'] = $dbMock;
         $di['loggedin_admin'] = new \Model_Admin();
 
@@ -885,7 +885,7 @@ class ServiceTest extends \BBTestCase
         $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $dbMock->expects($this->atLeastOnce())
             ->method('dispense')
@@ -1633,13 +1633,13 @@ class ServiceTest extends \BBTestCase
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
             ->with('Admin', 'email = ? AND status = ? AND role != ?')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $authMock = $this->getMockBuilder('\Box_Authorization')->disableOriginalConstructor()->getMock();
         $authMock->expects($this->atLeastOnce())
             ->method('authorizeUser')
             ->with(null, $password)
-            ->willReturn(null);
+            ->willReturn(true);
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;

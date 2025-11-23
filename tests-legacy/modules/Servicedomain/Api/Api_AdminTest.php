@@ -251,7 +251,7 @@ class Api_AdminTest extends \BBTestCase
     {
         $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Servicedomain\Service::class)->getMock();
         $serviceMock->expects($this->atLeastOnce())->method('tldFindOneByTld')
-            ->willReturn(null);
+            ->willReturn(true);
         $serviceMock->expects($this->never())->method('tldToApiArray')
             ->willReturn([]);
 
@@ -302,9 +302,9 @@ class Api_AdminTest extends \BBTestCase
     {
         $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Servicedomain\Service::class)->getMock();
         $serviceMock->expects($this->atLeastOnce())->method('tldFindOneByTld')
-            ->willReturn(null);
+            ->willReturn(true);
         $serviceMock->expects($this->never())->method('tldRm')
-            ->willReturn([]);
+            ->willReturn(true);
 
         $di = new \Pimple\Container();
         $this->adminApi->setDi($di);
@@ -370,7 +370,7 @@ class Api_AdminTest extends \BBTestCase
         $serviceMock->expects($this->atLeastOnce())->method('tldFindOneByTld')
             ->willReturn(new \Model_Tld());
         $serviceMock->expects($this->atLeastOnce())->method('tldUpdate')
-            ->willReturn([]);
+            ->willReturn(true);
 
         $di = new \Pimple\Container();
         $this->adminApi->setDi($di);
@@ -389,9 +389,9 @@ class Api_AdminTest extends \BBTestCase
     {
         $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Servicedomain\Service::class)->getMock();
         $serviceMock->expects($this->atLeastOnce())->method('tldFindOneByTld')
-            ->willReturn(null);
+            ->willReturn(true);
         $serviceMock->expects($this->never())->method('tldUpdate')
-            ->willReturn([]);
+            ->willReturn(true);
 
         $di = new \Pimple\Container();
         $this->adminApi->setDi($di);
@@ -651,7 +651,7 @@ class Api_AdminTest extends \BBTestCase
 
         $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Servicedomain\Service::class)->getMock();
         $serviceMock->expects($this->never())->method('registrarToApiArray')
-            ->willReturn(true);
+            ->willReturn([]);
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
@@ -827,7 +827,7 @@ class Api_AdminTest extends \BBTestCase
         $orderService = $this->getMockBuilder('\\' . \Box\Mod\Order\Service::class)->onlyMethods(['getOrderService'])->getMock();
         $orderService->expects($this->atLeastOnce())
             ->method('getOrderService')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;

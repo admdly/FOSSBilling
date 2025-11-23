@@ -247,7 +247,7 @@ class ServiceSubscriptionTest extends \BBTestCase
             ->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getCell')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $getAllResults = [
             0 => ['period' => '1W'],

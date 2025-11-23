@@ -260,7 +260,7 @@ class GuestTest extends \BBTestCase
 
         $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
-            ->method('findOne')->willReturn(null);
+            ->method('findOne')->willReturn(true);
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
@@ -345,7 +345,7 @@ class GuestTest extends \BBTestCase
         // Mock for the database service
         $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
         $dbMock->expects($this->once())
-            ->method('findOne')->willReturn(null);
+            ->method('findOne')->willReturn(true);
 
         // Mock for the events manager
         $eventMock = $this->getMockBuilder('\Box_EventManager')->getMock();

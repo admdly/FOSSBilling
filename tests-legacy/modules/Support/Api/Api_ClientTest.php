@@ -218,7 +218,7 @@ class Api_ClientTest extends \BBTestCase
         $serviceMock->expects($this->atLeastOnce())->method('findOneByClient')
             ->willReturn(new \Model_SupportTicket());
         $serviceMock->expects($this->atLeastOnce())->method('closeTicket')
-            ->willReturn(random_int(1, 100));
+            ->willReturn(true);
 
 
         $di = new \Pimple\Container();
@@ -237,6 +237,7 @@ class Api_ClientTest extends \BBTestCase
         ];
         $result = $this->clientApi->ticket_close($data);
 
-        $this->assertIsInt($result);
+        $this->assertIsBool($result);
+        $this->assertTrue($result);
     }
 }

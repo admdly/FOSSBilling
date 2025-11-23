@@ -251,7 +251,7 @@ class ServiceTest extends \BBTestCase
             ->willReturn([$cartProduct]);
         $dbMock->expects($this->atLeastOnce())
             ->method('trash')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
@@ -269,10 +269,10 @@ class ServiceTest extends \BBTestCase
         $dbMock = $this->getMockBuilder('\Box_Database')->disableOriginalConstructor()->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
-            ->willReturn(null);
+            ->willReturn(true);
         $dbMock->expects($this->never())
             ->method('trash')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
@@ -316,7 +316,7 @@ class ServiceTest extends \BBTestCase
             ->willReturn([new \Model_Product(), new \Model_Product()]);
         $dbMock->expects($this->atLeastOnce())
             ->method('trash')
-            ->willReturn(null);
+            ->willReturn(true);
         $dbMock->expects($this->atLeastOnce())
             ->method('store')
             ->willReturn(random_int(1, 100));
@@ -446,7 +446,7 @@ class ServiceTest extends \BBTestCase
             ->willReturn([new \Model_CartProduct()]);
         $dbMock->expects($this->atLeastOnce())
             ->method('trash')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $cart = new \Model_Cart();
         $cart->loadBean(new \DummyBean());
@@ -963,8 +963,7 @@ class ServiceTest extends \BBTestCase
             ->method('attachOrderConfig')
             ->willReturn([]);
         $serviceLicenseServiceMock->expects($this->atLeastOnce())
-            ->method('validateOrderData')
-            ->willReturn(true);
+            ->method('validateOrderData');
 
         $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Cart\Service::class)
             ->onlyMethods(['isRecurrentPricing', 'isStockAvailable', 'addProduct'])

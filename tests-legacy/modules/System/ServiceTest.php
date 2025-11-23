@@ -343,7 +343,7 @@ class ServiceTest extends \BBTestCase
         $sessionMock->expects($this->atLeastOnce())
             ->method('get')
             ->with('pending_messages')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $di['session'] = $sessionMock;
 

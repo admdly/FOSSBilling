@@ -22,7 +22,7 @@ class Api_ClientTest extends \BBTestCase
             ->willReturn(new \Model_ServiceCustom());
         $serviceMock->expects($this->atLeastOnce())
             ->method('customCall')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $arguments = [
             0 => [
@@ -43,7 +43,7 @@ class Api_ClientTest extends \BBTestCase
             ->willReturn(new \Model_ServiceCustom());
         $serviceMock->expects($this->never())
             ->method('customCall')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $arguments = [];
 
@@ -60,7 +60,7 @@ class Api_ClientTest extends \BBTestCase
             ->willReturn(new \Model_ServiceCustom());
         $serviceMock->expects($this->never())
             ->method('customCall')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $arguments = [
             0 => [],

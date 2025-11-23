@@ -254,7 +254,7 @@ class Api_ClientTest extends \BBTestCase
         $orderService = $this->getMockBuilder('\\' . \Box\Mod\Order\Service::class)->onlyMethods(['getOrderService', 'findForClientById'])->getMock();
         $orderService->expects($this->atLeastOnce())
             ->method('findForClientById')
-            ->willReturn(null);
+            ->willReturn(true);
         $orderService->expects($this->never())
             ->method('getOrderService')
             ->willReturn(new \Model_ServiceDomain());
@@ -289,7 +289,7 @@ class Api_ClientTest extends \BBTestCase
             ->willReturn(new \Model_ClientOrder());
         $orderService->expects($this->atLeastOnce())
             ->method('getOrderService')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $di = new \Pimple\Container();
         $di['mod_service'] = $di->protect(fn () => $orderService);

@@ -322,7 +322,7 @@ class Api_ClientTest extends PHPUnit\Framework\TestCase
         $serviceMock = $this->getMockBuilder('\\' . Box\Mod\Order\Service::class)
             ->onlyMethods(['findForClientById', 'toApiArray'])->getMock();
         $serviceMock->expects($this->atLeastOnce())->method('findForClientById')
-            ->willReturn(null);
+            ->willReturn(true);
         $serviceMock->expects($this->never())->method('toApiArray')
             ->willReturn([]);
 

@@ -101,11 +101,11 @@ class Api_GuestTest extends \BBTestCase
         $service = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)->getMock();
         $service->expects($this->never())
             ->method('getByCode')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $service->expects($this->atLeastOnce())
             ->method('getDefault')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $guestApi->setService($service);
         $this->expectException(\FOSSBilling\Exception::class);

@@ -86,7 +86,7 @@ class GuestTest extends \BBTestCase
         $currencyServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)
             ->onlyMethods(['getByCode'])->getMock();
         $currencyServiceMock->expects($this->atLeastOnce())->method('getByCode')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $di = new \Pimple\Container();
         $di['mod_service'] = $di->protect(fn () => $currencyServiceMock);
@@ -163,7 +163,7 @@ class GuestTest extends \BBTestCase
         $dbMock = $this->getMockBuilder('\Box_Database')->disableOriginalConstructor()->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('load')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
@@ -225,7 +225,7 @@ class GuestTest extends \BBTestCase
         $serviceMock->expects($this->never())->method('applyPromo')
             ->willReturn(true);
         $serviceMock->expects($this->atLeastOnce())->method('findActivePromoByCode')
-            ->willReturn(null);
+            ->willReturn(true);
         $serviceMock->expects($this->never())->method('promoCanBeApplied')
             ->willReturn(true);
         $serviceMock->expects($this->never())->method('isPromoAvailableForClientGroup')

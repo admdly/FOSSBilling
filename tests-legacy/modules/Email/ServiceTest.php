@@ -129,7 +129,7 @@ class ServiceTest extends \BBTestCase
 
         $db->expects($this->atLeastOnce())
             ->method('trash')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $di['db'] = $db;
         $service->setDi($di);
@@ -150,7 +150,7 @@ class ServiceTest extends \BBTestCase
         $db = $this->getMockBuilder('Box_Database')->getMock();
         $db->expects($this->atLeastOnce())
             ->method('trash')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $di['db'] = $db;
         $service->setDi($di);

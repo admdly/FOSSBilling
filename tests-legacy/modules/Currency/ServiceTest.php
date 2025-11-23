@@ -165,7 +165,7 @@ class ServiceTest extends \BBTestCase
 
         $serviceMock->expects($this->atLeastOnce())
             ->method('getByCode')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $di['db'] = $db;
         $serviceMock->setDi($di);
@@ -433,7 +433,7 @@ class ServiceTest extends \BBTestCase
         $systemService = $this->getMockBuilder('\\' . \Box\Mod\System\Service::class)->onlyMethods(['checkLimits'])->getMock();
         $systemService->expects($this->atLeastOnce())
             ->method('checkLimits')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $currencyModel = new \Model_Tld();
         $currencyModel->loadBean(new \DummyBean());
@@ -660,7 +660,7 @@ class ServiceTest extends \BBTestCase
         $service = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)->onlyMethods(['getByCode', 'rm'])->getMock();
         $service->expects($this->atLeastOnce())
             ->method('getByCode')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $this->expectException(\FOSSBilling\Exception::class);
         $result = $service->deleteCurrencyByCode($code);

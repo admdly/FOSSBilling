@@ -64,7 +64,7 @@ class Api_GuestTest extends \BBTestCase
         $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Servicedomain\Service::class)
             ->onlyMethods(['tldFindOneByTld', 'tldToApiArray'])->getMock();
         $serviceMock->expects($this->atLeastOnce())->method('tldFindOneByTld')
-            ->willReturn(null);
+            ->willReturn(true);
         $serviceMock->expects($this->never())->method('tldToApiArray')
             ->willReturn([]);
 
@@ -136,7 +136,7 @@ class Api_GuestTest extends \BBTestCase
         $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Servicedomain\Service::class)
             ->onlyMethods(['tldFindOneByTld', 'isDomainAvailable'])->getMock();
         $serviceMock->expects($this->atLeastOnce())->method('tldFindOneByTld')
-            ->willReturn(null);
+            ->willReturn(true);
         $serviceMock->expects($this->never())->method('isDomainAvailable')
             ->willReturn(true);
 
@@ -218,7 +218,7 @@ class Api_GuestTest extends \BBTestCase
         $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Servicedomain\Service::class)
             ->onlyMethods(['tldFindOneByTld', 'canBeTransferred'])->getMock();
         $serviceMock->expects($this->atLeastOnce())->method('tldFindOneByTld')
-            ->willReturn(null);
+            ->willReturn(true);
         $serviceMock->expects($this->never())->method('canBeTransferred')
             ->willReturn(true);
 

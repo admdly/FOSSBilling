@@ -349,7 +349,7 @@ class ServiceTest extends \BBTestCase
 
         $database = $this->getMockBuilder('\Box_Database')->getMock();
         $database->expects($this->atLeastOnce())->method('findOne')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $di = new \Pimple\Container();
         $di['db'] = $database;
@@ -932,13 +932,13 @@ class ServiceTest extends \BBTestCase
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
             ->with('Client')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $authMock = $this->getMockBuilder('\Box_Authorization')->disableOriginalConstructor()->getMock();
         $authMock->expects($this->atLeastOnce())
             ->method('authorizeUser')
             ->with(null, $password)
-            ->willReturn(null);
+            ->willReturn(true);
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;

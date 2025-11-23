@@ -335,7 +335,7 @@ class Api_AdminTest extends \BBTestCase
         $serviceMock->expects($this->atLeastOnce())->method('getExpired')
             ->willReturn([['id' => 1], ['id' => 2]]);
         $serviceMock->expects($this->atLeastOnce())->method('autoClose')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
@@ -379,7 +379,7 @@ class Api_AdminTest extends \BBTestCase
         $serviceMock->expects($this->atLeastOnce())->method('publicGetExpired')
             ->willReturn([$ticket, $ticket]);
         $serviceMock->expects($this->atLeastOnce())->method('publicAutoClose')
-            ->willReturn(null);
+            ->willReturn(true);
 
         $this->adminApi->setService($serviceMock);
         $di = new \Pimple\Container();
@@ -938,7 +938,7 @@ class Api_AdminTest extends \BBTestCase
         $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Support\Service::class)
             ->onlyMethods(['cannedRm'])->getMock();
         $serviceMock->expects($this->atLeastOnce())->method('cannedRm')
-            ->willReturn([]);
+            ->willReturn(true);
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
@@ -985,7 +985,7 @@ class Api_AdminTest extends \BBTestCase
         $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Support\Service::class)
             ->onlyMethods(['cannedUpdate'])->getMock();
         $serviceMock->expects($this->atLeastOnce())->method('cannedUpdate')
-            ->willReturn(random_int(1, 100));
+            ->willReturn(true);
 
         $dbMock = $this->getMockBuilder('\Box_Database')->disableOriginalConstructor()->getMock();
         $dbMock->expects($this->atLeastOnce())
@@ -1070,7 +1070,7 @@ class Api_AdminTest extends \BBTestCase
         $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Support\Service::class)
             ->onlyMethods(['cannedCategoryUpdate'])->getMock();
         $serviceMock->expects($this->atLeastOnce())->method('cannedCategoryUpdate')
-            ->willReturn([]);
+            ->willReturn(true);
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
@@ -1102,7 +1102,7 @@ class Api_AdminTest extends \BBTestCase
         $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Support\Service::class)
             ->onlyMethods(['cannedCategoryRm'])->getMock();
         $serviceMock->expects($this->atLeastOnce())->method('cannedCategoryRm')
-            ->willReturn([]);
+            ->willReturn(true);
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
@@ -1175,7 +1175,7 @@ class Api_AdminTest extends \BBTestCase
         $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Support\Service::class)
             ->onlyMethods(['noteRm'])->getMock();
         $serviceMock->expects($this->atLeastOnce())->method('noteRm')
-            ->willReturn([]);
+            ->willReturn(true);
 
         $dbMock = $this->getMockBuilder('\Box_Database')->disableOriginalConstructor()->getMock();
         $dbMock->expects($this->atLeastOnce())
@@ -1194,7 +1194,8 @@ class Api_AdminTest extends \BBTestCase
         ];
         $result = $this->adminApi->note_delete($data);
 
-        $this->assertIsArray($result);
+        $this->assertIsBool($result);
+        $this->assertTrue($result);
     }
 
     public function testTaskComplete(): void
@@ -1407,8 +1408,7 @@ class Api_AdminTest extends \BBTestCase
 
         $kbService = $this->getMockBuilder(\Box\Mod\Support\Service::class)->onlyMethods(['kbRm'])->getMock();
         $kbService->expects($this->atLeastOnce())
-            ->method('kbRm')
-            ->willReturn(true);
+            ->method('kbRm');
         $adminApi->setService($kbService);
 
         $result = $adminApi->kb_article_delete($data);
@@ -1431,8 +1431,7 @@ class Api_AdminTest extends \BBTestCase
 
         $kbService = $this->getMockBuilder(\Box\Mod\Support\Service::class)->onlyMethods(['kbRm'])->getMock();
         $kbService->expects($this->never())
-            ->method('kbRm')
-            ->willReturn(true);
+            ->method('kbRm');
         $adminApi->setService($kbService);
 
         $this->expectException(\FOSSBilling\Exception::class);
@@ -1591,7 +1590,7 @@ class Api_AdminTest extends \BBTestCase
         $kbService = $this->getMockBuilder(\Box\Mod\Support\Service::class)->onlyMethods(['kbUpdateCategory'])->getMock();
         $kbService->expects($this->atLeastOnce())
             ->method('kbUpdateCategory')
-            ->willReturn([]);
+            ->willReturn(true);
         $adminApi->setService($kbService);
 
         $db = $this->getMockBuilder('Box_Database')->getMock();
@@ -1613,7 +1612,8 @@ class Api_AdminTest extends \BBTestCase
         ];
 
         $result = $adminApi->kb_category_update($data);
-        $this->assertIsArray($result);
+        $this->assertIsBool($result);
+        $this->assertTrue($result);
     }
 
     public function testKbCategoryUpdateIdNotSet(): void
@@ -1623,7 +1623,7 @@ class Api_AdminTest extends \BBTestCase
         $kbService = $this->getMockBuilder(\Box\Mod\Support\Service::class)->onlyMethods(['kbUpdateCategory'])->getMock();
         $kbService->expects($this->never())
             ->method('kbUpdateCategory')
-            ->willReturn([]);
+            ->willReturn(true);
         $adminApi->setService($kbService);
 
         $db = $this->getMockBuilder('Box_Database')->getMock();
@@ -1642,7 +1642,8 @@ class Api_AdminTest extends \BBTestCase
         $this->expectException(\FOSSBilling\Exception::class);
         $this->validateRequiredParams($adminApi, 'kb_category_update', $data);
         $result = $adminApi->kb_category_update($data);
-        $this->assertIsArray($result);
+        $this->assertIsBool($result);
+        $this->assertTrue($result);
     }
 
     public function testKbCategoryUpdateNotFound(): void
@@ -1652,7 +1653,7 @@ class Api_AdminTest extends \BBTestCase
         $kbService = $this->getMockBuilder(\Box\Mod\Support\Service::class)->onlyMethods(['kbUpdateCategory'])->getMock();
         $kbService->expects($this->never())
             ->method('kbUpdateCategory')
-            ->willReturn([]);
+            ->willReturn(true);
         $adminApi->setService($kbService);
 
         $db = $this->getMockBuilder('Box_Database')->getMock();
@@ -1675,7 +1676,8 @@ class Api_AdminTest extends \BBTestCase
 
         $this->expectException(\FOSSBilling\Exception::class);
         $result = $adminApi->kb_category_update($data);
-        $this->assertIsArray($result);
+        $this->assertIsBool($result);
+        $this->assertTrue($result);
     }
 
     public function testKbCategoryDelete(): void
@@ -1685,7 +1687,7 @@ class Api_AdminTest extends \BBTestCase
         $kbService = $this->getMockBuilder(\Box\Mod\Support\Service::class)->onlyMethods(['kbCategoryRm'])->getMock();
         $kbService->expects($this->atLeastOnce())
             ->method('kbCategoryRm')
-            ->willReturn([]);
+            ->willReturn(true);
         $adminApi->setService($kbService);
 
         $db = $this->getMockBuilder('Box_Database')->getMock();
@@ -1703,7 +1705,8 @@ class Api_AdminTest extends \BBTestCase
             'id' => random_int(1, 100),
         ];
         $result = $adminApi->kb_category_delete($data);
-        $this->assertIsArray($result);
+        $this->assertIsBool($result);
+        $this->assertTrue($result);
     }
 
     public function testKbCategoryDeleteIdNotSet(): void
@@ -1713,7 +1716,7 @@ class Api_AdminTest extends \BBTestCase
         $kbService = $this->getMockBuilder(\Box\Mod\Support\Service::class)->onlyMethods(['kbCategoryRm'])->getMock();
         $kbService->expects($this->never())
             ->method('kbCategoryRm')
-            ->willReturn([]);
+            ->willReturn(true);
         $adminApi->setService($kbService);
 
         $db = $this->getMockBuilder('Box_Database')->getMock();
@@ -1731,7 +1734,8 @@ class Api_AdminTest extends \BBTestCase
         $this->expectException(\FOSSBilling\Exception::class);
         $this->validateRequiredParams($adminApi, 'kb_category_delete', $data);
         $result = $adminApi->kb_category_delete($data);
-        $this->assertIsArray($result);
+        $this->assertIsBool($result);
+        $this->assertTrue($result);
     }
 
     public function testKbCategoryDeleteNotFound(): void
@@ -1741,7 +1745,7 @@ class Api_AdminTest extends \BBTestCase
         $kbService = $this->getMockBuilder(\Box\Mod\Support\Service::class)->onlyMethods(['kbCategoryRm'])->getMock();
         $kbService->expects($this->never())
             ->method('kbCategoryRm')
-            ->willReturn([]);
+            ->willReturn(true);
         $adminApi->setService($kbService);
 
         $db = $this->getMockBuilder('Box_Database')->getMock();
@@ -1761,7 +1765,8 @@ class Api_AdminTest extends \BBTestCase
 
         $this->expectException(\FOSSBilling\Exception::class);
         $result = $adminApi->kb_category_delete($data);
-        $this->assertIsArray($result);
+        $this->assertIsBool($result);
+        $this->assertTrue($result);
     }
 
     public function testKbCategoryGetPairs(): void
