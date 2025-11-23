@@ -748,7 +748,7 @@ class ServiceTest extends \BBTestCase
         $model->loadBean(new \DummyBean());
         $model->id = $id;
 
-        $emailServiceMock = $this->getMockBuilder(\Box\Mod\Email\Service::class)->addMethods(['template_render'])->getMock();
+        $emailServiceMock = $this->getMockBuilder(\Box\Mod\Email\Service::class)->onlyMethods([])->getMock();
 
         $db = $this->getMockBuilder('Box_Database')->getMock();
         $db->expects($this->atLeastOnce())

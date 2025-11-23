@@ -134,7 +134,7 @@ class ServiceTest extends \BBTestCase
             ->method('store');
         $dbMock->expects($this->exactly(3))
             ->method('findOne')
-            ->will($this->onConsecutiveCalls($serviceLicenseModel, $serviceLicenseModel, null));
+            ->willReturn($serviceLicenseModel, $serviceLicenseModel, null);
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;

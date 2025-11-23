@@ -268,7 +268,7 @@ class Api_AdminTest extends \BBTestCase
         $dbMock = $this->getMockBuilder('\Box_Database')->disableOriginalConstructor()->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getExistingModelById')
-            ->will($this->onConsecutiveCalls($clientModel, $supportHelpdeskModel));
+            ->willReturn($clientModel, $supportHelpdeskModel);
 
         $randID = random_int(1, 100);
         $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Support\Service::class)->getMock();

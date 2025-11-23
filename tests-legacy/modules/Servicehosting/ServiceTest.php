@@ -71,7 +71,7 @@ class ServiceTest extends \BBTestCase
         $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('getExistingModelById')
-            ->will($this->onConsecutiveCalls($hostingServerModel, $hostingPlansModel));
+            ->willReturn($hostingServerModel, $hostingPlansModel);
 
         $servhostingModel = new \Model_ServiceHosting();
         $servhostingModel->loadBean(new \DummyBean());
@@ -394,7 +394,7 @@ class ServiceTest extends \BBTestCase
     //        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
     //        $dbMock->expects($this->atLeastOnce())
     //            ->method('getExistingModelById')
-    //            ->will($this->onConsecutiveCalls($hostingServerModel, $hostingPlansModel));
+    //            ->willReturn($hostingServerModel, $hostingPlansModel);
     //
     //        $servhostingModel = new \Model_ServiceHosting();
     //        $servhostingModel->loadBean(new \DummyBean());
@@ -777,7 +777,7 @@ class ServiceTest extends \BBTestCase
         $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('load')
-            ->will($this->onConsecutiveCalls($hostingServer, $hostingHp));
+            ->willReturn($hostingServer, $hostingHp);
 
         $orderServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Order\Service::class)->getMock();
         $orderServiceMock->expects($this->atLeastOnce())

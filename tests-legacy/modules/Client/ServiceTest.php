@@ -435,7 +435,7 @@ class ServiceTest extends \BBTestCase
 
         $database = $this->getMockBuilder('\Box_Database')->getMock();
         $database->expects($this->exactly(2))->method('findOne')
-            ->will($this->onConsecutiveCalls($this->returnValue(null)));
+            ->willReturn($this->returnValue(null));
 
         $di = new \Pimple\Container();
         $di['db'] = $database;

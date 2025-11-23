@@ -159,7 +159,7 @@ class AdminTest extends \BBTestCase
         $serviceMock = $this->getMockBuilder('\\' . \Box\Mod\Extension\Service::class)->getMock();
         $serviceMock->expects($this->atLeastOnce())
             ->method('findExtension')
-            ->will($this->onConsecutiveCalls($model));
+            ->willReturn($model);
         $serviceMock->expects($this->atLeastOnce())
             ->method('deactivate')
             ->willReturn(true);

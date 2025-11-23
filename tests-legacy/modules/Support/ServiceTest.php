@@ -2319,8 +2319,7 @@ class ServiceTest extends \BBTestCase
             ->method('store')
             ->willReturn($randId);
 
-        $settingsServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Email\Service::class)
-            ->addMethods(['checkLimits'])->getMock();
+        $settingsServiceMock = $this->getMockBuilder('\\' . \Box\Mod\System\Service::class)->getMock();
         $settingsServiceMock->expects($this->atLeastOnce())->method('checkLimits')
             ->willReturn(null);
 

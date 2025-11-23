@@ -783,7 +783,7 @@ class ServiceTest extends \BBTestCase
         $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('dispense')
-            ->will($this->onConsecutiveCalls($invoiceModel, $invoiceItemModel));
+            ->willReturn($invoiceModel, $invoiceItemModel);
         $dbMock->expects($this->atLeastOnce())
             ->method('store');
         $dbMock->expects($this->atLeastOnce())
@@ -1396,7 +1396,7 @@ class ServiceTest extends \BBTestCase
         $systemService = $this->getMockBuilder('\\' . \Box\Mod\System\Service::class)->getMock();
         $systemService->expects($this->atLeastOnce())
             ->method('getParamValue')
-            ->will($this->onConsecutiveCalls($minAmount, $maxAmount));
+            ->willReturn($minAmount, $maxAmount);
 
         $di = new \Pimple\Container();
         $di['mod_service'] = $di->protect(fn () => $systemService);
@@ -1421,7 +1421,7 @@ class ServiceTest extends \BBTestCase
         $systemService = $this->getMockBuilder('\\' . \Box\Mod\System\Service::class)->getMock();
         $systemService->expects($this->atLeastOnce())
             ->method('getParamValue')
-            ->will($this->onConsecutiveCalls($minAmount, $maxAmount));
+            ->willReturn($minAmount, $maxAmount);
 
         $di = new \Pimple\Container();
         $di['mod_service'] = $di->protect(fn () => $systemService);
@@ -1456,7 +1456,7 @@ class ServiceTest extends \BBTestCase
         $systemService = $this->getMockBuilder('\\' . \Box\Mod\System\Service::class)->getMock();
         $systemService->expects($this->atLeastOnce())
             ->method('getParamValue')
-            ->will($this->onConsecutiveCalls($minAmount, $maxAmount, true));
+            ->willReturn($minAmount, $maxAmount, true);
 
         $itemInvoiceServiceMock = $this->getMockBuilder('\\' . ServiceInvoiceItem::class)->getMock();
         $itemInvoiceServiceMock->expects($this->atLeastOnce())
