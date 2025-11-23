@@ -208,7 +208,7 @@ class ServiceTest extends \BBTestCase
         $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
-            ->willReturn(true);
+            ->willReturn(null);
 
         $themeMock = $this->getMockBuilder('\\' . Model\Theme::class)->disableOriginalConstructor()->getMock();
         $themeMock->expects($this->atLeastOnce())
@@ -236,7 +236,7 @@ class ServiceTest extends \BBTestCase
         $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
-            ->willReturn(true);
+            ->willReturn(null);
         $dbMock->expects($this->atLeastOnce())
             ->method('dispense')
             ->willReturn($extensionMetaModel);

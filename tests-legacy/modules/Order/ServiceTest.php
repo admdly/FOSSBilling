@@ -1913,14 +1913,14 @@ class ServiceTest extends \BBTestCase
         ];
         $di = new \Pimple\Container();
 
+        $clientOrderMetaModel = new \Model_ClientOrderMeta();
+        $clientOrderMetaModel->loadBean(new \DummyBean());
+
         $dBMock = $this->getMockBuilder('\Box_Database')->getMock();
         $dBMock->expects($this->atLeastOnce())
             ->method('findOne')
             ->with('ClientOrderMeta')
-            ->willReturn(true);
-
-        $clientOrderMetaModel = new \Model_ClientOrderMeta();
-        $clientOrderMetaModel->loadBean(new \DummyBean());
+            ->willReturn(null);
         $dBMock->expects($this->atLeastOnce())
             ->method('dispense')
             ->with('ClientOrderMeta')

@@ -233,7 +233,8 @@ class AdminTest extends \BBTestCase
 
         $invoiceItemService = $this->getMockBuilder('\\' . \Box\Mod\Invoice\ServiceInvoiceItem::class)->getMock();
         $invoiceItemService->expects($this->atLeastOnce())
-            ->method('remove');
+            ->method('remove')
+            ->willReturn(true);
 
         $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
 

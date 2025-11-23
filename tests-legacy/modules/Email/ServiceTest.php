@@ -889,7 +889,7 @@ class ServiceTest extends \BBTestCase
         $extension = $this->getMockBuilder(\Box\Mod\Extension\Service::class)->getMock();
         $extension->expects($this->atLeastOnce())
             ->method('isExtensionActive')
-            ->willReturn(false);
+            ->willReturn($isExtensionActiveReturn);
 
         $di = new \Pimple\Container();
         $di['db'] = $db;

@@ -932,13 +932,13 @@ class ServiceTest extends \BBTestCase
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
             ->with('Client')
-            ->willReturn(true);
+            ->willReturn(null);
 
         $authMock = $this->getMockBuilder('\Box_Authorization')->disableOriginalConstructor()->getMock();
         $authMock->expects($this->atLeastOnce())
             ->method('authorizeUser')
             ->with(null, $password)
-            ->willReturn(true);
+            ->willReturn(null);
 
         $di = new \Pimple\Container();
         $di['db'] = $dbMock;
