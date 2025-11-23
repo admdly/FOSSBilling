@@ -346,7 +346,7 @@ class Api_AdminTest extends \BBTestCase
         $service = $this->getMockBuilder('\\' . \Box\Mod\Currency\Service::class)->getMock();
         $service->expects($this->atLeastOnce())
             ->method('getByCode')
-            ->willReturn(true);
+            ->willReturn(null);
         $service->expects($this->atLeastOnce())
             ->method('getAvailableCurrencies')
             ->willReturn($this->availableCurrencies);

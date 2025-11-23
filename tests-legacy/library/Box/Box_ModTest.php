@@ -8,7 +8,7 @@ class Box_ModTest extends PHPUnit\Framework\TestCase
         $db = $this->getMockBuilder('Box_Database')->getMock();
         $db->expects($this->atLeastOnce())
             ->method('findOne')
-            ->willReturn(true);
+            ->willReturn(null);
 
         $di = new Pimple\Container();
         $di['db'] = $db;

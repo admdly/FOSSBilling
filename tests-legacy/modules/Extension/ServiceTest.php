@@ -670,7 +670,7 @@ class ServiceTest extends \BBTestCase
         $dbMock = $this->getMockBuilder(\Box_Database::class)->getMock();
         $dbMock->expects($this->atLeastOnce())
             ->method('findOne')
-            ->willReturn(true);
+            ->willReturn(null);
         $dbMock->expects($this->atLeastOnce())
             ->method('dispense')
             ->willReturn($model);
