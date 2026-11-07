@@ -75,7 +75,7 @@ class Server_Manager_CWP extends Server_Manager
      *
      * @return string returns the login URL as a string
      */
-    public function getLoginUrl(?Server_Account $account): string
+    public function getLoginUrl(?Server_Account $account, ?string $clientIp = null): string
     {
         $fallback = 'https://' . $this->_config['host'] . ':2083';
 

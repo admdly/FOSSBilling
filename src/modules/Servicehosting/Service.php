@@ -1635,7 +1635,7 @@ class Service implements InjectionAwareInterface
             return $adapter->getResellerLoginUrl($account);
         }
 
-        return $adapter->getLoginUrl($account);
+        return $adapter->getLoginUrl($account, $this->di['request']->getClientIp());
     }
 
     /**

@@ -61,16 +61,17 @@ class Server_Manager_Plesk extends Server_Manager
      * Returns the login URL for a given account.
      * If an account is provided, a session is created for the account and the session ID is appended to the URL.
      *
-     * @param Server_Account|null $account the account for which the login URL should be retrieved
+     * @param Server_Account|null $account  the account for which the login URL should be retrieved
+     * @param string|null         $clientIp the visitor IP the Plesk session should be bound to
      *
      * @return string the login URL for the account
      */
-    public function getLoginUrl(?Server_Account $account = null): string
+    public function getLoginUrl(?Server_Account $account = null, ?string $clientIp = null): string
     {
         $protocol = $this->_config['secure'] ? 'https' : 'http';
         $url = $protocol . '://' . $this->_config['host'] . ':' . $this->_config['port'];
         if ($account) {
-            $clientIp = Request::createFromGlobals()->getClientIp() ?? '';
+            $clientIp ??= Request::createFromGlobals()->getClientIp() ?? '';
             $sessionId = $this->_client->session()->create($account->getUsername(), $clientIp);
             $url .= '/enterprise/rsession_init.php?PHPSESSID=' . $sessionId;
         }

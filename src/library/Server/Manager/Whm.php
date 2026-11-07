@@ -84,7 +84,7 @@ class Server_Manager_Whm extends Server_Manager
      *
      * @return string the login URL
      */
-    public function getLoginUrl(?Server_Account $account = null): string
+    public function getLoginUrl(?Server_Account $account = null, ?string $clientIp = null): string
     {
         if ($account) {
             $action = 'create_user_session';

@@ -37,7 +37,7 @@ class Server_Manager_Custom extends Server_Manager
      *
      * @return string returns the URL as a string
      */
-    public function getLoginUrl(?Server_Account $account = null): string
+    public function getLoginUrl(?Server_Account $account = null, ?string $clientIp = null): string
     {
         return 'http://www.google.com?q=cpanel';
     }

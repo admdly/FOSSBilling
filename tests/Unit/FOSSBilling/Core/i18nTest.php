@@ -278,3 +278,45 @@ test('getActiveLocale migrates and expires the legacy locale cookie', function (
     expect($queued[CookieNames::LOCALE]->getValue())->toBe('en_US')
         ->and($queued[CookieNames::LEGACY_LOCALE]->getExpiresTime())->toBeLessThan(time());
 });
+
+test('getActiveLocale honors q-values across all Accept-Language entries', function (): void {
+    Config::setProperty('i18n.locale', 'de_DE');
+
+    // "de" is listed first but has a lower q-value, so "en" must win.
+    $request = Request::create('/', 'GET', [], [], [], ['HTTP_ACCEPT_LANGUAGE' => 'de;q=0.8,en;q=0.9']);
+
+    expect(I18n::getActiveLocale($request, true))->toBe('en_US');
+});
+
+test('getActiveLocale queues a locale cookie when auto-detection matches an enabled locale', function (): void {
+    Config::setProperty('i18n.locale', 'de_DE');
+
+    $cookies = new CookieQueue();
+    $request = Request::create('/', 'GET', [], [], [], ['HTTP_ACCEPT_LANGUAGE' => 'en']);
+
+    expect(I18n::getActiveLocale($request, true, $cookies))->toBe('en_US');
+
+    $response = new Response();
+    $cookies->applyToResponse($response);
+    $queued = [];
+    foreach ($response->headers->getCookies() as $cookie) {
+        $queued[$cookie->getName()] = $cookie;
+    }
+
+    expect($queued[CookieNames::LOCALE]->getValue())->toBe('en_US')
+        ->and($queued[CookieNames::LOCALE]->getExpiresTime())->toBeGreaterThan(time());
+});
+
+test('getActiveLocale falls back to the config default without queueing a cookie for an unsupported browser locale', function (): void {
+    Config::setProperty('i18n.locale', 'de_DE');
+
+    $cookies = new CookieQueue();
+    $request = Request::create('/', 'GET', [], [], [], ['HTTP_ACCEPT_LANGUAGE' => 'zz_Latn_ZZ']);
+
+    expect(I18n::getActiveLocale($request, true, $cookies))->toBe('de_DE');
+
+    $response = new Response();
+    $cookies->applyToResponse($response);
+
+    expect($response->headers->getCookies())->toBe([]);
+});

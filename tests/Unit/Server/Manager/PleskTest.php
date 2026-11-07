@@ -150,3 +150,19 @@ test('getLoginUrl passes the trusted client IP to Plesk session creation', funct
         Request::setTrustedProxies($originalTrustedProxies, $originalTrustedHeaderSet);
     }
 });
+
+test('getLoginUrl prefers the client IP passed by the caller over the request globals', function (): void {
+    $session = Mockery::mock(Session::class);
+    $session->shouldReceive('create')
+        ->once()
+        ->with('example', '192.0.2.7')
+        ->andReturn('session-id');
+    $client = Mockery::mock(Client::class);
+    $client->shouldReceive('session')->once()->andReturn($session);
+
+    $clientProperty = new ReflectionProperty($this->manager, '_client');
+    $clientProperty->setValue($this->manager, $client);
+
+    expect($this->manager->getLoginUrl($this->account, '192.0.2.7'))
+        ->toBe('http://plesk.example.com:8443/enterprise/rsession_init.php?PHPSESSID=session-id');
+});

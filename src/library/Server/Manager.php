@@ -187,9 +187,10 @@ abstract class Server_Manager
     /**
      * Returns the login URL for the server. (ex: panel.example.com).
      *
-     * @param Server_Account|null $account either the related `Server_Account` which can be used to generate an SSO link or `null`
+     * @param Server_Account|null $account  either the related `Server_Account` which can be used to generate an SSO link or `null`
+     * @param string|null         $clientIp the visitor IP to bind an SSO session to, for managers that support it (e.g. Plesk)
      */
-    abstract public function getLoginUrl(?Server_Account $account);
+    abstract public function getLoginUrl(?Server_Account $account, ?string $clientIp = null);
 
     /**
      * Returns the login URL for the server for reseller accounts.
